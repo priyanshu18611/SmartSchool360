@@ -1,8 +1,10 @@
 /* =========================================================
    SMARTSCHOOL360
    STUDENT ADMISSION + EDIT MODULE
-   CREATE / UPDATE / PHOTO / VALIDATION
+   PHOTO + DOCUMENT MANAGEMENT
    ========================================================= */
+
+"use strict";
 
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -28,9 +30,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const sidebar =
         document.getElementById("sidebar");
 
+    const studentPhotoInput =
+        document.getElementById("studentPhoto");
+
+    const birthCertificateInput =
+        document.getElementById("birthCertificate");
+
+    const previousCertificateInput =
+        document.getElementById("previousCertificate");
+
 
     /* =====================================================
-       URL / EDIT MODE
+       URL / MODE
        ===================================================== */
 
     const params =
@@ -49,21 +60,25 @@ document.addEventListener("DOMContentLoaded", () => {
        STORAGE
        ===================================================== */
 
+    const STORAGE_KEY =
+        "smartschool_students";
+
+
     function getStudents() {
 
         try {
 
-            const stored =
+            const data =
                 localStorage.getItem(
-                    "smartschool_students"
+                    STORAGE_KEY
                 );
 
-            if (!stored) {
+            if (!data) {
                 return [];
             }
 
             const parsed =
-                JSON.parse(stored);
+                JSON.parse(data);
 
             return Array.isArray(parsed)
                 ? parsed
@@ -72,7 +87,7 @@ document.addEventListener("DOMContentLoaded", () => {
         } catch (error) {
 
             console.error(
-                "Unable to read students:",
+                "Student storage read error:",
                 error
             );
 
@@ -88,7 +103,7 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
 
             localStorage.setItem(
-                "smartschool_students",
+                STORAGE_KEY,
                 JSON.stringify(students)
             );
 
@@ -97,7 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
         } catch (error) {
 
             console.error(
-                "Unable to save students:",
+                "Student storage save error:",
                 error
             );
 
@@ -132,19 +147,16 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!editStudent) {
 
             showToast(
-                "Student record could not be found.",
+                "Student record not found.",
                 "error"
             );
 
-            setTimeout(
-                () => {
+            setTimeout(() => {
 
-                    window.location.href =
-                        "students.html";
+                window.location.href =
+                    "students.html";
 
-                },
-                1200
-            );
+            }, 1200);
 
             return;
 
@@ -154,25 +166,36 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================================
-       TODAY'S DATE
+       FILE LIMITS
+       ===================================================== */
+
+    const PHOTO_MAX_SIZE =
+        1 * 1024 * 1024;
+
+    const DOCUMENT_MAX_SIZE =
+        700 * 1024;
+
+
+    /* =====================================================
+       TODAY
        ===================================================== */
 
     function getToday() {
 
-        const today =
+        const date =
             new Date();
 
         const year =
-            today.getFullYear();
+            date.getFullYear();
 
         const month =
             String(
-                today.getMonth() + 1
+                date.getMonth() + 1
             ).padStart(2, "0");
 
         const day =
             String(
-                today.getDate()
+                date.getDate()
             ).padStart(2, "0");
 
         return `${year}-${month}-${day}`;
@@ -180,20 +203,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    function setToday() {
-
-        if (!admissionDate) {
-            return;
-        }
-
-        admissionDate.value =
-            getToday();
-
-    }
-
-
     /* =====================================================
-       EDIT MODE UI
+       PAGE MODE
        ===================================================== */
 
     function setupPageMode() {
@@ -203,7 +214,12 @@ document.addEventListener("DOMContentLoaded", () => {
             document.title =
                 "Student Admission | SmartSchool360";
 
-            setToday();
+            if (admissionDate) {
+
+                admissionDate.value =
+                    getToday();
+
+            }
 
             return;
 
@@ -214,81 +230,73 @@ document.addEventListener("DOMContentLoaded", () => {
             "Edit Student | SmartSchool360";
 
 
-        /* PAGE HEADING */
-
-        const pageHeading =
+        const heading =
             document.querySelector(
                 ".page-heading h1"
             );
 
-        const pageSubtitle =
+        const subtitle =
             document.querySelector(
                 ".page-heading p"
             );
 
 
-        if (pageHeading) {
+        if (heading) {
 
-            pageHeading.textContent =
+            heading.textContent =
                 "Edit Student";
 
         }
 
 
-        if (pageSubtitle) {
+        if (subtitle) {
 
-            pageSubtitle.textContent =
+            subtitle.textContent =
                 "Update student information";
 
         }
 
 
-        /* ADMISSION HEADER */
-
-        const admissionHeaderTitle =
+        const moduleTitle =
             document.querySelector(
                 ".admission-header h2"
             );
 
-        const admissionHeaderText =
+        const moduleText =
             document.querySelector(
                 ".admission-header p"
             );
 
 
-        if (admissionHeaderTitle) {
+        if (moduleTitle) {
 
-            admissionHeaderTitle.textContent =
+            moduleTitle.textContent =
                 "Update Student Record";
 
         }
 
 
-        if (admissionHeaderText) {
+        if (moduleText) {
 
-            admissionHeaderText.textContent =
+            moduleText.textContent =
                 "Edit the student and guardian information below.";
 
         }
 
 
-        /* SECTION BADGE */
-
-        const sectionBadge =
+        const badge =
             document.querySelector(
                 ".section-badge"
             );
 
 
-        if (sectionBadge) {
+        if (badge) {
 
-            sectionBadge.textContent =
+            badge.textContent =
                 "EDIT STUDENT MODULE";
 
         }
 
-
-        /* SAVE BUTTON */
 
         if (saveBtn) {
 
@@ -297,8 +305,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         }
 
-
-        /* FORM PRE-FILL */
 
         populateForm(
             editStudent
@@ -318,173 +324,736 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
-        setInputValue(
+        setValue(
             "studentName",
             student.name
         );
 
-        setInputValue(
+        setValue(
             "dob",
             student.dob
         );
 
-        setInputValue(
+        setValue(
             "gender",
             student.gender
         );
 
-        setInputValue(
+        setValue(
             "bloodGroup",
             student.bloodGroup
         );
 
-        setInputValue(
+        setValue(
             "studentPhone",
             student.studentPhone
         );
 
-        setInputValue(
+        setValue(
             "address",
             student.address
         );
 
-        setInputValue(
+        setValue(
             "fatherName",
             student.fatherName
         );
 
-        setInputValue(
+        setValue(
             "motherName",
             student.motherName
         );
 
-        setInputValue(
+        setValue(
             "parentPhone",
             student.parentPhone
         );
 
-        setInputValue(
+        setValue(
             "parentEmail",
             student.parentEmail
         );
 
-        setInputValue(
+        setValue(
             "occupation",
             student.occupation
         );
 
-        setInputValue(
+        setValue(
             "emergencyContact",
             student.emergencyContact
         );
 
-        setInputValue(
+        setValue(
             "className",
             student.className
         );
 
-        setInputValue(
+        setValue(
             "section",
             student.section
         );
 
-        setInputValue(
+        setValue(
             "session",
             student.session
         );
 
-        setInputValue(
+        setValue(
             "previousSchool",
             student.previousSchool
         );
 
-        setInputValue(
+        setValue(
             "admissionDate",
             student.admissionDate
         );
 
-        setInputValue(
+        setValue(
             "studentStatus",
             student.status || "Active"
         );
 
 
-        /* PHOTO INFORMATION */
+        /* EXISTING PHOTO */
 
-        const existingPhoto =
+        const photo =
             student.photo ||
             student.studentPhoto ||
             "";
 
 
-        if (existingPhoto) {
+        if (photo) {
 
-            showExistingPhoto(
-                existingPhoto
+            renderExistingPhoto(
+                photo
             );
 
         }
+
+
+        /* EXISTING DOCUMENTS */
+
+        renderExistingDocuments(
+            student.documents
+        );
 
     }
 
 
     /* =====================================================
-       SET INPUT VALUE
+       SET VALUE
        ===================================================== */
 
-    function setInputValue(
+    function setValue(
         id,
         value
     ) {
 
         const element =
-            document.getElementById(id);
+            document.getElementById(
+                id
+            );
+
 
         if (!element) {
             return;
         }
 
 
-        if (
+        element.value =
             value === undefined ||
             value === null
-        ) {
-
-            element.value = "";
-
-            return;
-
-        }
-
-
-        element.value =
-            value;
+                ? ""
+                : value;
 
     }
 
 
     /* =====================================================
-       EXISTING PHOTO
+       PHOTO MANAGEMENT
        ===================================================== */
 
-    function showExistingPhoto(
+    function getUploadBox(
+        input
+    ) {
+
+        if (!input) {
+            return null;
+        }
+
+        return input.closest(
+            ".upload-box"
+        );
+
+    }
+
+
+    function renderExistingPhoto(
         photo
     ) {
 
         const input =
-            document.getElementById(
-                "studentPhoto"
+            studentPhotoInput;
+
+        const box =
+            getUploadBox(
+                input
             );
 
+
+        if (!box) {
+            return;
+        }
+
+
+        let preview =
+            box.querySelector(
+                ".existing-photo-preview"
+            );
+
+
+        if (!preview) {
+
+            preview =
+                document.createElement(
+                    "div"
+                );
+
+            preview.className =
+                "existing-photo-preview";
+
+
+            box.prepend(
+                preview
+            );
+
+        }
+
+
+        preview.innerHTML = `
+
+            <div
+                style="
+                    display:flex;
+                    flex-direction:column;
+                    align-items:center;
+                    gap:8px;
+                    width:100%;
+                "
+            >
+
+                <img
+                    src="${escapeHTML(photo)}"
+                    alt="Existing Student Photo"
+                    style="
+                        width:82px;
+                        height:82px;
+                        object-fit:cover;
+                        border-radius:50%;
+                        border:4px solid #ffffff;
+                        box-shadow:0 5px 18px rgba(0,0,0,.15);
+                    "
+                >
+
+                <span
+                    style="
+                        font-size:11px;
+                        font-weight:800;
+                        color:#16a34a;
+                    "
+                >
+                    ✓ Current Photo
+                </span>
+
+                <button
+                    type="button"
+                    id="removeStudentPhoto"
+                    style="
+                        border:0;
+                        border-radius:8px;
+                        padding:7px 11px;
+                        background:#fee2e2;
+                        color:#dc2626;
+                        font-size:10px;
+                        font-weight:800;
+                        cursor:pointer;
+                    "
+                >
+                    Remove Photo
+                </button>
+
+            </div>
+
+        `;
+
+
+        const title =
+            box.querySelector(
+                "strong"
+            );
+
+
+        if (title) {
+
+            title.textContent =
+                "Replace Student Photo";
+
+        }
+
+
+        box.style.borderColor =
+            "#22c55e";
+
+
+        const removeButton =
+            document.getElementById(
+                "removeStudentPhoto"
+            );
+
+
+        if (removeButton) {
+
+            removeButton.addEventListener(
+                "click",
+                event => {
+
+                    event.preventDefault();
+
+                    event.stopPropagation();
+
+                    removeCurrentPhoto();
+
+                }
+            );
+
+        }
+
+    }
+
+
+    function removeCurrentPhoto() {
+
+        if (
+            !editStudent
+        ) {
+            return;
+        }
+
+
+        editStudent.photo =
+            "";
+
+        editStudent.studentPhoto =
+            "";
+
+
+        const box =
+            getUploadBox(
+                studentPhotoInput
+            );
+
+
+        if (box) {
+
+            const preview =
+                box.querySelector(
+                    ".existing-photo-preview"
+                );
+
+
+            if (preview) {
+                preview.remove();
+            }
+
+
+            const title =
+                box.querySelector(
+                    "strong"
+                );
+
+
+            if (title) {
+
+                title.textContent =
+                    "Student Photo";
+
+            }
+
+
+            box.style.borderColor =
+                "";
+
+        }
+
+
+        if (studentPhotoInput) {
+
+            studentPhotoInput.value =
+                "";
+
+        }
+
+
+        showToast(
+            "Current photo removed. Save the student to confirm."
+        );
+
+    }
+
+
+    /* =====================================================
+       PHOTO INPUT
+       ===================================================== */
+
+    if (studentPhotoInput) {
+
+        studentPhotoInput.addEventListener(
+            "change",
+            () => {
+
+                const file =
+                    studentPhotoInput.files &&
+                    studentPhotoInput.files[0];
+
+
+                if (!file) {
+                    return;
+                }
+
+
+                if (
+                    !file.type.startsWith(
+                        "image/"
+                    )
+                ) {
+
+                    showToast(
+                        "Please select a valid image.",
+                        "error"
+                    );
+
+                    studentPhotoInput.value =
+                        "";
+
+                    return;
+
+                }
+
+
+                if (
+                    file.size >
+                    PHOTO_MAX_SIZE
+                ) {
+
+                    showToast(
+                        "Student photo must be smaller than 1 MB.",
+                        "error"
+                    );
+
+                    studentPhotoInput.value =
+                        "";
+
+                    return;
+
+                }
+
+
+                previewSelectedPhoto(
+                    file
+                );
+
+            }
+        );
+
+    }
+
+
+    function previewSelectedPhoto(
+        file
+    ) {
+
+        const box =
+            getUploadBox(
+                studentPhotoInput
+            );
+
+
+        if (!box) {
+            return;
+        }
+
+
+        const reader =
+            new FileReader();
+
+
+        reader.onload =
+            event => {
+
+                let preview =
+                    box.querySelector(
+                        ".existing-photo-preview"
+                    );
+
+
+                if (!preview) {
+
+                    preview =
+                        document.createElement(
+                            "div"
+                        );
+
+                    preview.className =
+                        "existing-photo-preview";
+
+
+                    box.prepend(
+                        preview
+                    );
+
+                }
+
+
+                preview.innerHTML = `
+
+                    <div
+                        style="
+                            display:flex;
+                            flex-direction:column;
+                            align-items:center;
+                            gap:7px;
+                        "
+                    >
+
+                        <img
+                            src="${event.target.result}"
+                            alt="Selected Student Photo"
+                            style="
+                                width:82px;
+                                height:82px;
+                                object-fit:cover;
+                                border-radius:50%;
+                                border:4px solid #ffffff;
+                                box-shadow:0 5px 18px rgba(0,0,0,.15);
+                            "
+                        >
+
+                        <span
+                            style="
+                                color:#2563eb;
+                                font-size:10px;
+                                font-weight:800;
+                            "
+                        >
+                            ✓ New Photo Selected
+                        </span>
+
+                    </div>
+
+                `;
+
+
+                const title =
+                    box.querySelector(
+                        "strong"
+                    );
+
+
+                if (title) {
+
+                    title.textContent =
+                        file.name;
+
+                }
+
+
+                box.style.borderColor =
+                    "#2563eb";
+
+            };
+
+
+        reader.readAsDataURL(
+            file
+        );
+
+    }
+
+
+    /* =====================================================
+       DOCUMENT MANAGEMENT
+       ===================================================== */
+
+    function setupDocumentInput(
+        input,
+        label
+    ) {
 
         if (!input) {
             return;
         }
 
 
+        input.addEventListener(
+            "change",
+            () => {
+
+                const file =
+                    input.files &&
+                    input.files[0];
+
+
+                if (!file) {
+                    return;
+                }
+
+
+                if (
+                    file.size >
+                    DOCUMENT_MAX_SIZE
+                ) {
+
+                    showToast(
+                        `${label} must be smaller than 700 KB.`,
+                        "error"
+                    );
+
+                    input.value =
+                        "";
+
+                    return;
+
+                }
+
+
+                const box =
+                    getUploadBox(
+                        input
+                    );
+
+
+                if (!box) {
+                    return;
+                }
+
+
+                const title =
+                    box.querySelector(
+                        "strong"
+                    );
+
+
+                if (title) {
+
+                    title.textContent =
+                        file.name;
+
+                }
+
+
+                box.style.borderColor =
+                    "#2563eb";
+
+
+                let selected =
+                    box.querySelector(
+                        ".document-selected"
+                    );
+
+
+                if (!selected) {
+
+                    selected =
+                        document.createElement(
+                            "small"
+                        );
+
+                    selected.className =
+                        "document-selected";
+
+
+                    box.appendChild(
+                        selected
+                    );
+
+                }
+
+
+                selected.textContent =
+                    "✓ New document selected";
+
+
+                selected.style.color =
+                    "#2563eb";
+
+                selected.style.fontWeight =
+                    "800";
+
+            }
+        );
+
+    }
+
+
+    setupDocumentInput(
+        birthCertificateInput,
+        "Birth Certificate"
+    );
+
+
+    setupDocumentInput(
+        previousCertificateInput,
+        "Previous Certificate"
+    );
+
+
+    /* =====================================================
+       EXISTING DOCUMENTS
+       ===================================================== */
+
+    function renderExistingDocuments(
+        documents
+    ) {
+
+        if (!documents) {
+            return;
+        }
+
+
+        renderExistingDocument(
+            birthCertificateInput,
+            documents.birthCertificate,
+            "Birth Certificate"
+        );
+
+
+        renderExistingDocument(
+            previousCertificateInput,
+            documents.previousCertificate,
+            "Previous Certificate"
+        );
+
+    }
+
+
+    function renderExistingDocument(
+        input,
+        documentData,
+        label
+    ) {
+
+        if (
+            !input ||
+            !documentData
+        ) {
+            return;
+        }
+
+
         const box =
-            input.closest(
-                ".upload-box"
+            getUploadBox(
+                input
             );
 
 
@@ -502,7 +1071,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (title) {
 
             title.textContent =
-                "✓ Existing photo saved";
+                "✓ Existing " + label;
 
         }
 
@@ -511,27 +1080,199 @@ document.addEventListener("DOMContentLoaded", () => {
             "#22c55e";
 
 
-        box.dataset.existingPhoto =
-            photo;
+        let info =
+            box.querySelector(
+                ".existing-document"
+            );
+
+
+        if (!info) {
+
+            info =
+                document.createElement(
+                    "small"
+                );
+
+            info.className =
+                "existing-document";
+
+
+            box.appendChild(
+                info
+            );
+
+        }
+
+
+        info.textContent =
+            documentData.name ||
+            "Document saved";
+
+
+        info.style.color =
+            "#16a34a";
+
+        info.style.fontWeight =
+            "800";
+
+
+        let removeButton =
+            box.querySelector(
+                ".remove-document-btn"
+            );
+
+
+        if (!removeButton) {
+
+            removeButton =
+                document.createElement(
+                    "button"
+                );
+
+            removeButton.type =
+                "button";
+
+            removeButton.className =
+                "remove-document-btn";
+
+            removeButton.textContent =
+                "Remove";
+
+
+            removeButton.style.marginTop =
+                "7px";
+
+            removeButton.style.border =
+                "0";
+
+            removeButton.style.borderRadius =
+                "7px";
+
+            removeButton.style.padding =
+                "6px 9px";
+
+            removeButton.style.background =
+                "#fee2e2";
+
+            removeButton.style.color =
+                "#dc2626";
+
+            removeButton.style.fontSize =
+                "10px";
+
+            removeButton.style.fontWeight =
+                "800";
+
+
+            box.appendChild(
+                removeButton
+            );
+
+        }
+
+
+        removeButton.addEventListener(
+            "click",
+            event => {
+
+                event.preventDefault();
+
+                event.stopPropagation();
+
+
+                if (
+                    editStudent &&
+                    editStudent.documents
+                ) {
+
+                    if (
+                        label ===
+                        "Birth Certificate"
+                    ) {
+
+                        editStudent.documents.birthCertificate =
+                            null;
+
+                    }
+
+
+                    if (
+                        label ===
+                        "Previous Certificate"
+                    ) {
+
+                        editStudent.documents.previousCertificate =
+                            null;
+
+                    }
+
+                }
+
+
+                removeButton.remove();
+
+                info.remove();
+
+
+                if (title) {
+
+                    title.textContent =
+                        label;
+
+                }
+
+
+                box.style.borderColor =
+                    "";
+
+            }
+        );
 
     }
 
 
     /* =====================================================
-       MOBILE SIDEBAR
+       READ FILE
        ===================================================== */
 
-    if (
-        mobileMenu &&
-        sidebar
+    function readFileAsDataURL(
+        file
     ) {
 
-        mobileMenu.addEventListener(
-            "click",
-            () => {
+        return new Promise(
+            (
+                resolve,
+                reject
+            ) => {
 
-                sidebar.classList.toggle(
-                    "show"
+                const reader =
+                    new FileReader();
+
+
+                reader.onload =
+                    () => {
+
+                        resolve(
+                            reader.result
+                        );
+
+                    };
+
+
+                reader.onerror =
+                    () => {
+
+                        reject(
+                            new Error(
+                                "File reading failed."
+                            )
+                        );
+
+                    };
+
+
+                reader.readAsDataURL(
+                    file
                 );
 
             }
@@ -544,25 +1285,18 @@ document.addEventListener("DOMContentLoaded", () => {
        PHONE INPUT
        ===================================================== */
 
-    const phoneFields = [
+    [
+        "studentPhone",
+        "parentPhone",
+        "emergencyContact"
+    ].forEach(
+        id => {
 
-        document.getElementById(
-            "studentPhone"
-        ),
+            const field =
+                document.getElementById(
+                    id
+                );
 
-        document.getElementById(
-            "parentPhone"
-        ),
-
-        document.getElementById(
-            "emergencyContact"
-        )
-
-    ];
-
-
-    phoneFields.forEach(
-        field => {
 
             if (!field) {
                 return;
@@ -592,189 +1326,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================================
-       UPLOAD FIELDS
-       ===================================================== */
-
-    const uploadFields = [
-
-        {
-            id: "studentPhoto",
-            defaultText: "Student Photo"
-        },
-
-        {
-            id: "birthCertificate",
-            defaultText: "Birth Certificate"
-        },
-
-        {
-            id: "previousCertificate",
-            defaultText: "Previous Certificate"
-        }
-
-    ];
-
-
-    uploadFields.forEach(
-        item => {
-
-            const input =
-                document.getElementById(
-                    item.id
-                );
-
-
-            if (!input) {
-                return;
-            }
-
-
-            input.addEventListener(
-                "change",
-                () => {
-
-                    const box =
-                        input.closest(
-                            ".upload-box"
-                        );
-
-
-                    if (!box) {
-                        return;
-                    }
-
-
-                    const title =
-                        box.querySelector(
-                            "strong"
-                        );
-
-
-                    if (
-                        input.files &&
-                        input.files.length > 0
-                    ) {
-
-                        if (title) {
-
-                            title.textContent =
-                                input.files[0].name;
-
-                        }
-
-
-                        box.style.borderColor =
-                            "#22c55e";
-
-                    } else {
-
-                        if (title) {
-
-                            title.textContent =
-                                item.defaultText;
-
-                        }
-
-
-                        if (
-                            !isEditMode ||
-                            item.id !==
-                                "studentPhoto"
-                        ) {
-
-                            box.style.borderColor =
-                                "";
-
-                        }
-
-                    }
-
-                }
-            );
-
-        }
-    );
-
-
-    /* =====================================================
-       STUDENT PHOTO VALIDATION
-       ===================================================== */
-
-    const studentPhotoInput =
-        document.getElementById(
-            "studentPhoto"
-        );
-
-
-    if (studentPhotoInput) {
-
-        studentPhotoInput.addEventListener(
-            "change",
-            () => {
-
-                const file =
-                    studentPhotoInput.files &&
-                    studentPhotoInput.files[0];
-
-
-                if (!file) {
-                    return;
-                }
-
-
-                /* IMAGE CHECK */
-
-                if (
-                    !file.type.startsWith(
-                        "image/"
-                    )
-                ) {
-
-                    showToast(
-                        "Please select a valid image file.",
-                        "error"
-                    );
-
-                    studentPhotoInput.value =
-                        "";
-
-                    return;
-
-                }
-
-
-                /* SIZE CHECK */
-
-                if (
-                    file.size >
-                    2 * 1024 * 1024
-                ) {
-
-                    showToast(
-                        "Student photo must be smaller than 2 MB.",
-                        "error"
-                    );
-
-                    studentPhotoInput.value =
-                        "";
-
-                    return;
-
-                }
-
-
-                console.log(
-                    "Student photo selected:",
-                    file.name
-                );
-
-            }
-        );
-
-    }
-
-
-    /* =====================================================
        FORM SUBMIT
        ===================================================== */
 
@@ -787,8 +1338,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 event.preventDefault();
 
 
-                /* HTML VALIDATION */
-
                 if (
                     !form.checkValidity()
                 ) {
@@ -799,8 +1348,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 }
 
-
-                /* PHONE VALUES */
 
                 const parentPhone =
                     getValue(
@@ -818,10 +1365,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     );
 
 
-                /* PHONE VALIDATION */
-
                 if (
-                    parentPhone.length !== 10
+                    parentPhone.length !==
+                    10
                 ) {
 
                     showToast(
@@ -835,8 +1381,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
                 if (
-                    studentPhone.length > 0 &&
-                    studentPhone.length !== 10
+                    studentPhone &&
+                    studentPhone.length !==
+                    10
                 ) {
 
                     showToast(
@@ -850,8 +1397,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
                 if (
-                    emergencyContact.length > 0 &&
-                    emergencyContact.length !== 10
+                    emergencyContact &&
+                    emergencyContact.length !==
+                    10
                 ) {
 
                     showToast(
@@ -868,11 +1416,7 @@ document.addEventListener("DOMContentLoaded", () => {
                    PHOTO
                    ========================================= */
 
-                let studentPhoto =
-                    "";
-
-
-                const existingPhoto =
+                let photo =
                     editStudent
                         ? (
                             editStudent.photo ||
@@ -885,7 +1429,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (
                     studentPhotoInput &&
                     studentPhotoInput.files &&
-                    studentPhotoInput.files.length > 0
+                    studentPhotoInput.files.length
                 ) {
 
                     const file =
@@ -893,28 +1437,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
                     if (
-                        !file.type.startsWith(
-                            "image/"
-                        )
-                    ) {
-
-                        showToast(
-                            "Please select a valid student image.",
-                            "error"
-                        );
-
-                        return;
-
-                    }
-
-
-                    if (
                         file.size >
-                        2 * 1024 * 1024
+                        PHOTO_MAX_SIZE
                     ) {
 
                         showToast(
-                            "Student photo must be smaller than 2 MB.",
+                            "Student photo must be smaller than 1 MB.",
                             "error"
                         );
 
@@ -925,17 +1453,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     try {
 
-                        studentPhoto =
+                        photo =
                             await readFileAsDataURL(
                                 file
                             );
 
                     } catch (error) {
-
-                        console.error(
-                            "Photo processing failed:",
-                            error
-                        );
 
                         showToast(
                             "Unable to process student photo.",
@@ -946,23 +1469,151 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     }
 
-                } else {
+                }
 
-                    /*
-                       EDIT MODE:
-                       If user does not select
-                       a new photo, preserve
-                       the existing photo.
-                    */
 
-                    studentPhoto =
-                        existingPhoto;
+                /* =========================================
+                   DOCUMENTS
+                   ========================================= */
+
+                let documents =
+                    editStudent &&
+                    editStudent.documents
+                        ? {
+                            ...editStudent.documents
+                        }
+                        : {
+                            birthCertificate: null,
+                            previousCertificate: null
+                        };
+
+
+                if (
+                    birthCertificateInput &&
+                    birthCertificateInput.files &&
+                    birthCertificateInput.files.length
+                ) {
+
+                    const file =
+                        birthCertificateInput.files[0];
+
+
+                    if (
+                        file.size >
+                        DOCUMENT_MAX_SIZE
+                    ) {
+
+                        showToast(
+                            "Birth Certificate must be smaller than 700 KB.",
+                            "error"
+                        );
+
+                        return;
+
+                    }
+
+
+                    try {
+
+                        documents.birthCertificate =
+                            {
+                                name:
+                                    file.name,
+
+                                type:
+                                    file.type,
+
+                                size:
+                                    file.size,
+
+                                data:
+                                    await readFileAsDataURL(
+                                        file
+                                    ),
+
+                                updatedAt:
+                                    new Date()
+                                        .toISOString()
+                            };
+
+                    } catch (error) {
+
+                        showToast(
+                            "Unable to process Birth Certificate.",
+                            "error"
+                        );
+
+                        return;
+
+                    }
+
+                }
+
+
+                if (
+                    previousCertificateInput &&
+                    previousCertificateInput.files &&
+                    previousCertificateInput.files.length
+                ) {
+
+                    const file =
+                        previousCertificateInput.files[0];
+
+
+                    if (
+                        file.size >
+                        DOCUMENT_MAX_SIZE
+                    ) {
+
+                        showToast(
+                            "Previous Certificate must be smaller than 700 KB.",
+                            "error"
+                        );
+
+                        return;
+
+                    }
+
+
+                    try {
+
+                        documents.previousCertificate =
+                            {
+                                name:
+                                    file.name,
+
+                                type:
+                                    file.type,
+
+                                size:
+                                    file.size,
+
+                                data:
+                                    await readFileAsDataURL(
+                                        file
+                                    ),
+
+                                updatedAt:
+                                    new Date()
+                                        .toISOString()
+                            };
+
+                    } catch (error) {
+
+                        showToast(
+                            "Unable to process Previous Certificate.",
+                            "error"
+                        );
+
+                        return;
+
+                    }
 
                 }
 
 
                 /* =========================================
-                   CREATE NEW STUDENT OBJECT
+                   STUDENT OBJECT
                    ========================================= */
 
                 const studentData = {
@@ -1054,27 +1705,34 @@ document.addEventListener("DOMContentLoaded", () => {
                     status:
                         getValue(
                             "studentStatus"
-                        ) || "Active",
+                        ) ||
+                        "Active",
 
                     photo:
-                        studentPhoto,
+                        photo,
+
+                    documents:
+                        documents,
 
                     createdAt:
                         isEditMode
                             ? (
                                 editStudent.createdAt ||
-                                new Date().toISOString()
+                                new Date()
+                                    .toISOString()
                             )
-                            : new Date().toISOString(),
+                            : new Date()
+                                .toISOString(),
 
                     updatedAt:
-                        new Date().toISOString()
+                        new Date()
+                            .toISOString()
 
                 };
 
 
                 /* =========================================
-                   SAVE
+                   UPDATE / CREATE
                    ========================================= */
 
                 if (isEditMode) {
@@ -1094,7 +1752,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     if (index === -1) {
 
                         showToast(
-                            "Student record could not be updated.",
+                            "Student record not found.",
                             "error"
                         );
 
@@ -1116,19 +1774,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
                 /* =========================================
-                   LOCAL STORAGE
+                   SAVE
                    ========================================= */
 
-                const saved =
-                    saveStudents(
+                if (
+                    !saveStudents(
                         students
-                    );
-
-
-                if (!saved) {
+                    )
+                ) {
 
                     showToast(
-                        "Unable to save student data. Storage may be full.",
+                        "Storage is full. Please use smaller files.",
                         "error"
                     );
 
@@ -1137,15 +1793,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
 
 
-                /* =========================================
-                   SUCCESS BUTTON
-                   ========================================= */
-
                 if (saveBtn) {
 
                     saveBtn.disabled =
                         true;
-
 
                     saveBtn.innerHTML =
                         isEditMode
@@ -1155,31 +1806,17 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
 
 
-                /* =========================================
-                   SUCCESS MESSAGE
-                   ========================================= */
-
                 showToast(
                     isEditMode
-                        ? "Student record updated successfully."
-                        : `Student registered successfully. ID: ${studentData.id}`,
-                    "success"
+                        ? "Student updated successfully."
+                        : `Student registered successfully. ID: ${studentData.id}`
                 );
 
-
-                /* =========================================
-                   REDIRECT
-                   ========================================= */
 
                 setTimeout(
                     () => {
 
                         if (isEditMode) {
-
-                            /*
-                               Return directly
-                               to updated profile.
-                            */
 
                             window.location.href =
                                 "student-profile.html?id=" +
@@ -1205,7 +1842,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================================
-       RESET FORM
+       RESET
        ===================================================== */
 
     if (resetBtn) {
@@ -1217,8 +1854,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 const confirmed =
                     window.confirm(
                         isEditMode
-                            ? "Are you sure you want to reset the changes?"
-                            : "Are you sure you want to reset the complete admission form?"
+                            ? "Reset all changes and restore the saved student data?"
+                            : "Reset the complete admission form?"
                     );
 
 
@@ -1228,11 +1865,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
                 if (isEditMode) {
-
-                    /*
-                       Restore original
-                       student values.
-                    */
 
                     populateForm(
                         editStudent
@@ -1249,11 +1881,29 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
 
 
-                    showToast(
-                        "Original student information restored.",
-                        "success"
-                    );
+                    if (
+                        birthCertificateInput
+                    ) {
 
+                        birthCertificateInput.value =
+                            "";
+
+                    }
+
+
+                    if (
+                        previousCertificateInput
+                    ) {
+
+                        previousCertificateInput.value =
+                            "";
+
+                    }
+
+
+                    showToast(
+                        "Original student information restored."
+                    );
 
                     return;
 
@@ -1262,58 +1912,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 form.reset();
 
-                setToday();
 
+                if (admissionDate) {
 
-                uploadFields.forEach(
-                    item => {
+                    admissionDate.value =
+                        getToday();
 
-                        const input =
-                            document.getElementById(
-                                item.id
-                            );
-
-
-                        if (!input) {
-                            return;
-                        }
-
-
-                        const box =
-                            input.closest(
-                                ".upload-box"
-                            );
-
-
-                        if (!box) {
-                            return;
-                        }
-
-
-                        const title =
-                            box.querySelector(
-                                "strong"
-                            );
-
-
-                        if (title) {
-
-                            title.textContent =
-                                item.defaultText;
-
-                        }
-
-
-                        box.style.borderColor =
-                            "";
-
-                    }
-                );
+                }
 
 
                 showToast(
-                    "Admission form has been reset.",
-                    "success"
+                    "Admission form reset."
                 );
 
             }
@@ -1323,44 +1932,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================================
-       FILE READER
+       MOBILE MENU
        ===================================================== */
 
-    function readFileAsDataURL(
-        file
+    if (
+        mobileMenu &&
+        sidebar
     ) {
 
-        return new Promise(
-            (resolve, reject) => {
+        mobileMenu.addEventListener(
+            "click",
+            () => {
 
-                const reader =
-                    new FileReader();
-
-
-                reader.onload =
-                    () => {
-
-                        resolve(
-                            reader.result
-                        );
-
-                    };
-
-
-                reader.onerror =
-                    () => {
-
-                        reject(
-                            new Error(
-                                "File reading failed."
-                            )
-                        );
-
-                    };
-
-
-                reader.readAsDataURL(
-                    file
+                sidebar.classList.toggle(
+                    "show"
                 );
 
             }
@@ -1370,30 +1955,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================================
-       VALUE HELPER
-       ===================================================== */
-
-    function getValue(id) {
-
-        const element =
-            document.getElementById(
-                id
-            );
-
-
-        if (!element) {
-            return "";
-        }
-
-
-        return element.value
-            .trim();
-
-    }
-
-
-    /* =====================================================
-       STUDENT ID
+       ID GENERATOR
        ===================================================== */
 
     function generateStudentId() {
@@ -1436,6 +1998,61 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================================
+       GET VALUE
+       ===================================================== */
+
+    function getValue(id) {
+
+        const element =
+            document.getElementById(
+                id
+            );
+
+
+        if (!element) {
+            return "";
+        }
+
+
+        return element.value.trim();
+
+    }
+
+
+    /* =====================================================
+       ESCAPE HTML
+       ===================================================== */
+
+    function escapeHTML(
+        value
+    ) {
+
+        return String(value)
+            .replace(
+                /&/g,
+                "&amp;"
+            )
+            .replace(
+                /</g,
+                "&lt;"
+            )
+            .replace(
+                />/g,
+                "&gt;"
+            )
+            .replace(
+                /"/g,
+                "&quot;"
+            )
+            .replace(
+                /'/g,
+                "&#039;"
+            );
+
+    }
+
+
+    /* =====================================================
        TOAST
        ===================================================== */
 
@@ -1444,14 +2061,14 @@ document.addEventListener("DOMContentLoaded", () => {
         type = "success"
     ) {
 
-        const oldToast =
+        const old =
             document.querySelector(
                 ".admission-toast"
             );
 
 
-        if (oldToast) {
-            oldToast.remove();
+        if (old) {
+            old.remove();
         }
 
 
@@ -1462,67 +2079,55 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         toast.className =
-            `admission-toast ${type}`;
+            "admission-toast";
 
 
         toast.textContent =
             message;
 
 
-        toast.style.position =
-            "fixed";
+        Object.assign(
+            toast.style,
+            {
 
-        toast.style.left =
-            "50%";
+                position: "fixed",
 
-        toast.style.bottom =
-            "25px";
+                left: "50%",
 
-        toast.style.transform =
-            "translateX(-50%)";
+                bottom: "24px",
 
-        toast.style.zIndex =
-            "99999";
+                transform:
+                    "translateX(-50%)",
 
-        toast.style.padding =
-            "13px 20px";
+                zIndex: "99999",
 
-        toast.style.borderRadius =
-            "10px";
+                padding:
+                    "13px 19px",
 
-        toast.style.fontSize =
-            "13px";
+                borderRadius:
+                    "10px",
 
-        toast.style.fontWeight =
-            "700";
+                fontSize: "12px",
 
-        toast.style.maxWidth =
-            "calc(100% - 30px)";
+                fontWeight: "800",
 
-        toast.style.textAlign =
-            "center";
+                textAlign: "center",
 
-        toast.style.boxShadow =
-            "0 10px 30px rgba(0,0,0,.18)";
+                maxWidth:
+                    "calc(100% - 30px)",
 
+                color: "#ffffff",
 
-        if (type === "error") {
+                background:
+                    type === "error"
+                        ? "#dc2626"
+                        : "#16a34a",
 
-            toast.style.background =
-                "#dc2626";
+                boxShadow:
+                    "0 10px 30px rgba(0,0,0,.18)"
 
-            toast.style.color =
-                "#ffffff";
-
-        } else {
-
-            toast.style.background =
-                "#16a34a";
-
-            toast.style.color =
-                "#ffffff";
-
-        }
+            }
+        );
 
 
         document.body.appendChild(
@@ -1550,7 +2155,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 );
 
             },
-            3000
+            2800
         );
 
     }
@@ -1565,8 +2170,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     console.log(
         isEditMode
-            ? `SmartSchool360 Edit Mode loaded for ${editStudentId}`
-            : "SmartSchool360 Admission Mode loaded."
+            ? "SmartSchool360 Edit Mode + File Management ready."
+            : "SmartSchool360 Admission Mode ready."
     );
 
 });
