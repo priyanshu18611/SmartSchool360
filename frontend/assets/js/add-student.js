@@ -1,17 +1,10 @@
-/* =========================================================
+/* =========================================
    SMARTSCHOOL360
-   STUDENT ADMISSION + EDIT MODULE
-   ========================================================= */
-
-"use strict";
+   STUDENT ADMISSION MODULE
+   PHOTO ENABLED
+   ========================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
-
-    const STORAGE_KEY = "smartschool_students";
-
-    /* =====================================================
-       DOM
-    ===================================================== */
 
     const form =
         document.getElementById("admissionForm");
@@ -26,129 +19,51 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("admissionDate");
 
 
-    /* =====================================================
-       EDIT MODE
-    ===================================================== */
-
-    const urlParams =
-        new URLSearchParams(
-            window.location.search
-        );
-
-    const editStudentId =
-        urlParams.get("id");
-
-    let editMode =
-        Boolean(editStudentId);
-
-
-    /* =====================================================
-       LOAD STUDENTS
-    ===================================================== */
-
-    function getStudents() {
-
-        try {
-
-            const raw =
-                localStorage.getItem(
-                    STORAGE_KEY
-                );
-
-            if (!raw) {
-                return [];
-            }
-
-            const data =
-                JSON.parse(raw);
-
-            return Array.isArray(data)
-                ? data
-                : [];
-
-        } catch (error) {
-
-            console.error(
-                "Unable to read student data:",
-                error
-            );
-
-            return [];
-        }
-    }
-
-
-    /* =====================================================
-       SAVE STUDENTS
-    ===================================================== */
-
-    function saveStudents(students) {
-
-        localStorage.setItem(
-            STORAGE_KEY,
-            JSON.stringify(students)
-        );
-    }
-
-
-    /* =====================================================
+    /* =========================================
        TODAY'S DATE
-    ===================================================== */
+       ========================================= */
 
     function setToday() {
 
-        if (!admissionDate) {
-            return;
-        }
+        if (!admissionDate) return;
 
-        const today =
-            new Date();
+        const today = new Date();
 
         const year =
             today.getFullYear();
 
         const month =
-            String(
-                today.getMonth() + 1
-            ).padStart(2, "0");
+            String(today.getMonth() + 1)
+                .padStart(2, "0");
 
         const day =
-            String(
-                today.getDate()
-            ).padStart(2, "0");
+            String(today.getDate())
+                .padStart(2, "0");
 
         admissionDate.value =
             `${year}-${month}-${day}`;
     }
 
+    setToday();
 
-    /* =====================================================
+
+    /* =========================================
        MOBILE SIDEBAR
-    ===================================================== */
+       ========================================= */
 
     const mobileMenu =
-        document.getElementById(
-            "mobileMenu"
-        );
+        document.getElementById("mobileMenu");
 
     const sidebar =
-        document.getElementById(
-            "sidebar"
-        );
+        document.getElementById("sidebar");
 
-
-    if (
-        mobileMenu &&
-        sidebar
-    ) {
+    if (mobileMenu && sidebar) {
 
         mobileMenu.addEventListener(
             "click",
             () => {
 
-                sidebar.classList.toggle(
-                    "show"
-                );
+                sidebar.classList.toggle("show");
 
             }
         );
@@ -156,32 +71,24 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /* =====================================================
-       PHONE INPUT
-    ===================================================== */
+    /* =========================================
+       PHONE NUMBER INPUT
+       ========================================= */
 
     const phoneFields = [
 
-        document.getElementById(
-            "studentPhone"
-        ),
+        document.getElementById("studentPhone"),
 
-        document.getElementById(
-            "parentPhone"
-        ),
+        document.getElementById("parentPhone"),
 
-        document.getElementById(
-            "emergencyContact"
-        )
+        document.getElementById("emergencyContact")
 
     ];
 
 
     phoneFields.forEach(field => {
 
-        if (!field) {
-            return;
-        }
+        if (!field) return;
 
         field.addEventListener(
             "input",
@@ -198,9 +105,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 
-    /* =====================================================
+    /* =========================================
        FILE UPLOAD DISPLAY
-    ===================================================== */
+       ========================================= */
 
     const uploadFields = [
 
@@ -225,32 +132,21 @@ document.addEventListener("DOMContentLoaded", () => {
     uploadFields.forEach(item => {
 
         const input =
-            document.getElementById(
-                item.id
-            );
+            document.getElementById(item.id);
 
-        if (!input) {
-            return;
-        }
+        if (!input) return;
 
         input.addEventListener(
             "change",
             () => {
 
                 const box =
-                    input.closest(
-                        ".upload-box"
-                    );
+                    input.closest(".upload-box");
 
-                if (!box) {
-                    return;
-                }
+                if (!box) return;
 
                 const title =
-                    box.querySelector(
-                        "strong"
-                    );
-
+                    box.querySelector("strong");
 
                 if (
                     input.files &&
@@ -279,275 +175,123 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 
-    /* =====================================================
-       FORM HELPERS
-    ===================================================== */
+    /* =========================================
+       STUDENT PHOTO VALIDATION
+       ========================================= */
 
-    function getValue(id) {
-
-        const element =
-            document.getElementById(id);
-
-        return element
-            ? element.value.trim()
-            : "";
-    }
+    const studentPhotoInput =
+        document.getElementById("studentPhoto");
 
 
-    function setValue(id, value) {
+    if (studentPhotoInput) {
 
-        const element =
-            document.getElementById(id);
+        studentPhotoInput.addEventListener(
+            "change",
+            () => {
 
-        if (!element) {
-            return;
-        }
+                const file =
+                    studentPhotoInput.files &&
+                    studentPhotoInput.files[0];
 
-        element.value =
-            value ?? "";
-    }
-
-
-    /* =====================================================
-       EDIT MODE - LOAD EXISTING STUDENT
-    ===================================================== */
-
-    function loadEditStudent() {
-
-        if (!editMode) {
-            return;
-        }
+                if (!file) return;
 
 
-        const students =
-            getStudents();
+                /* IMAGE CHECK */
+
+                if (!file.type.startsWith("image/")) {
+
+                    showToast(
+                        "Please select a valid image file.",
+                        "error"
+                    );
+
+                    studentPhotoInput.value = "";
+
+                    return;
+
+                }
 
 
-        const student =
-            students.find(
-                item =>
-                    String(item.id) ===
-                    String(editStudentId)
-            );
+                /* SIZE CHECK — 2 MB */
+
+                const maxSize =
+                    2 * 1024 * 1024;
+
+                if (file.size > maxSize) {
+
+                    showToast(
+                        "Student photo must be smaller than 2 MB.",
+                        "error"
+                    );
+
+                    studentPhotoInput.value = "";
+
+                    return;
+
+                }
 
 
-        if (!student) {
+                console.log(
+                    "Student photo selected:",
+                    file.name
+                );
 
-            alert(
-                "Student record not found."
-            );
-
-            window.location.href =
-                "students.html";
-
-            return;
-        }
-
-
-        /* ================================================
-           FORM VALUES
-        ================================================ */
-
-        setValue(
-            "studentName",
-            student.name
-        );
-
-        setValue(
-            "dob",
-            student.dob
-        );
-
-        setValue(
-            "gender",
-            student.gender
-        );
-
-        setValue(
-            "bloodGroup",
-            student.bloodGroup
-        );
-
-        setValue(
-            "studentPhone",
-            student.studentPhone
-        );
-
-        setValue(
-            "address",
-            student.address
-        );
-
-        setValue(
-            "fatherName",
-            student.fatherName
-        );
-
-        setValue(
-            "motherName",
-            student.motherName
-        );
-
-        setValue(
-            "parentPhone",
-            student.parentPhone
-        );
-
-        setValue(
-            "parentEmail",
-            student.parentEmail
-        );
-
-        setValue(
-            "occupation",
-            student.occupation
-        );
-
-        setValue(
-            "emergencyContact",
-            student.emergencyContact
-        );
-
-        setValue(
-            "className",
-            student.className
-        );
-
-        setValue(
-            "section",
-            student.section
-        );
-
-        setValue(
-            "session",
-            student.session
-        );
-
-        setValue(
-            "previousSchool",
-            student.previousSchool
-        );
-
-        setValue(
-            "admissionDate",
-            student.admissionDate
-        );
-
-        setValue(
-            "studentStatus",
-            student.status
-        );
-
-
-        /* ================================================
-           CHANGE PAGE TITLE
-        ================================================ */
-
-        const heading =
-            document.querySelector(
-                ".page-heading h1"
-            );
-
-        const subtitle =
-            document.querySelector(
-                ".page-heading p"
-            );
-
-
-        if (heading) {
-
-            heading.textContent =
-                "Edit Student";
-
-        }
-
-
-        if (subtitle) {
-
-            subtitle.textContent =
-                `Update student record · ${student.id}`;
-
-        }
-
-
-        /* ================================================
-           CHANGE SAVE BUTTON
-        ================================================ */
-
-        if (saveBtn) {
-
-            saveBtn.innerHTML =
-                "✓ Update Student";
-
-        }
-
-
-        /* ================================================
-           UPDATE DOCUMENT TITLE
-        ================================================ */
-
-        document.title =
-            "Edit Student | SmartSchool360";
-
-
-        console.log(
-            "Edit mode loaded:",
-            student
+            }
         );
 
     }
 
 
-    /* =====================================================
+    /* =========================================
        FORM SUBMIT
-    ===================================================== */
+       ========================================= */
 
     if (form) {
 
         form.addEventListener(
             "submit",
-            event => {
+            async function (event) {
 
                 event.preventDefault();
 
 
-                /* =========================================
-                   HTML VALIDATION
-                ========================================= */
+                /* HTML VALIDATION */
 
                 if (!form.checkValidity()) {
 
                     form.reportValidity();
 
                     return;
+
                 }
 
 
-                /* =========================================
+                /* =================================
                    PHONE VALIDATION
-                ========================================= */
+                   ================================= */
 
                 const parentPhone =
-                    getValue(
-                        "parentPhone"
-                    );
+                    document
+                        .getElementById("parentPhone")
+                        .value
+                        .trim();
 
 
                 const studentPhone =
-                    getValue(
-                        "studentPhone"
-                    );
+                    document
+                        .getElementById("studentPhone")
+                        .value
+                        .trim();
 
 
                 const emergencyContact =
-                    getValue(
-                        "emergencyContact"
-                    );
+                    document
+                        .getElementById("emergencyContact")
+                        .value
+                        .trim();
 
 
-                if (
-                    parentPhone.length !== 10
-                ) {
+                if (parentPhone.length !== 10) {
 
                     showToast(
                         "Please enter a valid 10-digit parent mobile number.",
@@ -555,6 +299,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     );
 
                     return;
+
                 }
 
 
@@ -569,6 +314,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     );
 
                     return;
+
                 }
 
 
@@ -583,200 +329,81 @@ document.addEventListener("DOMContentLoaded", () => {
                     );
 
                     return;
+
                 }
 
 
-                /* =========================================
-                   GET EXISTING STUDENTS
-                ========================================= */
+                /* =================================
+                   STUDENT PHOTO
+                   ================================= */
 
-                const students =
-                    getStudents();
-
-
-                /* =========================================
-                   EDIT EXISTING STUDENT
-                ========================================= */
-
-                if (editMode) {
-
-                    const index =
-                        students.findIndex(
-                            student =>
-                                String(student.id) ===
-                                String(editStudentId)
-                        );
+                let studentPhoto = "";
 
 
-                    if (index === -1) {
+                if (
+                    studentPhotoInput &&
+                    studentPhotoInput.files &&
+                    studentPhotoInput.files.length > 0
+                ) {
+
+                    const file =
+                        studentPhotoInput.files[0];
+
+
+                    if (!file.type.startsWith("image/")) {
 
                         showToast(
-                            "Student record not found.",
+                            "Please select a valid student image.",
                             "error"
                         );
 
                         return;
-                    }
-
-
-                    const oldStudent =
-                        students[index];
-
-
-                    /* =====================================
-                       UPDATE RECORD
-                    ===================================== */
-
-                    students[index] = {
-
-                        ...oldStudent,
-
-                        name:
-                            getValue(
-                                "studentName"
-                            ),
-
-                        dob:
-                            getValue(
-                                "dob"
-                            ),
-
-                        gender:
-                            getValue(
-                                "gender"
-                            ),
-
-                        bloodGroup:
-                            getValue(
-                                "bloodGroup"
-                            ),
-
-                        studentPhone:
-                            studentPhone,
-
-                        address:
-                            getValue(
-                                "address"
-                            ),
-
-                        fatherName:
-                            getValue(
-                                "fatherName"
-                            ),
-
-                        motherName:
-                            getValue(
-                                "motherName"
-                            ),
-
-                        parentPhone:
-                            parentPhone,
-
-                        parentEmail:
-                            getValue(
-                                "parentEmail"
-                            ),
-
-                        occupation:
-                            getValue(
-                                "occupation"
-                            ),
-
-                        emergencyContact:
-                            emergencyContact,
-
-                        className:
-                            getValue(
-                                "className"
-                            ),
-
-                        section:
-                            getValue(
-                                "section"
-                            ),
-
-                        session:
-                            getValue(
-                                "session"
-                            ),
-
-                        previousSchool:
-                            getValue(
-                                "previousSchool"
-                            ),
-
-                        admissionDate:
-                            getValue(
-                                "admissionDate"
-                            ),
-
-                        status:
-                            getValue(
-                                "studentStatus"
-                            ),
-
-                        updatedAt:
-                            new Date()
-                                .toISOString()
-
-                    };
-
-
-                    /* =====================================
-                       SAVE UPDATED DATA
-                    ===================================== */
-
-                    saveStudents(
-                        students
-                    );
-
-
-                    /* =====================================
-                       BUTTON
-                    ===================================== */
-
-                    if (saveBtn) {
-
-                        saveBtn.disabled =
-                            true;
-
-                        saveBtn.innerHTML =
-                            "✓ Student Updated";
 
                     }
 
 
-                    showToast(
-                        "Student record updated successfully.",
-                        "success"
-                    );
+                    if (
+                        file.size >
+                        2 * 1024 * 1024
+                    ) {
+
+                        showToast(
+                            "Student photo must be smaller than 2 MB.",
+                            "error"
+                        );
+
+                        return;
+
+                    }
 
 
-                    /* =====================================
-                       REDIRECT
-                    ===================================== */
+                    try {
 
-                    setTimeout(
-                        () => {
+                        studentPhoto =
+                            await readFileAsDataURL(file);
 
-                            window.location.href =
-                                "student-profile.html?id=" +
-                                encodeURIComponent(
-                                    editStudentId
-                                );
+                    } catch (error) {
 
-                        },
-                        1200
-                    );
+                        console.error(
+                            "Photo processing failed:",
+                            error
+                        );
 
+                        showToast(
+                            "Unable to process student photo.",
+                            "error"
+                        );
 
-                    return;
+                        return;
+
+                    }
+
                 }
 
 
-                /* =========================================
-                   NEW STUDENT
-                ========================================= */
+                /* =================================
+                   CREATE STUDENT
+                   ================================= */
 
                 const student = {
 
@@ -784,118 +411,134 @@ document.addEventListener("DOMContentLoaded", () => {
                         generateStudentId(),
 
                     name:
-                        getValue(
-                            "studentName"
-                        ),
+                        getValue("studentName"),
 
                     dob:
-                        getValue(
-                            "dob"
-                        ),
+                        getValue("dob"),
 
                     gender:
-                        getValue(
-                            "gender"
-                        ),
+                        getValue("gender"),
 
                     bloodGroup:
-                        getValue(
-                            "bloodGroup"
-                        ),
+                        getValue("bloodGroup"),
 
                     studentPhone:
                         studentPhone,
 
                     address:
-                        getValue(
-                            "address"
-                        ),
+                        getValue("address"),
 
                     fatherName:
-                        getValue(
-                            "fatherName"
-                        ),
+                        getValue("fatherName"),
 
                     motherName:
-                        getValue(
-                            "motherName"
-                        ),
+                        getValue("motherName"),
 
                     parentPhone:
                         parentPhone,
 
                     parentEmail:
-                        getValue(
-                            "parentEmail"
-                        ),
+                        getValue("parentEmail"),
 
                     occupation:
-                        getValue(
-                            "occupation"
-                        ),
+                        getValue("occupation"),
 
                     emergencyContact:
                         emergencyContact,
 
                     className:
-                        getValue(
-                            "className"
-                        ),
+                        getValue("className"),
 
                     section:
-                        getValue(
-                            "section"
-                        ),
+                        getValue("section"),
 
                     session:
-                        getValue(
-                            "session"
-                        ),
+                        getValue("session"),
 
                     previousSchool:
-                        getValue(
-                            "previousSchool"
-                        ),
+                        getValue("previousSchool"),
 
                     admissionDate:
-                        getValue(
-                            "admissionDate"
-                        ),
+                        getValue("admissionDate"),
 
                     status:
-                        getValue(
-                            "studentStatus"
-                        ),
+                        getValue("studentStatus"),
+
+                    photo:
+                        studentPhoto,
 
                     createdAt:
-                        new Date()
-                            .toISOString()
+                        new Date().toISOString()
 
                 };
 
 
-                /* =========================================
-                   ADD STUDENT
-                ========================================= */
+                /* =================================
+                   GET OLD STUDENTS
+                   ================================= */
 
-                students.push(
-                    student
-                );
+                let students = [];
 
 
-                saveStudents(
-                    students
-                );
+                try {
+
+                    students =
+                        JSON.parse(
+                            localStorage.getItem(
+                                "smartschool_students"
+                            )
+                        ) || [];
+
+                } catch (error) {
+
+                    console.error(
+                        "Unable to read student data:",
+                        error
+                    );
+
+                    students = [];
+
+                }
 
 
-                /* =========================================
+                /* =================================
+                   SAVE STUDENT
+                   ================================= */
+
+                students.push(student);
+
+
+                try {
+
+                    localStorage.setItem(
+                        "smartschool_students",
+                        JSON.stringify(students)
+                    );
+
+                } catch (error) {
+
+                    console.error(
+                        "Unable to save student:",
+                        error
+                    );
+
+                    showToast(
+                        "Storage limit reached. Please use a smaller photo.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                /* =================================
                    SUCCESS
-                ========================================= */
+                   ================================= */
 
                 if (saveBtn) {
 
-                    saveBtn.disabled =
-                        true;
+                    saveBtn.disabled = true;
 
                     saveBtn.innerHTML =
                         "✓ Student Registered";
@@ -909,9 +552,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 );
 
 
-                /* =========================================
+                /* =================================
                    REDIRECT
-                ========================================= */
+                   ================================= */
 
                 setTimeout(
                     () => {
@@ -929,9 +572,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /* =====================================================
-       RESET
-    ===================================================== */
+    /* =========================================
+       RESET FORM
+       ========================================= */
 
     if (resetBtn) {
 
@@ -945,59 +588,47 @@ document.addEventListener("DOMContentLoaded", () => {
                     );
 
 
-                if (!confirmed) {
-                    return;
-                }
+                if (!confirmed) return;
 
 
                 form.reset();
 
+
                 setToday();
 
 
-                uploadFields.forEach(
-                    item => {
+                uploadFields.forEach(item => {
 
-                        const input =
-                            document.getElementById(
-                                item.id
-                            );
+                    const input =
+                        document.getElementById(
+                            item.id
+                        );
 
-                        if (!input) {
-                            return;
-                        }
+                    if (!input) return;
 
+                    const box =
+                        input.closest(
+                            ".upload-box"
+                        );
 
-                        const box =
-                            input.closest(
-                                ".upload-box"
-                            );
+                    if (!box) return;
 
+                    const title =
+                        box.querySelector(
+                            "strong"
+                        );
 
-                        if (!box) {
-                            return;
-                        }
+                    if (title) {
 
-
-                        const title =
-                            box.querySelector(
-                                "strong"
-                            );
-
-
-                        if (title) {
-
-                            title.textContent =
-                                item.defaultText;
-
-                        }
-
-
-                        box.style.borderColor =
-                            "";
+                        title.textContent =
+                            item.defaultText;
 
                     }
-                );
+
+                    box.style.borderColor =
+                        "";
+
+                });
 
 
                 showToast(
@@ -1011,15 +642,73 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /* =====================================================
-       GENERATE STUDENT ID
-    ===================================================== */
+    /* =========================================
+       READ FILE
+       ========================================= */
+
+    function readFileAsDataURL(file) {
+
+        return new Promise(
+            (resolve, reject) => {
+
+                const reader =
+                    new FileReader();
+
+
+                reader.onload =
+                    () => {
+
+                        resolve(
+                            reader.result
+                        );
+
+                    };
+
+
+                reader.onerror =
+                    () => {
+
+                        reject(
+                            new Error(
+                                "File reading failed."
+                            )
+                        );
+
+                    };
+
+
+                reader.readAsDataURL(file);
+
+            }
+        );
+
+    }
+
+
+    /* =========================================
+       HELPER
+       ========================================= */
+
+    function getValue(id) {
+
+        const element =
+            document.getElementById(id);
+
+        return element
+            ? element.value.trim()
+            : "";
+
+    }
+
+
+    /* =========================================
+       STUDENT ID
+       ========================================= */
 
     function generateStudentId() {
 
         const year =
             new Date().getFullYear();
-
 
         const random =
             Math.floor(
@@ -1027,16 +716,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 Math.random() * 9000
             );
 
+        return `SS${year}${random}`;
 
-        return (
-            `SS${year}${random}`
-        );
     }
 
 
-    /* =====================================================
-       TOAST
-    ===================================================== */
+    /* =========================================
+       TOAST MESSAGE
+       ========================================= */
 
     function showToast(
         message,
@@ -1050,7 +737,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         if (oldToast) {
+
             oldToast.remove();
+
         }
 
 
@@ -1099,23 +788,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /* =====================================================
-       INITIALIZE
-    ===================================================== */
-
-    if (editMode) {
-
-        loadEditStudent();
-
-    } else {
-
-        setToday();
-
-    }
-
+    /* =========================================
+       MODULE READY
+       ========================================= */
 
     console.log(
-        "SmartSchool360 Admission/Edit Module loaded."
+        "SmartSchool360 Admission Module loaded."
     );
 
 });
