@@ -1,0 +1,469 @@
+/* =========================================
+   SMARTSCHOOL360
+   STUDENT ADMISSION PAGE
+   ========================================= */
+
+.admission-container {
+    padding: 30px;
+    max-width: 1500px;
+    margin: auto;
+}
+
+.admission-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 28px;
+}
+
+.section-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    background: #eef2ff;
+    color: #4f46e5;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+}
+
+.admission-header h2 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.admission-header p {
+    margin: 8px 0 0;
+    color: #64748b;
+}
+
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 11px 18px;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #334155;
+    text-decoration: none;
+    font-weight: 700;
+    transition: 0.25s;
+}
+
+.back-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+}
+
+
+/* =========================================
+   PROGRESS
+   ========================================= */
+
+.form-progress {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    margin-bottom: 25px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+}
+
+.progress-step {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: #94a3b8;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.progress-step.active {
+    color: #4f46e5;
+}
+
+.step-number {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f1f5f9;
+    color: #64748b;
+    font-weight: 800;
+}
+
+.progress-step.active .step-number {
+    background: #4f46e5;
+    color: #ffffff;
+}
+
+.progress-line {
+    width: 80px;
+    height: 2px;
+    margin: 0 15px;
+    background: #e2e8f0;
+}
+
+
+/* =========================================
+   FORM CARD
+   ========================================= */
+
+.form-card {
+    padding: 28px;
+    margin-bottom: 22px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    box-shadow: 0 8px 25px rgba(15, 23, 42, 0.04);
+}
+
+.form-card-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding-bottom: 20px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid #eef2f7;
+}
+
+.form-icon {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 13px;
+    background: #eef2ff;
+    font-size: 22px;
+}
+
+.parent-icon {
+    background: #fef3c7;
+}
+
+.academic-icon {
+    background: #dcfce7;
+}
+
+.document-icon {
+    background: #fce7f3;
+}
+
+.form-card-header h3 {
+    margin: 0 0 5px;
+    font-size: 18px;
+    color: #0f172a;
+}
+
+.form-card-header p {
+    margin: 0;
+    color: #64748b;
+    font-size: 13px;
+}
+
+
+/* =========================================
+   FORM GRID
+   ========================================= */
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.full-width {
+    grid-column: 1 / -1;
+}
+
+.form-group label {
+    color: #334155;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.form-group label span {
+    color: #ef4444;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px 13px;
+    border: 1px solid #dbe3ec;
+    border-radius: 10px;
+    outline: none;
+    background: #f8fafc;
+    color: #1e293b;
+    font-family: inherit;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.form-group textarea {
+    min-height: 90px;
+    resize: vertical;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #6366f1;
+    background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: #94a3b8;
+}
+
+
+/* =========================================
+   DOCUMENT UPLOAD
+   ========================================= */
+
+.document-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+}
+
+.upload-box {
+    min-height: 150px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+    box-sizing: border-box;
+    border: 2px dashed #cbd5e1;
+    border-radius: 14px;
+    background: #f8fafc;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.25s;
+}
+
+.upload-box:hover {
+    border-color: #6366f1;
+    background: #f5f3ff;
+    transform: translateY(-2px);
+}
+
+.upload-box input {
+    display: none;
+}
+
+.upload-icon {
+    margin-bottom: 8px;
+    font-size: 30px;
+}
+
+.upload-box strong {
+    color: #334155;
+    font-size: 14px;
+}
+
+.upload-box small {
+    margin-top: 5px;
+    color: #94a3b8;
+}
+
+
+/* =========================================
+   BUTTONS
+   ========================================= */
+
+.form-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 8px 0 30px;
+}
+
+.btn {
+    border: none;
+    border-radius: 10px;
+    padding: 13px 20px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.25s;
+}
+
+.secondary-btn {
+    background: #f1f5f9;
+    color: #475569;
+}
+
+.secondary-btn:hover {
+    background: #e2e8f0;
+}
+
+.primary-btn {
+    background: #4f46e5;
+    color: #ffffff;
+    box-shadow: 0 8px 20px rgba(79, 70, 229, 0.20);
+}
+
+.primary-btn:hover {
+    background: #4338ca;
+    transform: translateY(-2px);
+}
+
+.primary-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+
+/* =========================================
+   TOAST
+   ========================================= */
+
+.admission-toast {
+    position: fixed;
+    right: 25px;
+    bottom: 25px;
+    z-index: 9999;
+    min-width: 280px;
+    max-width: 400px;
+    padding: 15px 18px;
+    border-radius: 12px;
+    background: #0f172a;
+    color: #ffffff;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+    animation: toastIn 0.3s ease;
+}
+
+.admission-toast.success {
+    border-left: 4px solid #22c55e;
+}
+
+.admission-toast.error {
+    border-left: 4px solid #ef4444;
+}
+
+@keyframes toastIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* =========================================
+   TABLET
+   ========================================= */
+
+@media (max-width: 900px) {
+
+    .admission-container {
+        padding: 20px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .full-width {
+        grid-column: auto;
+    }
+
+    .document-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .progress-line {
+        width: 35px;
+        margin: 0 8px;
+    }
+
+    .progress-step span {
+        display: none;
+    }
+}
+
+
+/* =========================================
+   MOBILE
+   ========================================= */
+
+@media (max-width: 600px) {
+
+    .admission-container {
+        padding: 14px;
+    }
+
+    .admission-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .admission-header h2 {
+        font-size: 22px;
+    }
+
+    .back-btn {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .form-progress {
+        justify-content: flex-start;
+        overflow-x: auto;
+    }
+
+    .form-card {
+        padding: 18px;
+        border-radius: 14px;
+    }
+
+    .form-card-header {
+        align-items: flex-start;
+    }
+
+    .form-actions {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+
+    .btn {
+        width: 100%;
+    }
+
+    .admission-toast {
+        left: 15px;
+        right: 15px;
+        bottom: 15px;
+        min-width: auto;
+    }
+}
