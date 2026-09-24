@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="SmartSchool360 Student Documents"
+    >
+
+    <title>
+        Student Documents | SmartSchool360
+    </title>
+
+
+    <!-- MAIN STYLE -->
+
+    <link
+        rel="stylesheet"
+        href="../assets/css/style.css"
+    >
+
+
+    <!-- DOCUMENT PAGE STYLE -->
+
+    <link
+        rel="stylesheet"
+        href="../assets/css/student-documents.css?v=1"
+    >
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         SIDEBAR
+         ===================================================== -->
+
+    <aside
+        class="sidebar"
+        id="sidebar"
+    >
+
+        <div class="sidebar-brand">
+
+            <div class="brand-logo">
+                🎓
+            </div>
+
+            <div>
+
+                <strong>
+                    SmartSchool360
+                </strong>
+
+                <span>
+                    School ERP
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <nav class="sidebar-nav">
+
+
+            <a
+                href="../index.html"
+                class="nav-item"
+            >
+
+                <span>🏠</span>
+
+                <span>
+                    Dashboard
+                </span>
+
+            </a>
+
+
+            <a
+                href="students.html"
+                class="nav-item active"
+            >
+
+                <span>👨‍🎓</span>
+
+                <span>
+                    Students
+                </span>
+
+            </a>
+
+
+            <a
+                href="add-student.html"
+                class="nav-item"
+            >
+
+                <span>➕</span>
+
+                <span>
+                    Admission
+                </span>
+
+            </a>
+
+
+            <div class="nav-section-title">
+                ACADEMICS
+            </div>
+
+
+            <a
+                href="#"
+                class="nav-item"
+            >
+
+                <span>📅</span>
+
+                <span>
+                    Attendance
+                </span>
+
+            </a>
+
+
+            <a
+                href="#"
+                class="nav-item"
+            >
+
+                <span>📚</span>
+
+                <span>
+                    Classes & Subjects
+                </span>
+
+            </a>
+
+
+            <a
+                href="#"
+                class="nav-item"
+            >
+
+                <span>📝</span>
+
+                <span>
+                    Examinations
+                </span>
+
+            </a>
+
+
+            <div class="nav-section-title">
+                FINANCE
+            </div>
+
+
+            <a
+                href="#"
+                class="nav-item"
+            >
+
+                <span>💳</span>
+
+                <span>
+                    Fees
+                </span>
+
+            </a>
+
+
+            <a
+                href="#"
+                class="nav-item"
+            >
+
+                <span>🧾</span>
+
+                <span>
+                    Receipts
+                </span>
+
+            </a>
+
+
+            <div class="nav-section-title">
+                MANAGEMENT
+            </div>
+
+
+            <a
+                href="#"
+                class="nav-item"
+            >
+
+                <span>👨‍🏫</span>
+
+                <span>
+                    Staff
+                </span>
+
+            </a>
+
+
+            <a
+                href="#"
+                class="nav-item"
+            >
+
+                <span>📊</span>
+
+                <span>
+                    Reports
+                </span>
+
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-user">
+
+            <div class="user-avatar">
+                PK
+            </div>
+
+            <div>
+
+                <strong>
+                    Priyanshu Kumar
+                </strong>
+
+                <small>
+                    Administrator
+                </small>
+
+            </div>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+         ===================================================== -->
+
+    <main class="main-content">
+
+
+        <!-- TOPBAR -->
+
+        <header class="topbar">
+
+
+            <button
+                class="mobile-menu"
+                id="mobileMenu"
+                type="button"
+                aria-label="Open menu"
+            >
+                ☰
+            </button>
+
+
+            <div class="page-heading">
+
+                <h1>
+                    Student Documents
+                </h1>
+
+                <p>
+                    Manage student documents securely
+                </p>
+
+            </div>
+
+
+            <div class="topbar-actions">
+
+
+                <button
+                    class="topbar-btn"
+                    id="notificationBtn"
+                    type="button"
+                    title="Notifications"
+                >
+                    🔔
+                </button>
+
+
+                <button
+                    class="topbar-btn"
+                    id="fullscreenBtn"
+                    type="button"
+                    title="Fullscreen"
+                >
+                    ⛶
+                </button>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- =====================================================
+             DOCUMENT CONTENT
+             ===================================================== -->
+
+        <section class="documents-container">
+
+
+            <!-- ACTION BAR -->
+
+            <div class="documents-action-bar">
+
+
+                <a
+                    href="students.html"
+                    class="documents-back-btn"
+                    id="backStudentsBtn"
+                >
+                    ← Back to Students
+                </a>
+
+
+                <a
+                    href="#"
+                    class="documents-profile-btn"
+                    id="backProfileBtn"
+                >
+                    👤 Student Profile
+                </a>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 STUDENT HEADER
+                 ================================================= -->
+
+            <section class="documents-student-header">
+
+
+                <div
+                    class="documents-avatar"
+                    id="studentAvatar"
+                >
+                    ST
+                </div>
+
+
+                <div class="documents-student-info">
+
+                    <div
+                        class="documents-name-row"
+                    >
+
+                        <h2 id="studentName">
+                            Student Name
+                        </h2>
+
+                        <span
+                            id="studentStatus"
+                            class="documents-status"
+                        >
+                            Active
+                        </span>
+
+                    </div>
+
+
+                    <div
+                        class="documents-meta"
+                    >
+
+                        <span>
+
+                            🆔
+
+                            <strong>
+                                ID:
+                            </strong>
+
+                            <span id="studentId">
+                                —
+                            </span>
+
+                        </span>
+
+
+                        <span>
+
+                            🎓
+
+                            <strong>
+                                Class:
+                            </strong>
+
+                            <span id="studentClass">
+                                —
+                            </span>
+
+                        </span>
+
+
+                        <span>
+
+                            🏷️
+
+                            <strong>
+                                Section:
+                            </strong>
+
+                            <span id="studentSection">
+                                —
+                            </span>
+
+                        </span>
+
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 DOCUMENT OVERVIEW
+                 ================================================= -->
+
+            <section
+                class="documents-overview"
+            >
+
+
+                <div class="overview-card">
+
+                    <div class="overview-icon">
+                        📄
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Total Documents
+                        </span>
+
+                        <strong id="totalDocuments">
+                            0
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="overview-card">
+
+                    <div class="overview-icon">
+                        ✅
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Available
+                        </span>
+
+                        <strong id="availableDocuments">
+                            0
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="overview-card">
+
+                    <div class="overview-icon">
+                        🔒
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Student Record
+                        </span>
+
+                        <strong>
+                            Protected
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+            </section>
+
+
+
+            <!-- =================================================
+                 DOCUMENT GRID
+                 ================================================= -->
+
+            <section
+                class="document-manager"
+            >
+
+
+                <div
+                    class="document-manager-header"
+                >
+
+                    <div>
+
+                        <h3>
+                            Student Documents
+                        </h3>
+
+                        <p>
+                            View, download and manage
+                            uploaded documents.
+                        </p>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        class="refresh-documents-btn"
+                        id="refreshDocumentsBtn"
+                    >
+                        🔄 Refresh
+                    </button>
+
+                </div>
+
+
+
+                <div
+                    class="document-grid"
+                    id="documentGrid"
+                >
+
+
+                    <!-- BIRTH CERTIFICATE -->
+
+                    <article
+                        class="document-card"
+                        data-document="birthCertificate"
+                    >
+
+                        <div
+                            class="document-card-icon birth"
+                        >
+                            📜
+                        </div>
+
+
+                        <div
+                            class="document-card-content"
+                        >
+
+                            <h4>
+                                Birth Certificate
+                            </h4>
+
+                            <p
+                                id="birthCertificateStatus"
+                                class="document-status-text"
+                            >
+                                Not uploaded
+                            </p>
+
+                            <small
+                                id="birthCertificateMeta"
+                            >
+                                PDF / Image
+                            </small>
+
+                        </div>
+
+
+                        <div
+                            class="document-card-actions"
+                        >
+
+                            <button
+                                type="button"
+                                class="document-btn view-document-btn"
+                                data-document="birthCertificate"
+                            >
+                                👁️ View
+                            </button>
+
+
+                            <button
+                                type="button"
+                                class="document-btn download-document-btn"
+                                data-document="birthCertificate"
+                            >
+                                ⬇️ Download
+                            </button>
+
+
+                            <button
+                                type="button"
+                                class="document-btn delete-document-btn"
+                                data-document="birthCertificate"
+                            >
+                                🗑️ Remove
+                            </button>
+
+                        </div>
+
+                    </article>
+
+
+
+                    <!-- PREVIOUS CERTIFICATE -->
+
+                    <article
+                        class="document-card"
+                        data-document="previousCertificate"
+                    >
+
+                        <div
+                            class="document-card-icon previous"
+                        >
+                            🎓
+                        </div>
+
+
+                        <div
+                            class="document-card-content"
+                        >
+
+                            <h4>
+                                Previous Certificate
+                            </h4>
+
+                            <p
+                                id="previousCertificateStatus"
+                                class="document-status-text"
+                            >
+                                Not uploaded
+                            </p>
+
+                            <small
+                                id="previousCertificateMeta"
+                            >
+                                PDF / Image
+                            </small>
+
+                        </div>
+
+
+                        <div
+                            class="document-card-actions"
+                        >
+
+                            <button
+                                type="button"
+                                class="document-btn view-document-btn"
+                                data-document="previousCertificate"
+                            >
+                                👁️ View
+                            </button>
+
+
+                            <button
+                                type="button"
+                                class="document-btn download-document-btn"
+                                data-document="previousCertificate"
+                            >
+                                ⬇️ Download
+                            </button>
+
+
+                            <button
+                                type="button"
+                                class="document-btn delete-document-btn"
+                                data-document="previousCertificate"
+                            >
+                                🗑️ Remove
+                            </button>
+
+                        </div>
+
+                    </article>
+
+
+                </div>
+
+
+            </section>
+
+
+
+            <!-- =================================================
+                 SECURITY NOTE
+                 ================================================= -->
+
+            <section
+                class="documents-security"
+            >
+
+                <div class="security-icon">
+                    🔐
+                </div>
+
+                <div>
+
+                    <strong>
+                        Student Document Security
+                    </strong>
+
+                    <p>
+                        Documents are linked to the
+                        selected student's record.
+                        Only the stored student record
+                        is used to locate these files.
+                    </p>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 FOOTER
+                 ================================================= -->
+
+            <footer
+                class="documents-footer"
+            >
+
+                <div
+                    class="documents-footer-brand"
+                >
+
+                    <div
+                        class="documents-footer-icon"
+                    >
+                        🎓
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            SmartSchool360
+                        </strong>
+
+                        <span>
+                            School Management System
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="documents-footer-meta"
+                >
+
+                    © 2026 SmartSchool360
+                    <span>•</span>
+                    Built by
+                    <strong>
+                        Priyanshu Kumar
+                    </strong>
+
+                </div>
+
+            </footer>
+
+
+        </section>
+
+
+    </main>
+
+
+
+    <!-- =====================================================
+         SCRIPTS
+         ===================================================== -->
+
+    <script
+        src="../assets/js/app.js"
+    ></script>
+
+
+    <script
+        src="../assets/js/student-documents.js?v=1"
+    ></script>
+
+
+</body>
+
+</html>
