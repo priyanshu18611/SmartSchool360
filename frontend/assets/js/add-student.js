@@ -1,10 +1,14 @@
-/* =========================================
+/* =========================================================
    SMARTSCHOOL360
-   STUDENT ADMISSION MODULE
-   PHOTO ENABLED
-   ========================================= */
+   STUDENT ADMISSION + EDIT MODULE
+   CREATE / UPDATE / PHOTO / VALIDATION
+   ========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
+
+    /* =====================================================
+       ELEMENTS
+       ===================================================== */
 
     const form =
         document.getElementById("admissionForm");
@@ -18,52 +22,517 @@ document.addEventListener("DOMContentLoaded", () => {
     const admissionDate =
         document.getElementById("admissionDate");
 
-
-    /* =========================================
-       TODAY'S DATE
-       ========================================= */
-
-    function setToday() {
-
-        if (!admissionDate) return;
-
-        const today = new Date();
-
-        const year =
-            today.getFullYear();
-
-        const month =
-            String(today.getMonth() + 1)
-                .padStart(2, "0");
-
-        const day =
-            String(today.getDate())
-                .padStart(2, "0");
-
-        admissionDate.value =
-            `${year}-${month}-${day}`;
-    }
-
-    setToday();
-
-
-    /* =========================================
-       MOBILE SIDEBAR
-       ========================================= */
-
     const mobileMenu =
         document.getElementById("mobileMenu");
 
     const sidebar =
         document.getElementById("sidebar");
 
-    if (mobileMenu && sidebar) {
+
+    /* =====================================================
+       URL / EDIT MODE
+       ===================================================== */
+
+    const params =
+        new URLSearchParams(
+            window.location.search
+        );
+
+    const editStudentId =
+        params.get("id");
+
+    const isEditMode =
+        Boolean(editStudentId);
+
+
+    /* =====================================================
+       STORAGE
+       ===================================================== */
+
+    function getStudents() {
+
+        try {
+
+            const stored =
+                localStorage.getItem(
+                    "smartschool_students"
+                );
+
+            if (!stored) {
+                return [];
+            }
+
+            const parsed =
+                JSON.parse(stored);
+
+            return Array.isArray(parsed)
+                ? parsed
+                : [];
+
+        } catch (error) {
+
+            console.error(
+                "Unable to read students:",
+                error
+            );
+
+            return [];
+
+        }
+
+    }
+
+
+    function saveStudents(students) {
+
+        try {
+
+            localStorage.setItem(
+                "smartschool_students",
+                JSON.stringify(students)
+            );
+
+            return true;
+
+        } catch (error) {
+
+            console.error(
+                "Unable to save students:",
+                error
+            );
+
+            return false;
+
+        }
+
+    }
+
+
+    let students =
+        getStudents();
+
+
+    /* =====================================================
+       FIND EDIT STUDENT
+       ===================================================== */
+
+    let editStudent = null;
+
+
+    if (isEditMode) {
+
+        editStudent =
+            students.find(
+                student =>
+                    String(student.id) ===
+                    String(editStudentId)
+            );
+
+
+        if (!editStudent) {
+
+            showToast(
+                "Student record could not be found.",
+                "error"
+            );
+
+            setTimeout(
+                () => {
+
+                    window.location.href =
+                        "students.html";
+
+                },
+                1200
+            );
+
+            return;
+
+        }
+
+    }
+
+
+    /* =====================================================
+       TODAY'S DATE
+       ===================================================== */
+
+    function getToday() {
+
+        const today =
+            new Date();
+
+        const year =
+            today.getFullYear();
+
+        const month =
+            String(
+                today.getMonth() + 1
+            ).padStart(2, "0");
+
+        const day =
+            String(
+                today.getDate()
+            ).padStart(2, "0");
+
+        return `${year}-${month}-${day}`;
+
+    }
+
+
+    function setToday() {
+
+        if (!admissionDate) {
+            return;
+        }
+
+        admissionDate.value =
+            getToday();
+
+    }
+
+
+    /* =====================================================
+       EDIT MODE UI
+       ===================================================== */
+
+    function setupPageMode() {
+
+        if (!isEditMode) {
+
+            document.title =
+                "Student Admission | SmartSchool360";
+
+            setToday();
+
+            return;
+
+        }
+
+
+        document.title =
+            "Edit Student | SmartSchool360";
+
+
+        /* PAGE HEADING */
+
+        const pageHeading =
+            document.querySelector(
+                ".page-heading h1"
+            );
+
+        const pageSubtitle =
+            document.querySelector(
+                ".page-heading p"
+            );
+
+
+        if (pageHeading) {
+
+            pageHeading.textContent =
+                "Edit Student";
+
+        }
+
+
+        if (pageSubtitle) {
+
+            pageSubtitle.textContent =
+                "Update student information";
+
+        }
+
+
+        /* ADMISSION HEADER */
+
+        const admissionHeaderTitle =
+            document.querySelector(
+                ".admission-header h2"
+            );
+
+        const admissionHeaderText =
+            document.querySelector(
+                ".admission-header p"
+            );
+
+
+        if (admissionHeaderTitle) {
+
+            admissionHeaderTitle.textContent =
+                "Update Student Record";
+
+        }
+
+
+        if (admissionHeaderText) {
+
+            admissionHeaderText.textContent =
+                "Edit the student and guardian information below.";
+
+        }
+
+
+        /* SECTION BADGE */
+
+        const sectionBadge =
+            document.querySelector(
+                ".section-badge"
+            );
+
+
+        if (sectionBadge) {
+
+            sectionBadge.textContent =
+                "EDIT STUDENT MODULE";
+
+        }
+
+
+        /* SAVE BUTTON */
+
+        if (saveBtn) {
+
+            saveBtn.innerHTML =
+                "✓ Update Student";
+
+        }
+
+
+        /* FORM PRE-FILL */
+
+        populateForm(
+            editStudent
+        );
+
+    }
+
+
+    /* =====================================================
+       POPULATE FORM
+       ===================================================== */
+
+    function populateForm(student) {
+
+        if (!student) {
+            return;
+        }
+
+
+        setInputValue(
+            "studentName",
+            student.name
+        );
+
+        setInputValue(
+            "dob",
+            student.dob
+        );
+
+        setInputValue(
+            "gender",
+            student.gender
+        );
+
+        setInputValue(
+            "bloodGroup",
+            student.bloodGroup
+        );
+
+        setInputValue(
+            "studentPhone",
+            student.studentPhone
+        );
+
+        setInputValue(
+            "address",
+            student.address
+        );
+
+        setInputValue(
+            "fatherName",
+            student.fatherName
+        );
+
+        setInputValue(
+            "motherName",
+            student.motherName
+        );
+
+        setInputValue(
+            "parentPhone",
+            student.parentPhone
+        );
+
+        setInputValue(
+            "parentEmail",
+            student.parentEmail
+        );
+
+        setInputValue(
+            "occupation",
+            student.occupation
+        );
+
+        setInputValue(
+            "emergencyContact",
+            student.emergencyContact
+        );
+
+        setInputValue(
+            "className",
+            student.className
+        );
+
+        setInputValue(
+            "section",
+            student.section
+        );
+
+        setInputValue(
+            "session",
+            student.session
+        );
+
+        setInputValue(
+            "previousSchool",
+            student.previousSchool
+        );
+
+        setInputValue(
+            "admissionDate",
+            student.admissionDate
+        );
+
+        setInputValue(
+            "studentStatus",
+            student.status || "Active"
+        );
+
+
+        /* PHOTO INFORMATION */
+
+        const existingPhoto =
+            student.photo ||
+            student.studentPhoto ||
+            "";
+
+
+        if (existingPhoto) {
+
+            showExistingPhoto(
+                existingPhoto
+            );
+
+        }
+
+    }
+
+
+    /* =====================================================
+       SET INPUT VALUE
+       ===================================================== */
+
+    function setInputValue(
+        id,
+        value
+    ) {
+
+        const element =
+            document.getElementById(id);
+
+        if (!element) {
+            return;
+        }
+
+
+        if (
+            value === undefined ||
+            value === null
+        ) {
+
+            element.value = "";
+
+            return;
+
+        }
+
+
+        element.value =
+            value;
+
+    }
+
+
+    /* =====================================================
+       EXISTING PHOTO
+       ===================================================== */
+
+    function showExistingPhoto(
+        photo
+    ) {
+
+        const input =
+            document.getElementById(
+                "studentPhoto"
+            );
+
+
+        if (!input) {
+            return;
+        }
+
+
+        const box =
+            input.closest(
+                ".upload-box"
+            );
+
+
+        if (!box) {
+            return;
+        }
+
+
+        const title =
+            box.querySelector(
+                "strong"
+            );
+
+
+        if (title) {
+
+            title.textContent =
+                "✓ Existing photo saved";
+
+        }
+
+
+        box.style.borderColor =
+            "#22c55e";
+
+
+        box.dataset.existingPhoto =
+            photo;
+
+    }
+
+
+    /* =====================================================
+       MOBILE SIDEBAR
+       ===================================================== */
+
+    if (
+        mobileMenu &&
+        sidebar
+    ) {
 
         mobileMenu.addEventListener(
             "click",
             () => {
 
-                sidebar.classList.toggle("show");
+                sidebar.classList.toggle(
+                    "show"
+                );
 
             }
         );
@@ -71,43 +540,60 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /* =========================================
-       PHONE NUMBER INPUT
-       ========================================= */
+    /* =====================================================
+       PHONE INPUT
+       ===================================================== */
 
     const phoneFields = [
 
-        document.getElementById("studentPhone"),
+        document.getElementById(
+            "studentPhone"
+        ),
 
-        document.getElementById("parentPhone"),
+        document.getElementById(
+            "parentPhone"
+        ),
 
-        document.getElementById("emergencyContact")
+        document.getElementById(
+            "emergencyContact"
+        )
 
     ];
 
 
-    phoneFields.forEach(field => {
+    phoneFields.forEach(
+        field => {
 
-        if (!field) return;
-
-        field.addEventListener(
-            "input",
-            () => {
-
-                field.value =
-                    field.value
-                        .replace(/\D/g, "")
-                        .slice(0, 10);
-
+            if (!field) {
+                return;
             }
-        );
-
-    });
 
 
-    /* =========================================
-       FILE UPLOAD DISPLAY
-       ========================================= */
+            field.addEventListener(
+                "input",
+                () => {
+
+                    field.value =
+                        field.value
+                            .replace(
+                                /\D/g,
+                                ""
+                            )
+                            .slice(
+                                0,
+                                10
+                            );
+
+                }
+            );
+
+        }
+    );
+
+
+    /* =====================================================
+       UPLOAD FIELDS
+       ===================================================== */
 
     const uploadFields = [
 
@@ -129,58 +615,95 @@ document.addEventListener("DOMContentLoaded", () => {
     ];
 
 
-    uploadFields.forEach(item => {
+    uploadFields.forEach(
+        item => {
 
-        const input =
-            document.getElementById(item.id);
+            const input =
+                document.getElementById(
+                    item.id
+                );
 
-        if (!input) return;
 
-        input.addEventListener(
-            "change",
-            () => {
+            if (!input) {
+                return;
+            }
 
-                const box =
-                    input.closest(".upload-box");
 
-                if (!box) return;
+            input.addEventListener(
+                "change",
+                () => {
 
-                const title =
-                    box.querySelector("strong");
+                    const box =
+                        input.closest(
+                            ".upload-box"
+                        );
 
-                if (
-                    input.files &&
-                    input.files.length > 0
-                ) {
 
-                    title.textContent =
-                        input.files[0].name;
+                    if (!box) {
+                        return;
+                    }
 
-                    box.style.borderColor =
-                        "#22c55e";
 
-                } else {
+                    const title =
+                        box.querySelector(
+                            "strong"
+                        );
 
-                    title.textContent =
-                        item.defaultText;
 
-                    box.style.borderColor =
-                        "";
+                    if (
+                        input.files &&
+                        input.files.length > 0
+                    ) {
+
+                        if (title) {
+
+                            title.textContent =
+                                input.files[0].name;
+
+                        }
+
+
+                        box.style.borderColor =
+                            "#22c55e";
+
+                    } else {
+
+                        if (title) {
+
+                            title.textContent =
+                                item.defaultText;
+
+                        }
+
+
+                        if (
+                            !isEditMode ||
+                            item.id !==
+                                "studentPhoto"
+                        ) {
+
+                            box.style.borderColor =
+                                "";
+
+                        }
+
+                    }
 
                 }
+            );
 
-            }
-        );
-
-    });
+        }
+    );
 
 
-    /* =========================================
+    /* =====================================================
        STUDENT PHOTO VALIDATION
-       ========================================= */
+       ===================================================== */
 
     const studentPhotoInput =
-        document.getElementById("studentPhoto");
+        document.getElementById(
+            "studentPhoto"
+        );
 
 
     if (studentPhotoInput) {
@@ -193,38 +716,47 @@ document.addEventListener("DOMContentLoaded", () => {
                     studentPhotoInput.files &&
                     studentPhotoInput.files[0];
 
-                if (!file) return;
+
+                if (!file) {
+                    return;
+                }
 
 
                 /* IMAGE CHECK */
 
-                if (!file.type.startsWith("image/")) {
+                if (
+                    !file.type.startsWith(
+                        "image/"
+                    )
+                ) {
 
                     showToast(
                         "Please select a valid image file.",
                         "error"
                     );
 
-                    studentPhotoInput.value = "";
+                    studentPhotoInput.value =
+                        "";
 
                     return;
 
                 }
 
 
-                /* SIZE CHECK — 2 MB */
+                /* SIZE CHECK */
 
-                const maxSize =
-                    2 * 1024 * 1024;
-
-                if (file.size > maxSize) {
+                if (
+                    file.size >
+                    2 * 1024 * 1024
+                ) {
 
                     showToast(
                         "Student photo must be smaller than 2 MB.",
                         "error"
                     );
 
-                    studentPhotoInput.value = "";
+                    studentPhotoInput.value =
+                        "";
 
                     return;
 
@@ -242,22 +774,24 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /* =========================================
+    /* =====================================================
        FORM SUBMIT
-       ========================================= */
+       ===================================================== */
 
     if (form) {
 
         form.addEventListener(
             "submit",
-            async function (event) {
+            async event => {
 
                 event.preventDefault();
 
 
                 /* HTML VALIDATION */
 
-                if (!form.checkValidity()) {
+                if (
+                    !form.checkValidity()
+                ) {
 
                     form.reportValidity();
 
@@ -266,32 +800,29 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
 
 
-                /* =================================
-                   PHONE VALIDATION
-                   ================================= */
+                /* PHONE VALUES */
 
                 const parentPhone =
-                    document
-                        .getElementById("parentPhone")
-                        .value
-                        .trim();
-
+                    getValue(
+                        "parentPhone"
+                    );
 
                 const studentPhone =
-                    document
-                        .getElementById("studentPhone")
-                        .value
-                        .trim();
-
+                    getValue(
+                        "studentPhone"
+                    );
 
                 const emergencyContact =
-                    document
-                        .getElementById("emergencyContact")
-                        .value
-                        .trim();
+                    getValue(
+                        "emergencyContact"
+                    );
 
 
-                if (parentPhone.length !== 10) {
+                /* PHONE VALIDATION */
+
+                if (
+                    parentPhone.length !== 10
+                ) {
 
                     showToast(
                         "Please enter a valid 10-digit parent mobile number.",
@@ -333,11 +864,22 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
 
 
-                /* =================================
-                   STUDENT PHOTO
-                   ================================= */
+                /* =========================================
+                   PHOTO
+                   ========================================= */
 
-                let studentPhoto = "";
+                let studentPhoto =
+                    "";
+
+
+                const existingPhoto =
+                    editStudent
+                        ? (
+                            editStudent.photo ||
+                            editStudent.studentPhoto ||
+                            ""
+                        )
+                        : "";
 
 
                 if (
@@ -350,7 +892,11 @@ document.addEventListener("DOMContentLoaded", () => {
                         studentPhotoInput.files[0];
 
 
-                    if (!file.type.startsWith("image/")) {
+                    if (
+                        !file.type.startsWith(
+                            "image/"
+                        )
+                    ) {
 
                         showToast(
                             "Please select a valid student image.",
@@ -380,7 +926,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     try {
 
                         studentPhoto =
-                            await readFileAsDataURL(file);
+                            await readFileAsDataURL(
+                                file
+                            );
 
                     } catch (error) {
 
@@ -398,132 +946,189 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     }
 
+                } else {
+
+                    /*
+                       EDIT MODE:
+                       If user does not select
+                       a new photo, preserve
+                       the existing photo.
+                    */
+
+                    studentPhoto =
+                        existingPhoto;
+
                 }
 
 
-                /* =================================
-                   CREATE STUDENT
-                   ================================= */
+                /* =========================================
+                   CREATE NEW STUDENT OBJECT
+                   ========================================= */
 
-                const student = {
+                const studentData = {
 
                     id:
-                        generateStudentId(),
+                        isEditMode
+                            ? editStudent.id
+                            : generateStudentId(),
 
                     name:
-                        getValue("studentName"),
+                        getValue(
+                            "studentName"
+                        ),
 
                     dob:
-                        getValue("dob"),
+                        getValue(
+                            "dob"
+                        ),
 
                     gender:
-                        getValue("gender"),
+                        getValue(
+                            "gender"
+                        ),
 
                     bloodGroup:
-                        getValue("bloodGroup"),
+                        getValue(
+                            "bloodGroup"
+                        ),
 
                     studentPhone:
                         studentPhone,
 
                     address:
-                        getValue("address"),
+                        getValue(
+                            "address"
+                        ),
 
                     fatherName:
-                        getValue("fatherName"),
+                        getValue(
+                            "fatherName"
+                        ),
 
                     motherName:
-                        getValue("motherName"),
+                        getValue(
+                            "motherName"
+                        ),
 
                     parentPhone:
                         parentPhone,
 
                     parentEmail:
-                        getValue("parentEmail"),
+                        getValue(
+                            "parentEmail"
+                        ),
 
                     occupation:
-                        getValue("occupation"),
+                        getValue(
+                            "occupation"
+                        ),
 
                     emergencyContact:
                         emergencyContact,
 
                     className:
-                        getValue("className"),
+                        getValue(
+                            "className"
+                        ),
 
                     section:
-                        getValue("section"),
+                        getValue(
+                            "section"
+                        ),
 
                     session:
-                        getValue("session"),
+                        getValue(
+                            "session"
+                        ),
 
                     previousSchool:
-                        getValue("previousSchool"),
+                        getValue(
+                            "previousSchool"
+                        ),
 
                     admissionDate:
-                        getValue("admissionDate"),
+                        getValue(
+                            "admissionDate"
+                        ),
 
                     status:
-                        getValue("studentStatus"),
+                        getValue(
+                            "studentStatus"
+                        ) || "Active",
 
                     photo:
                         studentPhoto,
 
                     createdAt:
+                        isEditMode
+                            ? (
+                                editStudent.createdAt ||
+                                new Date().toISOString()
+                            )
+                            : new Date().toISOString(),
+
+                    updatedAt:
                         new Date().toISOString()
 
                 };
 
 
-                /* =================================
-                   GET OLD STUDENTS
-                   ================================= */
+                /* =========================================
+                   SAVE
+                   ========================================= */
 
-                let students = [];
+                if (isEditMode) {
+
+                    const index =
+                        students.findIndex(
+                            student =>
+                                String(
+                                    student.id
+                                ) ===
+                                String(
+                                    editStudent.id
+                                )
+                        );
 
 
-                try {
+                    if (index === -1) {
 
-                    students =
-                        JSON.parse(
-                            localStorage.getItem(
-                                "smartschool_students"
-                            )
-                        ) || [];
+                        showToast(
+                            "Student record could not be updated.",
+                            "error"
+                        );
 
-                } catch (error) {
+                        return;
 
-                    console.error(
-                        "Unable to read student data:",
-                        error
+                    }
+
+
+                    students[index] =
+                        studentData;
+
+                } else {
+
+                    students.push(
+                        studentData
                     );
-
-                    students = [];
 
                 }
 
 
-                /* =================================
-                   SAVE STUDENT
-                   ================================= */
+                /* =========================================
+                   LOCAL STORAGE
+                   ========================================= */
 
-                students.push(student);
-
-
-                try {
-
-                    localStorage.setItem(
-                        "smartschool_students",
-                        JSON.stringify(students)
+                const saved =
+                    saveStudents(
+                        students
                     );
 
-                } catch (error) {
 
-                    console.error(
-                        "Unable to save student:",
-                        error
-                    );
+                if (!saved) {
 
                     showToast(
-                        "Storage limit reached. Please use a smaller photo.",
+                        "Unable to save student data. Storage may be full.",
                         "error"
                     );
 
@@ -532,38 +1137,65 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
 
 
-                /* =================================
-                   SUCCESS
-                   ================================= */
+                /* =========================================
+                   SUCCESS BUTTON
+                   ========================================= */
 
                 if (saveBtn) {
 
-                    saveBtn.disabled = true;
+                    saveBtn.disabled =
+                        true;
+
 
                     saveBtn.innerHTML =
-                        "✓ Student Registered";
+                        isEditMode
+                            ? "✓ Student Updated"
+                            : "✓ Student Registered";
 
                 }
 
 
+                /* =========================================
+                   SUCCESS MESSAGE
+                   ========================================= */
+
                 showToast(
-                    `Student registered successfully. ID: ${student.id}`,
+                    isEditMode
+                        ? "Student record updated successfully."
+                        : `Student registered successfully. ID: ${studentData.id}`,
                     "success"
                 );
 
 
-                /* =================================
+                /* =========================================
                    REDIRECT
-                   ================================= */
+                   ========================================= */
 
                 setTimeout(
                     () => {
 
-                        window.location.href =
-                            "students.html";
+                        if (isEditMode) {
+
+                            /*
+                               Return directly
+                               to updated profile.
+                            */
+
+                            window.location.href =
+                                "student-profile.html?id=" +
+                                encodeURIComponent(
+                                    studentData.id
+                                );
+
+                        } else {
+
+                            window.location.href =
+                                "students.html";
+
+                        }
 
                     },
-                    1500
+                    1000
                 );
 
             }
@@ -572,9 +1204,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /* =========================================
+    /* =====================================================
        RESET FORM
-       ========================================= */
+       ===================================================== */
 
     if (resetBtn) {
 
@@ -584,51 +1216,99 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 const confirmed =
                     window.confirm(
-                        "Are you sure you want to reset the complete admission form?"
+                        isEditMode
+                            ? "Are you sure you want to reset the changes?"
+                            : "Are you sure you want to reset the complete admission form?"
                     );
 
 
-                if (!confirmed) return;
+                if (!confirmed) {
+                    return;
+                }
+
+
+                if (isEditMode) {
+
+                    /*
+                       Restore original
+                       student values.
+                    */
+
+                    populateForm(
+                        editStudent
+                    );
+
+
+                    if (
+                        studentPhotoInput
+                    ) {
+
+                        studentPhotoInput.value =
+                            "";
+
+                    }
+
+
+                    showToast(
+                        "Original student information restored.",
+                        "success"
+                    );
+
+
+                    return;
+
+                }
 
 
                 form.reset();
 
-
                 setToday();
 
 
-                uploadFields.forEach(item => {
+                uploadFields.forEach(
+                    item => {
 
-                    const input =
-                        document.getElementById(
-                            item.id
-                        );
+                        const input =
+                            document.getElementById(
+                                item.id
+                            );
 
-                    if (!input) return;
 
-                    const box =
-                        input.closest(
-                            ".upload-box"
-                        );
+                        if (!input) {
+                            return;
+                        }
 
-                    if (!box) return;
 
-                    const title =
-                        box.querySelector(
-                            "strong"
-                        );
+                        const box =
+                            input.closest(
+                                ".upload-box"
+                            );
 
-                    if (title) {
 
-                        title.textContent =
-                            item.defaultText;
+                        if (!box) {
+                            return;
+                        }
+
+
+                        const title =
+                            box.querySelector(
+                                "strong"
+                            );
+
+
+                        if (title) {
+
+                            title.textContent =
+                                item.defaultText;
+
+                        }
+
+
+                        box.style.borderColor =
+                            "";
 
                     }
-
-                    box.style.borderColor =
-                        "";
-
-                });
+                );
 
 
                 showToast(
@@ -642,11 +1322,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /* =========================================
-       READ FILE
-       ========================================= */
+    /* =====================================================
+       FILE READER
+       ===================================================== */
 
-    function readFileAsDataURL(file) {
+    function readFileAsDataURL(
+        file
+    ) {
 
         return new Promise(
             (resolve, reject) => {
@@ -677,7 +1359,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     };
 
 
-                reader.readAsDataURL(file);
+                reader.readAsDataURL(
+                    file
+                );
 
             }
         );
@@ -685,45 +1369,75 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /* =========================================
-       HELPER
-       ========================================= */
+    /* =====================================================
+       VALUE HELPER
+       ===================================================== */
 
     function getValue(id) {
 
         const element =
-            document.getElementById(id);
+            document.getElementById(
+                id
+            );
 
-        return element
-            ? element.value.trim()
-            : "";
+
+        if (!element) {
+            return "";
+        }
+
+
+        return element.value
+            .trim();
 
     }
 
 
-    /* =========================================
+    /* =====================================================
        STUDENT ID
-       ========================================= */
+       ===================================================== */
 
     function generateStudentId() {
 
         const year =
-            new Date().getFullYear();
+            new Date()
+                .getFullYear();
 
-        const random =
-            Math.floor(
-                1000 +
-                Math.random() * 9000
-            );
 
-        return `SS${year}${random}`;
+        let id;
+
+
+        do {
+
+            const random =
+                Math.floor(
+                    1000 +
+                    Math.random() *
+                    9000
+                );
+
+
+            id =
+                `SS${year}${random}`;
+
+        } while (
+            students.some(
+                student =>
+                    String(
+                        student.id
+                    ) ===
+                    String(id)
+            )
+        );
+
+
+        return id;
 
     }
 
 
-    /* =========================================
-       TOAST MESSAGE
-       ========================================= */
+    /* =====================================================
+       TOAST
+       ===================================================== */
 
     function showToast(
         message,
@@ -737,9 +1451,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         if (oldToast) {
-
             oldToast.remove();
-
         }
 
 
@@ -757,6 +1469,62 @@ document.addEventListener("DOMContentLoaded", () => {
             message;
 
 
+        toast.style.position =
+            "fixed";
+
+        toast.style.left =
+            "50%";
+
+        toast.style.bottom =
+            "25px";
+
+        toast.style.transform =
+            "translateX(-50%)";
+
+        toast.style.zIndex =
+            "99999";
+
+        toast.style.padding =
+            "13px 20px";
+
+        toast.style.borderRadius =
+            "10px";
+
+        toast.style.fontSize =
+            "13px";
+
+        toast.style.fontWeight =
+            "700";
+
+        toast.style.maxWidth =
+            "calc(100% - 30px)";
+
+        toast.style.textAlign =
+            "center";
+
+        toast.style.boxShadow =
+            "0 10px 30px rgba(0,0,0,.18)";
+
+
+        if (type === "error") {
+
+            toast.style.background =
+                "#dc2626";
+
+            toast.style.color =
+                "#ffffff";
+
+        } else {
+
+            toast.style.background =
+                "#16a34a";
+
+            toast.style.color =
+                "#ffffff";
+
+        }
+
+
         document.body.appendChild(
             toast
         );
@@ -768,8 +1536,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 toast.style.opacity =
                     "0";
 
-                toast.style.transform =
-                    "translateY(20px)";
+                toast.style.transition =
+                    "opacity .3s ease";
 
 
                 setTimeout(
@@ -782,18 +1550,23 @@ document.addEventListener("DOMContentLoaded", () => {
                 );
 
             },
-            3500
+            3000
         );
 
     }
 
 
-    /* =========================================
-       MODULE READY
-       ========================================= */
+    /* =====================================================
+       INITIALIZE
+       ===================================================== */
+
+    setupPageMode();
+
 
     console.log(
-        "SmartSchool360 Admission Module loaded."
+        isEditMode
+            ? `SmartSchool360 Edit Mode loaded for ${editStudentId}`
+            : "SmartSchool360 Admission Mode loaded."
     );
 
 });
