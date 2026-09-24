@@ -1,871 +1,538 @@
-/* =========================================
-   SMARTSCHOOL360
-   STUDENT MANAGEMENT MODULE
-   ========================================= */
-
 document.addEventListener("DOMContentLoaded", () => {
+    const STORAGE_KEY = "smartschool_students";
 
-    const tableBody =
-        document.getElementById("studentsTableBody");
+    const studentTableBody = document.getElementById("studentTableBody");
+    const searchInput = document.getElementById("studentSearch");
+    const classFilter = document.getElementById("classFilter");
+    const statusFilter = document.getElementById("statusFilter");
+    const exportButton = document.getElementById("exportStudentsBtn");
 
-    const emptyState =
-        document.getElementById("emptyState");
+    let students = [];
 
-    const searchInput =
-        document.getElementById("studentSearch");
-
-    const classFilter =
-        document.getElementById("classFilter");
-
-    const addStudentBtn =
-        document.getElementById("addStudentBtn");
-
-    const emptyAddBtn =
-        document.getElementById("emptyAddBtn");
-
-    const exportBtn =
-        document.getElementById("exportStudents");
-
-
-    /* =========================================
-       GET STUDENTS
-       ========================================= */
-
-    function getStudents() {
-
+    // ----------------------------------------
+    // Load Students from Local Storage
+    // ----------------------------------------
+    function loadStudents() {
         try {
+            const savedStudents = localStorage.getItem(STORAGE_KEY);
 
-            return JSON.parse(
-                localStorage.getItem(
-                    "smartschool_students"
-                )
-            ) || [];
+            students = savedStudents
+                ? JSON.parse(savedStudents)
+                : [];
 
+            if (!Array.isArray(students)) {
+                students = [];
+            }
         } catch (error) {
-
-            console.error(
-                "Unable to read student data:",
-                error
-            );
-
-            return [];
+            console.error("Error loading students:", error);
+            students = [];
         }
+
+        renderStudents();
+        updateStudentStats();
     }
 
-
-    /* =========================================
-       DISPLAY STUDENTS
-       ========================================= */
-
-    function renderStudents() {
-
-        if (!tableBody) return;
-
-        const students = getStudents();
-
-        const search =
-            searchInput
-                ? searchInput.value
-                    .trim()
-                    .toLowerCase()
-                : "";
-
-        const selectedClass =
-            classFilter
-                ? classFilter.value
-                : "";
-
-
-        const filteredStudents =
-            students.filter(student => {
-
-                const searchableText = [
-
-                    student.id,
-
-                    student.name,
-
-                    student.className,
-
-                    student.section,
-
-                    student.parentPhone,
-
-                    student.fatherName
-
-                ]
-                    .join(" ")
-                    .toLowerCase();
-
-
-                const matchesSearch =
-                    !search ||
-                    searchableText.includes(search);
-
-
-                const matchesClass =
-                    !selectedClass ||
-                    student.className === selectedClass;
-
-
-                return (
-                    matchesSearch &&
-                    matchesClass
-                );
-
-            });
-
-
-        tableBody.innerHTML = "";
-
-
-        /* =====================================
-           EMPTY STATE
-           ===================================== */
-
-        if (filteredStudents.length === 0) {
-
-            if (emptyState) {
-
-                emptyState.style.display =
-                    "block";
-
-            }
-
-        } else {
-
-            if (emptyState) {
-
-                emptyState.style.display =
-                    "none";
-
-            }
-
-        }
-
-
-        /* =====================================
-           TABLE ROWS
-           ===================================== */
-
-        filteredStudents.forEach(student => {
-
-            const row =
-                document.createElement("tr");
-
-
-            row.innerHTML = `
-
-                <td>
-                    <strong>
-                        ${escapeHTML(student.id)}
-                    </strong>
-                </td>
-
-
-                <td>
-
-                    <div class="student-table-user">
-
-                        <div class="student-mini-avatar">
-                            ${getInitials(student.name)}
-                        </div>
-
-                        <div>
-
-                            <strong>
-                                ${escapeHTML(student.name)}
-                            </strong>
-
-                            <small>
-                                ${escapeHTML(student.gender || "Student")}
-                            </small>
-
-                        </div>
-
-                    </div>
-
-                </td>
-
-
-                <td>
-                    ${escapeHTML(student.className)}
-                </td>
-
-
-                <td>
-                    ${escapeHTML(student.section)}
-                </td>
-
-
-                <td>
-                    ${escapeHTML(student.parentPhone)}
-                </td>
-
-
-                <td>
-                    ${formatDate(student.admissionDate)}
-                </td>
-
-
-                <td>
-
-                    <span class="status-badge ${getStatusClass(student.status)}">
-
-                        ${escapeHTML(student.status || "Active")}
-
-                    </span>
-
-                </td>
-
-
-                <td>
-
-                    <button
-                        class="student-view-btn"
-                        data-id="${escapeHTML(student.id)}"
-                        type="button"
-                    >
-                        View
-                    </button>
-
-                </td>
-
-            `;
-
-
-            tableBody.appendChild(row);
-
-        });
-
-
-        updateStatistics(students);
-
-        attachViewButtons();
-
-    }
-
-
-    /* =========================================
-       STATISTICS
-       ========================================= */
-
-    function updateStatistics(students) {
-
-        const totalStudents =
-            document.getElementById(
-                "totalStudents"
-            );
-
-
-        const activeStudents =
-            document.getElementById(
-                "activeStudents"
-            );
-
-
-        const classCount =
-            document.getElementById(
-                "classCount"
-            );
-
-
-        const newAdmissions =
-            document.getElementById(
-                "newAdmissions"
-            );
-
-
-        if (totalStudents) {
-
-            totalStudents.textContent =
-                students.length;
-
-        }
-
-
-        if (activeStudents) {
-
-            activeStudents.textContent =
-                students.filter(
-                    student =>
-                        student.status === "Active"
-                ).length;
-
-        }
-
-
-        if (classCount) {
-
-            const uniqueClasses =
-                new Set(
-                    students
-                        .map(
-                            student =>
-                                student.className
-                        )
-                        .filter(Boolean)
-                );
-
-            classCount.textContent =
-                uniqueClasses.size;
-
-        }
-
-
-        if (newAdmissions) {
-
-            const currentMonth =
-                new Date().getMonth();
-
-            const currentYear =
-                new Date().getFullYear();
-
-
-            const count =
-                students.filter(student => {
-
-                    if (!student.admissionDate) {
-                        return false;
-                    }
-
-                    const date =
-                        new Date(
-                            student.admissionDate
-                        );
-
-                    return (
-                        date.getMonth() ===
-                        currentMonth &&
-                        date.getFullYear() ===
-                        currentYear
-                    );
-
-                }).length;
-
-
-            newAdmissions.textContent =
-                count;
-
-        }
-
-    }
-
-
-    /* =========================================
-       SEARCH
-       ========================================= */
-
-    if (searchInput) {
-
-        searchInput.addEventListener(
-            "input",
-            renderStudents
+    // ----------------------------------------
+    // Get Student ID
+    // ----------------------------------------
+    function getStudentId(student) {
+        return (
+            student.id ||
+            student.studentId ||
+            student.admissionId ||
+            "N/A"
         );
-
     }
 
-
-    /* =========================================
-       CLASS FILTER
-       ========================================= */
-
-    if (classFilter) {
-
-        classFilter.addEventListener(
-            "change",
-            renderStudents
+    // ----------------------------------------
+    // Get Student Name
+    // ----------------------------------------
+    function getStudentName(student) {
+        return (
+            student.name ||
+            student.fullName ||
+            student.studentName ||
+            "Unnamed Student"
         );
-
     }
 
-
-    /* =========================================
-       ADD STUDENT
-       ========================================= */
-
-    function openAdmission() {
-
-        window.location.href =
-            "add-student.html";
-
-    }
-
-
-    if (addStudentBtn) {
-
-        addStudentBtn.addEventListener(
-            "click",
-            openAdmission
+    // ----------------------------------------
+    // Get Class
+    // ----------------------------------------
+    function getStudentClass(student) {
+        return (
+            student.class ||
+            student.className ||
+            student.standard ||
+            "N/A"
         );
-
     }
 
-
-    if (emptyAddBtn) {
-
-        emptyAddBtn.addEventListener(
-            "click",
-            openAdmission
+    // ----------------------------------------
+    // Get Section
+    // ----------------------------------------
+    function getStudentSection(student) {
+        return (
+            student.section ||
+            student.classSection ||
+            "-"
         );
-
     }
 
-
-    /* =========================================
-       VIEW STUDENT
-       ========================================= */
-
-    function attachViewButtons() {
-
-        const buttons =
-            document.querySelectorAll(
-                ".student-view-btn"
-            );
-
-
-        buttons.forEach(button => {
-
-            button.addEventListener(
-                "click",
-                () => {
-
-                    const id =
-                        button.dataset.id;
-
-                    const students =
-                        getStudents();
-
-                    const student =
-                        students.find(
-                            item =>
-                                item.id === id
-                        );
-
-
-                    if (!student) {
-
-                        alert(
-                            "Student record not found."
-                        );
-
-                        return;
-
-                    }
-
-
-                    const message = [
-
-                        `Student ID: ${student.id}`,
-
-                        `Name: ${student.name}`,
-
-                        `Class: ${student.className} - ${student.section}`,
-
-                        `Gender: ${student.gender}`,
-
-                        `Father: ${student.fatherName}`,
-
-                        `Parent Mobile: ${student.parentPhone}`,
-
-                        `Admission Date: ${formatDate(student.admissionDate)}`,
-
-                        `Status: ${student.status}`
-
-                    ].join("\n");
-
-
-                    alert(message);
-
-                }
-            );
-
-        });
-
+    // ----------------------------------------
+    // Get Gender
+    // ----------------------------------------
+    function getStudentGender(student) {
+        return student.gender || "-";
     }
 
-
-    /* =========================================
-       EXPORT CSV
-       ========================================= */
-
-    if (exportBtn) {
-
-        exportBtn.addEventListener(
-            "click",
-            exportStudents
+    // ----------------------------------------
+    // Get Parent / Guardian
+    // ----------------------------------------
+    function getParentName(student) {
+        return (
+            student.fatherName ||
+            student.father ||
+            student.parentName ||
+            student.guardianName ||
+            "-"
         );
-
     }
 
-
-    function exportStudents() {
-
-        const students =
-            getStudents();
-
-
-        if (students.length === 0) {
-
-            alert(
-                "There are no student records to export."
-            );
-
-            return;
-
-        }
-
-
-        const headers = [
-
-            "Student ID",
-
-            "Student Name",
-
-            "Date of Birth",
-
-            "Gender",
-
-            "Blood Group",
-
-            "Student Phone",
-
-            "Address",
-
-            "Father Name",
-
-            "Mother Name",
-
-            "Parent Phone",
-
-            "Parent Email",
-
-            "Occupation",
-
-            "Emergency Contact",
-
-            "Class",
-
-            "Section",
-
-            "Session",
-
-            "Previous School",
-
-            "Admission Date",
-
-            "Status"
-
-        ];
-
-
-        const rows =
-            students.map(student => [
-
-                student.id,
-
-                student.name,
-
-                student.dob,
-
-                student.gender,
-
-                student.bloodGroup,
-
-                student.studentPhone,
-
-                student.address,
-
-                student.fatherName,
-
-                student.motherName,
-
-                student.parentPhone,
-
-                student.parentEmail,
-
-                student.occupation,
-
-                student.emergencyContact,
-
-                student.className,
-
-                student.section,
-
-                student.session,
-
-                student.previousSchool,
-
-                student.admissionDate,
-
-                student.status
-
-            ]);
-
-
-        const csvRows = [
-
-            headers,
-
-            ...rows
-
-        ];
-
-
-        const csv =
-            csvRows
-                .map(row =>
-                    row
-                        .map(value =>
-                            `"${String(
-                                value ?? ""
-                            ).replace(
-                                /"/g,
-                                '""'
-                            )}"`
-                        )
-                        .join(",")
-                )
-                .join("\n");
-
-
-        const blob =
-            new Blob(
-                [csv],
-                {
-                    type:
-                        "text/csv;charset=utf-8;"
-                }
-            );
-
-
-        const url =
-            URL.createObjectURL(blob);
-
-
-        const link =
-            document.createElement("a");
-
-
-        link.href = url;
-
-        link.download =
-            "smartschool_students.csv";
-
-
-        document.body.appendChild(link);
-
-        link.click();
-
-        link.remove();
-
-        URL.revokeObjectURL(url);
-
+    // ----------------------------------------
+    // Get Status
+    // ----------------------------------------
+    function getStudentStatus(student) {
+        return student.status || "Active";
     }
 
+    // ----------------------------------------
+    // Get Date
+    // ----------------------------------------
+    function getAdmissionDate(student) {
+        return (
+            student.admissionDate ||
+            student.dateOfAdmission ||
+            ""
+        );
+    }
 
-    /* =========================================
-       HELPERS
-       ========================================= */
-
-    function formatDate(dateString) {
-
-        if (!dateString) {
+    // ----------------------------------------
+    // Format Date
+    // ----------------------------------------
+    function formatDate(dateValue) {
+        if (!dateValue) {
             return "-";
         }
 
-
-        const date =
-            new Date(dateString);
-
+        const date = new Date(dateValue);
 
         if (Number.isNaN(date.getTime())) {
-            return dateString;
+            return dateValue;
         }
 
-
-        return date.toLocaleDateString(
-            "en-IN",
-            {
-                day: "2-digit",
-                month: "short",
-                year: "numeric"
-            }
-        );
-
+        return date.toLocaleDateString("en-IN", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric"
+        });
     }
 
-
-    function getInitials(name) {
-
-        if (!name) {
-            return "ST";
-        }
-
-
-        const parts =
-            name
-                .trim()
-                .split(/\s+/);
-
-
-        if (parts.length === 1) {
-
-            return parts[0]
-                .substring(0, 2)
-                .toUpperCase();
-
-        }
-
-
-        return (
-            parts[0][0] +
-            parts[parts.length - 1][0]
-        ).toUpperCase();
-
-    }
-
-
-    function getStatusClass(status) {
-
-        if (
-            String(status).toLowerCase() ===
-            "active"
-        ) {
-
-            return "status-active";
-
-        }
-
-
-        return "status-pending";
-
-    }
-
-
+    // ----------------------------------------
+    // Escape HTML
+    // ----------------------------------------
     function escapeHTML(value) {
-
-        return String(
-            value ?? ""
-        )
+        return String(value)
             .replace(/&/g, "&amp;")
             .replace(/</g, "&lt;")
             .replace(/>/g, "&gt;")
             .replace(/"/g, "&quot;")
             .replace(/'/g, "&#039;");
-
     }
 
-
-    /* =========================================
-       EXTRA TABLE STYLES
-       ========================================= */
-
-    const style =
-        document.createElement("style");
-
-
-    style.textContent = `
-
-        .student-table-user {
-            display: flex;
-            align-items: center;
-            gap: 10px;
+    // ----------------------------------------
+    // Get Initials
+    // ----------------------------------------
+    function getInitials(name) {
+        if (!name) {
+            return "ST";
         }
 
-        .student-mini-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #eef2ff;
-            color: #4f46e5;
-            font-size: 12px;
-            font-weight: 800;
+        const words = name
+            .trim()
+            .split(/\s+/)
+            .filter(Boolean);
+
+        if (words.length === 1) {
+            return words[0]
+                .substring(0, 2)
+                .toUpperCase();
         }
 
-        .student-table-user strong {
-            display: block;
+        return (
+            words[0].charAt(0) +
+            words[words.length - 1].charAt(0)
+        ).toUpperCase();
+    }
+
+    // ----------------------------------------
+    // Render Students
+    // ----------------------------------------
+    function renderStudents() {
+        if (!studentTableBody) {
+            return;
         }
 
-        .student-table-user small {
-            display: block;
-            margin-top: 2px;
-            color: #94a3b8;
-            font-size: 11px;
+        const searchValue = searchInput
+            ? searchInput.value.toLowerCase().trim()
+            : "";
+
+        const selectedClass = classFilter
+            ? classFilter.value
+            : "";
+
+        const selectedStatus = statusFilter
+            ? statusFilter.value
+            : "";
+
+        const filteredStudents = students.filter(student => {
+            const name = getStudentName(student).toLowerCase();
+            const id = getStudentId(student).toLowerCase();
+            const studentClass = getStudentClass(student).toLowerCase();
+            const parent = getParentName(student).toLowerCase();
+
+            const studentStatus =
+                getStudentStatus(student).toLowerCase();
+
+            const matchesSearch =
+                !searchValue ||
+                name.includes(searchValue) ||
+                id.includes(searchValue) ||
+                studentClass.includes(searchValue) ||
+                parent.includes(searchValue);
+
+            const matchesClass =
+                !selectedClass ||
+                studentClass === selectedClass.toLowerCase();
+
+            const matchesStatus =
+                !selectedStatus ||
+                studentStatus === selectedStatus.toLowerCase();
+
+            return (
+                matchesSearch &&
+                matchesClass &&
+                matchesStatus
+            );
+        });
+
+        // ----------------------------------------
+        // Empty State
+        // ----------------------------------------
+        if (filteredStudents.length === 0) {
+            studentTableBody.innerHTML = `
+                <tr>
+                    <td colspan="100%" style="text-align:center;padding:50px 20px;">
+                        <div style="
+                            display:flex;
+                            flex-direction:column;
+                            align-items:center;
+                            gap:10px;
+                        ">
+                            <div style="
+                                width:60px;
+                                height:60px;
+                                border-radius:50%;
+                                display:flex;
+                                align-items:center;
+                                justify-content:center;
+                                background:#eef2ff;
+                                font-size:28px;
+                            ">
+                                👨‍🎓
+                            </div>
+
+                            <strong style="font-size:16px;">
+                                No students found
+                            </strong>
+
+                            <span style="color:#6b7280;font-size:14px;">
+                                Try changing your search or filter.
+                            </span>
+                        </div>
+                    </td>
+                </tr>
+            `;
+
+            return;
         }
 
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 700;
+        // ----------------------------------------
+        // Student Rows
+        // ----------------------------------------
+        studentTableBody.innerHTML = filteredStudents
+            .map(student => {
+                const id = getStudentId(student);
+                const name = getStudentName(student);
+                const studentClass = getStudentClass(student);
+                const section = getStudentSection(student);
+                const gender = getStudentGender(student);
+                const parent = getParentName(student);
+                const status = getStudentStatus(student);
+                const admissionDate = getAdmissionDate(student);
+
+                const statusClass =
+                    String(status).toLowerCase() === "active"
+                        ? "active"
+                        : "inactive";
+
+                return `
+                    <tr>
+                        <td>
+                            <div class="student-cell">
+                                <div class="student-avatar">
+                                    ${escapeHTML(getInitials(name))}
+                                </div>
+
+                                <div>
+                                    <strong>
+                                        ${escapeHTML(name)}
+                                    </strong>
+
+                                    <small>
+                                        ${escapeHTML(id)}
+                                    </small>
+                                </div>
+                            </div>
+                        </td>
+
+                        <td>
+                            ${escapeHTML(studentClass)}
+                        </td>
+
+                        <td>
+                            ${escapeHTML(section)}
+                        </td>
+
+                        <td>
+                            ${escapeHTML(gender)}
+                        </td>
+
+                        <td>
+                            ${escapeHTML(parent)}
+                        </td>
+
+                        <td>
+                            ${escapeHTML(formatDate(admissionDate))}
+                        </td>
+
+                        <td>
+                            <span class="status-badge ${statusClass}">
+                                ${escapeHTML(status)}
+                            </span>
+                        </td>
+
+                        <td>
+                            <div class="student-actions">
+                                <button
+                                    type="button"
+                                    class="action-btn view-btn"
+                                    data-id="${escapeHTML(id)}"
+                                    title="View Student"
+                                >
+                                    👁️ View
+                                </button>
+
+                                <button
+                                    type="button"
+                                    class="action-btn edit-btn"
+                                    data-id="${escapeHTML(id)}"
+                                    title="Edit Student"
+                                >
+                                    ✏️ Edit
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            })
+            .join("");
+
+        attachActionEvents();
+    }
+
+    // ----------------------------------------
+    // View + Edit Events
+    // ----------------------------------------
+    function attachActionEvents() {
+        const viewButtons =
+            document.querySelectorAll(".view-btn");
+
+        viewButtons.forEach(button => {
+            button.addEventListener("click", () => {
+                const studentId =
+                    button.getAttribute("data-id");
+
+                if (!studentId) {
+                    alert("Student ID not found.");
+                    return;
+                }
+
+                window.location.href =
+                    `student-profile.html?id=${encodeURIComponent(studentId)}`;
+            });
+        });
+
+        const editButtons =
+            document.querySelectorAll(".edit-btn");
+
+        editButtons.forEach(button => {
+            button.addEventListener("click", () => {
+                alert(
+                    "Edit Student module will be connected in the next update."
+                );
+            });
+        });
+    }
+
+    // ----------------------------------------
+    // Search
+    // ----------------------------------------
+    if (searchInput) {
+        searchInput.addEventListener("input", () => {
+            renderStudents();
+        });
+    }
+
+    // ----------------------------------------
+    // Class Filter
+    // ----------------------------------------
+    if (classFilter) {
+        classFilter.addEventListener("change", () => {
+            renderStudents();
+        });
+    }
+
+    // ----------------------------------------
+    // Status Filter
+    // ----------------------------------------
+    if (statusFilter) {
+        statusFilter.addEventListener("change", () => {
+            renderStudents();
+        });
+    }
+
+    // ----------------------------------------
+    // Student Statistics
+    // ----------------------------------------
+    function updateStudentStats() {
+        const totalElement =
+            document.getElementById("totalStudents");
+
+        const activeElement =
+            document.getElementById("activeStudents");
+
+        const inactiveElement =
+            document.getElementById("inactiveStudents");
+
+        const totalStudents = students.length;
+
+        const activeStudents = students.filter(student => {
+            return (
+                String(getStudentStatus(student))
+                    .toLowerCase() === "active"
+            );
+        }).length;
+
+        const inactiveStudents =
+            totalStudents - activeStudents;
+
+        if (totalElement) {
+            totalElement.textContent = totalStudents;
         }
 
-        .status-active {
-            background: #dcfce7;
-            color: #15803d;
+        if (activeElement) {
+            activeElement.textContent = activeStudents;
         }
 
-        .status-pending {
-            background: #fef3c7;
-            color: #b45309;
+        if (inactiveElement) {
+            inactiveElement.textContent = inactiveStudents;
         }
+    }
 
-        .student-view-btn {
-            border: 1px solid #e2e8f0;
-            background: #ffffff;
-            color: #4f46e5;
-            padding: 7px 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 700;
-            font-size: 12px;
-        }
+    // ----------------------------------------
+    // Export CSV
+    // ----------------------------------------
+    if (exportButton) {
+        exportButton.addEventListener("click", () => {
+            if (students.length === 0) {
+                alert("There are no students to export.");
+                return;
+            }
 
-        .student-view-btn:hover {
-            background: #eef2ff;
-        }
+            const headers = [
+                "Student ID",
+                "Student Name",
+                "Class",
+                "Section",
+                "Gender",
+                "Parent/Guardian",
+                "Admission Date",
+                "Status"
+            ];
 
-        .empty-state {
-            display: none;
-            padding: 50px 20px;
-            text-align: center;
-        }
+            const rows = students.map(student => [
+                getStudentId(student),
+                getStudentName(student),
+                getStudentClass(student),
+                getStudentSection(student),
+                getStudentGender(student),
+                getParentName(student),
+                formatDate(getAdmissionDate(student)),
+                getStudentStatus(student)
+            ]);
 
-        .empty-icon {
-            font-size: 48px;
-            margin-bottom: 10px;
-        }
+            const csvContent = [
+                headers,
+                ...rows
+            ]
+                .map(row =>
+                    row
+                        .map(value =>
+                            `"${String(value)
+                                .replace(/"/g, '""')}"`
+                        )
+                        .join(",")
+                )
+                .join("\n");
 
-        .empty-state h3 {
-            margin: 0 0 8px;
-        }
+            const blob = new Blob(
+                [csvContent],
+                {
+                    type: "text/csv;charset=utf-8;"
+                }
+            );
 
-        .empty-state p {
-            color: #64748b;
-            margin-bottom: 20px;
-        }
+            const url =
+                URL.createObjectURL(blob);
 
-    `;
+            const link =
+                document.createElement("a");
 
+            link.href = url;
+            link.download =
+                "SmartSchool360_Students.csv";
 
-    document.head.appendChild(style);
+            document.body.appendChild(link);
+            link.click();
 
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        });
+    }
 
-    /* =========================================
-       INITIALIZE
-       ========================================= */
-
-    renderStudents();
-
-
-    console.log(
-        "SmartSchool360 Student Management loaded."
-    );
-
+    // ----------------------------------------
+    // Initial Load
+    // ----------------------------------------
+    loadStudents();
 });
