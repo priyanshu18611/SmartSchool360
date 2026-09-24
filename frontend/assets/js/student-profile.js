@@ -1,35 +1,43 @@
-/* =========================================
+/* =========================================================
    SMARTSCHOOL360
    STUDENT PROFILE MODULE
-   PHOTO + EDIT + ID CARD + DELETE + PRINT
-   ========================================= */
+   PROFILE + PHOTO + EDIT + ID CARD + DELETE + PRINT
+   ========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    /* =========================================
+    /* =====================================================
        GET STUDENT ID
-       ========================================= */
+       ===================================================== */
 
-    const params =
-        new URLSearchParams(window.location.search);
+    const params = new URLSearchParams(
+        window.location.search
+    );
 
-    const studentId =
-        params.get("id");
+    const studentId = params.get("id");
 
 
-    /* =========================================
+    /* =====================================================
        STORAGE
-       ========================================= */
+       ===================================================== */
 
     function getStudents() {
 
         try {
 
-            return JSON.parse(
-                localStorage.getItem(
-                    "smartschool_students"
-                )
-            ) || [];
+            const data = localStorage.getItem(
+                "smartschool_students"
+            );
+
+            if (!data) {
+                return [];
+            }
+
+            const parsed = JSON.parse(data);
+
+            return Array.isArray(parsed)
+                ? parsed
+                : [];
 
         } catch (error) {
 
@@ -48,17 +56,20 @@ document.addEventListener("DOMContentLoaded", () => {
     const students = getStudents();
 
 
-    const student =
-        students.find(
-            item =>
-                String(item.id) ===
-                String(studentId)
-        );
+    /* =====================================================
+       FIND STUDENT
+       ===================================================== */
+
+    const student = students.find(
+        item =>
+            String(item.id) ===
+            String(studentId)
+    );
 
 
-    /* =========================================
+    /* =====================================================
        STUDENT NOT FOUND
-       ========================================= */
+       ===================================================== */
 
     if (!student) {
 
@@ -69,9 +80,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /* =========================================
+    /* =====================================================
        HELPERS
-       ========================================= */
+       ===================================================== */
 
     function getElement(id) {
 
@@ -82,32 +93,34 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function setText(id, value) {
 
-        const element =
-            getElement(id);
+        const element = getElement(id);
 
-        if (!element) return;
+        if (!element) {
+            return;
+        }
 
-        element.textContent =
-            value || "—";
+        const finalValue =
+            value === undefined ||
+            value === null ||
+            String(value).trim() === ""
+                ? "—"
+                : value;
+
+        element.textContent = finalValue;
 
     }
 
 
     function formatDate(value) {
 
-        if (!value) return "—";
+        if (!value) {
+            return "—";
+        }
 
-        const date =
-            new Date(value);
+        const date = new Date(value);
 
-        if (
-            Number.isNaN(
-                date.getTime()
-            )
-        ) {
-
-            return value;
-
+        if (Number.isNaN(date.getTime())) {
+            return String(value);
         }
 
         return date.toLocaleDateString(
@@ -124,13 +137,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function getInitials(name) {
 
-        if (!name) return "ST";
+        if (!name) {
+            return "ST";
+        }
 
-        const parts =
-            String(name)
-                .trim()
-                .split(/\s+/)
-                .filter(Boolean);
+        const parts = String(name)
+            .trim()
+            .split(/\s+/)
+            .filter(Boolean);
 
         if (parts.length === 1) {
 
@@ -141,24 +155,35 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         return (
-            parts[0][0] +
-            parts[parts.length - 1][0]
+            parts[0].charAt(0) +
+            parts[parts.length - 1].charAt(0)
         ).toUpperCase();
 
     }
 
 
-    /* =========================================
+    function normalizeStatus(value) {
+
+        return String(
+            value || "Active"
+        )
+            .trim()
+            .toLowerCase();
+
+    }
+
+
+    /* =====================================================
        PAGE TITLE
-       ========================================= */
+       ===================================================== */
 
     document.title =
         `${student.name || "Student"} | SmartSchool360`;
 
 
-    /* =========================================
-       PROFILE INFORMATION
-       ========================================= */
+    /* =====================================================
+       PROFILE HERO
+       ===================================================== */
 
     setText(
         "profileName",
@@ -166,12 +191,7 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
     setText(
-        "profileStudentId",
-        student.id
-    );
-
-    setText(
-        "studentId",
+        "profileId",
         student.id
     );
 
@@ -191,118 +211,9 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
 
-    /* =========================================
-       PERSONAL
-       ========================================= */
-
-    setText(
-        "profileDob",
-        formatDate(student.dob)
-    );
-
-    setText(
-        "profileGender",
-        student.gender
-    );
-
-    setText(
-        "profileBloodGroup",
-        student.bloodGroup
-    );
-
-    setText(
-        "profilePhone",
-        student.studentPhone
-    );
-
-    setText(
-        "profileAddress",
-        student.address
-    );
-
-
-    /* =========================================
-       PARENT
-       ========================================= */
-
-    setText(
-        "profileFather",
-        student.fatherName
-    );
-
-    setText(
-        "profileMother",
-        student.motherName
-    );
-
-    setText(
-        "profileParentPhone",
-        student.parentPhone
-    );
-
-    setText(
-        "profileParentEmail",
-        student.parentEmail
-    );
-
-    setText(
-        "profileOccupation",
-        student.occupation
-    );
-
-    setText(
-        "profileEmergency",
-        student.emergencyContact
-    );
-
-
-    /* =========================================
-       ACADEMIC
-       ========================================= */
-
-    setText(
-        "profileClassAcademic",
-        student.className
-    );
-
-    setText(
-        "profileSectionAcademic",
-        student.section
-    );
-
-    setText(
-        "profileSessionAcademic",
-        student.session
-    );
-
-    setText(
-        "profilePreviousSchool",
-        student.previousSchool
-    );
-
-
-    /* =========================================
-       ADMISSION
-       ========================================= */
-
-    setText(
-        "profileAdmissionDate",
-        formatDate(
-            student.admissionDate
-        )
-    );
-
-    setText(
-        "profileCreatedAt",
-        formatDate(
-            student.createdAt
-        )
-    );
-
-
-    /* =========================================
-       STATUS
-       ========================================= */
+    /* =====================================================
+       PROFILE STATUS
+       ===================================================== */
 
     const status =
         student.status || "Active";
@@ -312,57 +223,61 @@ document.addEventListener("DOMContentLoaded", () => {
         status
     );
 
-
-    const statusElements =
-        document.querySelectorAll(
-            ".profile-status, .status-badge"
-        );
+    updateStatusStyles();
 
 
-    statusElements.forEach(
-        element => {
+    function updateStatusStyles() {
 
-            element.classList.remove(
-                "active",
-                "inactive",
-                "pending"
+        const normalized =
+            normalizeStatus(status);
+
+        const statusElements =
+            document.querySelectorAll(
+                ".profile-status, .info-status"
             );
 
-            const normalized =
-                String(status).toLowerCase();
+        statusElements.forEach(
+            element => {
 
-
-            if (
-                normalized === "active"
-            ) {
-
-                element.classList.add(
-                    "active"
-                );
-
-            } else if (
-                normalized === "inactive"
-            ) {
-
-                element.classList.add(
-                    "inactive"
-                );
-
-            } else {
-
-                element.classList.add(
+                element.classList.remove(
+                    "active",
+                    "inactive",
                     "pending"
                 );
 
+                if (
+                    normalized === "active"
+                ) {
+
+                    element.classList.add(
+                        "active"
+                    );
+
+                } else if (
+                    normalized === "inactive"
+                ) {
+
+                    element.classList.add(
+                        "inactive"
+                    );
+
+                } else {
+
+                    element.classList.add(
+                        "pending"
+                    );
+
+                }
+
             }
+        );
 
-        }
-    );
+    }
 
 
-    /* =========================================
-       STUDENT PHOTO
-       ========================================= */
+    /* =====================================================
+       PROFILE PHOTO
+       ===================================================== */
 
     renderStudentPhoto();
 
@@ -370,40 +285,12 @@ document.addEventListener("DOMContentLoaded", () => {
     function renderStudentPhoto() {
 
         const avatar =
-            document.querySelector(
-                ".profile-avatar"
+            document.getElementById(
+                "profileInitials"
             );
 
-        if (!avatar) return;
-
-
-        const initials =
-            getInitials(
-                student.name
-            );
-
-
-        const oldImage =
-            avatar.querySelector(
-                ".student-profile-photo"
-            );
-
-        if (oldImage) {
-
-            oldImage.remove();
-
-        }
-
-
-        const oldInitials =
-            avatar.querySelector(
-                ".student-avatar-initials"
-            );
-
-        if (oldInitials) {
-
-            oldInitials.remove();
-
+        if (!avatar) {
+            return;
         }
 
 
@@ -413,71 +300,43 @@ document.addEventListener("DOMContentLoaded", () => {
             "";
 
 
+        avatar.innerHTML = "";
+
+
         if (
-            photo &&
-            typeof photo === "string"
+            typeof photo === "string" &&
+            photo.trim() !== ""
         ) {
 
             const image =
-                document.createElement(
-                    "img"
-                );
-
+                document.createElement("img");
 
             image.className =
                 "student-profile-photo";
 
-
             image.src =
                 photo;
-
 
             image.alt =
                 `${student.name || "Student"} Photo`;
 
-
             image.loading =
                 "eager";
-
 
             image.decoding =
                 "async";
 
-
-            image.style.width =
-                "100%";
-
-            image.style.height =
-                "100%";
-
-            image.style.objectFit =
-                "cover";
-
-            image.style.borderRadius =
-                "inherit";
-
-            image.style.display =
-                "block";
-
-
             image.onerror = () => {
-
-                image.remove();
 
                 showInitials();
 
             };
 
-
-            avatar.appendChild(
-                image
-            );
-
+            avatar.appendChild(image);
 
             avatar.classList.add(
                 "has-photo"
             );
-
 
         } else {
 
@@ -492,23 +351,23 @@ document.addEventListener("DOMContentLoaded", () => {
                 "has-photo"
             );
 
-
-            const initialsElement =
-                document.createElement(
-                    "span"
-                );
+            avatar.innerHTML = "";
 
 
-            initialsElement.className =
+            const initials =
+                document.createElement("span");
+
+            initials.className =
                 "student-avatar-initials";
 
+            initials.id =
+                "studentAvatarInitials";
 
-            initialsElement.textContent =
-                initials;
-
+            initials.textContent =
+                getInitials(student.name);
 
             avatar.appendChild(
-                initialsElement
+                initials
             );
 
         }
@@ -516,40 +375,163 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /* =========================================
+    /* =====================================================
        QUICK STATS
-       ========================================= */
+       ===================================================== */
 
     setText(
-        "statStudentId",
-        student.id
+        "profileDob",
+        formatDate(student.dob)
     );
 
     setText(
-        "statClass",
+        "profileGender",
+        student.gender
+    );
+
+    setText(
+        "profileSessionStat",
+        student.session
+    );
+
+    setText(
+        "profileAdmissionDate",
+        formatDate(student.admissionDate)
+    );
+
+
+    /* =====================================================
+       PERSONAL INFORMATION
+       ===================================================== */
+
+    setText(
+        "infoName",
+        student.name
+    );
+
+    setText(
+        "infoDob",
+        formatDate(student.dob)
+    );
+
+    setText(
+        "infoGender",
+        student.gender
+    );
+
+    setText(
+        "infoBlood",
+        student.bloodGroup
+    );
+
+    setText(
+        "infoStudentPhone",
+        student.studentPhone
+    );
+
+    setText(
+        "infoAddress",
+        student.address
+    );
+
+
+    /* =====================================================
+       PARENT / GUARDIAN INFORMATION
+       ===================================================== */
+
+    setText(
+        "infoFather",
+        student.fatherName
+    );
+
+    setText(
+        "infoMother",
+        student.motherName
+    );
+
+    setText(
+        "infoParentPhone",
+        student.parentPhone
+    );
+
+    setText(
+        "infoParentEmail",
+        student.parentEmail
+    );
+
+    setText(
+        "infoOccupation",
+        student.occupation
+    );
+
+    setText(
+        "infoEmergency",
+        student.emergencyContact
+    );
+
+
+    /* =====================================================
+       ACADEMIC INFORMATION
+       ===================================================== */
+
+    setText(
+        "infoClass",
         student.className
     );
 
     setText(
-        "statSection",
+        "infoSection",
         student.section
     );
 
     setText(
-        "statAdmission",
-        formatDate(
-            student.admissionDate
-        )
+        "infoSession",
+        student.session
+    );
+
+    setText(
+        "infoPreviousSchool",
+        student.previousSchool
+    );
+
+    setText(
+        "infoAdmissionDate",
+        formatDate(student.admissionDate)
+    );
+
+    setText(
+        "infoStatus",
+        status
     );
 
 
-    /* =========================================
-       BACK BUTTONS
-       ========================================= */
+    /* =====================================================
+       STUDENT RECORD
+       ===================================================== */
+
+    setText(
+        "recordStudentId",
+        student.id
+    );
+
+    setText(
+        "recordSession",
+        student.session
+    );
+
+    setText(
+        "recordStatus",
+        status
+    );
+
+
+    /* =====================================================
+       BACK BUTTON
+       ===================================================== */
 
     const backButtons =
         document.querySelectorAll(
-            "[data-back-students], .profile-back"
+            "[data-back-students], .profile-back-btn"
         );
 
 
@@ -572,12 +554,12 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
 
-    /* =========================================
-       EDIT BUTTON
-       ========================================= */
+    /* =====================================================
+       EDIT STUDENT
+       ===================================================== */
 
     const editButton =
-        document.getElementById(
+        getElement(
             "editStudentBtn"
         );
 
@@ -600,13 +582,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /* =========================================
-       PRINT BUTTON
-       ========================================= */
+    /* =====================================================
+       PRINT PROFILE
+       ===================================================== */
 
     const printButton =
-        document.getElementById(
-            "printStudentBtn"
+        getElement(
+            "printProfileBtn"
         );
 
 
@@ -624,69 +606,19 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /* =========================================
-       GENERATE ID CARD BUTTON
-       ========================================= */
+    /* =====================================================
+       GENERATE ID CARD
+       ===================================================== */
 
-    createIdCardButton();
-
-
-    function createIdCardButton() {
-
-        const actions =
-            document.querySelector(
-                ".profile-actions"
-            ) ||
-            document.querySelector(
-                ".profile-action-bar"
-            );
+    const generateIdCardButton =
+        getElement(
+            "generateIdCardBtn"
+        );
 
 
-        if (!actions) {
+    if (generateIdCardButton) {
 
-            console.warn(
-                "Profile action container not found."
-            );
-
-            return;
-
-        }
-
-
-        if (
-            document.getElementById(
-                "generateIdCardBtn"
-            )
-        ) {
-
-            return;
-
-        }
-
-
-        const button =
-            document.createElement(
-                "button"
-            );
-
-
-        button.type =
-            "button";
-
-
-        button.id =
-            "generateIdCardBtn";
-
-
-        button.className =
-            "profile-action-btn id-card-btn";
-
-
-        button.innerHTML =
-            "🪪 Generate ID Card";
-
-
-        button.addEventListener(
+        generateIdCardButton.addEventListener(
             "click",
             () => {
 
@@ -699,40 +631,12 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         );
 
-
-        actions.appendChild(
-            button
-        );
-
-
-        /* =====================================
-           BUTTON STYLE
-           ===================================== */
-
-        button.style.background =
-            "linear-gradient(135deg,#2563eb,#4f46e5)";
-
-        button.style.color =
-            "#ffffff";
-
-        button.style.border =
-            "1px solid #2563eb";
-
-        button.style.boxShadow =
-            "0 8px 20px rgba(37,99,235,.18)";
-
-        button.style.fontWeight =
-            "700";
-
-        button.style.cursor =
-            "pointer";
-
     }
 
 
-    /* =========================================
+    /* =====================================================
        COPY STUDENT ID
-       ========================================= */
+       ===================================================== */
 
     const copyButtons =
         document.querySelectorAll(
@@ -752,23 +656,17 @@ document.addEventListener("DOMContentLoaded", () => {
                         await navigator
                             .clipboard
                             .writeText(
-                                String(
-                                    student.id
-                                )
+                                String(student.id)
                             );
 
-
                         showToast(
-                            "Student ID copied successfully.",
-                            "success"
+                            "Student ID copied successfully."
                         );
-
 
                     } catch (error) {
 
                         showToast(
-                            `Student ID: ${student.id}`,
-                            "success"
+                            `Student ID: ${student.id}`
                         );
 
                     }
@@ -780,9 +678,9 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
 
-    /* =========================================
+    /* =====================================================
        DELETE BUTTON
-       ========================================= */
+       ===================================================== */
 
     createDeleteButton();
 
@@ -790,25 +688,25 @@ document.addEventListener("DOMContentLoaded", () => {
     function createDeleteButton() {
 
         const actions =
-            document.querySelector(
-                ".profile-actions"
+            getElement(
+                "profileActions"
             ) ||
             document.querySelector(
-                ".profile-action-bar"
+                ".profile-actions"
             );
 
 
-        if (!actions) return;
+        if (!actions) {
+            return;
+        }
 
 
         if (
-            document.getElementById(
+            getElement(
                 "deleteStudentBtn"
             )
         ) {
-
             return;
-
         }
 
 
@@ -821,17 +719,14 @@ document.addEventListener("DOMContentLoaded", () => {
         deleteButton.type =
             "button";
 
-
         deleteButton.id =
             "deleteStudentBtn";
-
 
         deleteButton.className =
             "profile-action-btn delete-btn";
 
-
         deleteButton.innerHTML =
-            "🗑 Delete";
+            "🗑️ Delete";
 
 
         deleteButton.addEventListener(
@@ -847,15 +742,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /* =========================================
+    /* =====================================================
        DELETE MODAL
-       ========================================= */
+       ===================================================== */
 
     function openDeleteModal() {
 
         if (
             document.querySelector(
-                ".student-delete-modal"
+                ".profile-delete-overlay"
             )
         ) {
 
@@ -864,44 +759,30 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
-        const backdrop =
+        const overlay =
             document.createElement(
                 "div"
             );
 
 
-        backdrop.className =
-            "student-delete-modal";
+        overlay.className =
+            "profile-delete-overlay";
 
 
-        backdrop.innerHTML = `
-
-            <div
-                class="student-delete-backdrop"
-            ></div>
+        overlay.innerHTML = `
 
             <div
-                class="student-delete-dialog"
+                class="profile-delete-modal"
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="deleteStudentTitle"
             >
 
-                <div
-                    class="student-delete-icon"
-                >
-                    🗑️
-                </div>
-
-                <h2
-                    id="deleteStudentTitle"
-                >
+                <h3 id="deleteStudentTitle">
                     Delete Student?
-                </h2>
+                </h3>
 
-                <p
-                    class="student-delete-info"
-                >
+                <p>
                     You are about to delete
                     <strong>
                         ${escapeHtml(
@@ -909,24 +790,16 @@ document.addEventListener("DOMContentLoaded", () => {
                             "this student"
                         )}
                     </strong>.
-                </p>
-
-                <p
-                    class="student-delete-warning"
-                >
                     This action cannot be undone.
-                    The student record will be
-                    permanently removed from
-                    this browser.
                 </p>
 
                 <div
-                    class="student-delete-actions"
+                    class="profile-delete-actions"
                 >
 
                     <button
                         type="button"
-                        class="student-delete-cancel"
+                        class="profile-delete-cancel"
                         id="cancelStudentDelete"
                     >
                         Cancel
@@ -934,7 +807,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     <button
                         type="button"
-                        class="student-delete-confirm"
+                        class="profile-delete-confirm"
                         id="confirmStudentDelete"
                     >
                         Delete Student
@@ -948,25 +821,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         document.body.appendChild(
-            backdrop
+            overlay
         );
 
 
         const cancelButton =
-            document.getElementById(
+            getElement(
                 "cancelStudentDelete"
             );
 
 
         const confirmButton =
-            document.getElementById(
+            getElement(
                 "confirmStudentDelete"
-            );
-
-
-        const background =
-            backdrop.querySelector(
-                ".student-delete-backdrop"
             );
 
 
@@ -976,9 +843,20 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
 
-        background.addEventListener(
+        overlay.addEventListener(
             "click",
-            closeModal
+            event => {
+
+                if (
+                    event.target ===
+                    overlay
+                ) {
+
+                    closeModal();
+
+                }
+
+            }
         );
 
 
@@ -996,7 +874,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         setTimeout(
             () => {
+
                 cancelButton.focus();
+
             },
             50
         );
@@ -1017,7 +897,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         function closeModal() {
 
-            backdrop.remove();
+            overlay.remove();
 
             document.removeEventListener(
                 "keydown",
@@ -1029,9 +909,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /* =========================================
+    /* =====================================================
        DELETE STUDENT
-       ========================================= */
+       ===================================================== */
 
     function deleteStudent() {
 
@@ -1058,8 +938,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
             showToast(
-                "Student deleted successfully.",
-                "success"
+                "Student deleted successfully."
             );
 
 
@@ -1092,9 +971,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /* =========================================
+    /* =====================================================
        ESCAPE HTML
-       ========================================= */
+       ===================================================== */
 
     function escapeHtml(value) {
 
@@ -1123,9 +1002,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /* =========================================
+    /* =====================================================
        TOAST
-       ========================================= */
+       ===================================================== */
 
     function showToast(
         message,
@@ -1139,9 +1018,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         if (oldToast) {
-
             oldToast.remove();
-
         }
 
 
@@ -1159,52 +1036,6 @@ document.addEventListener("DOMContentLoaded", () => {
             message;
 
 
-        toast.style.position =
-            "fixed";
-
-        toast.style.right =
-            "20px";
-
-        toast.style.bottom =
-            "20px";
-
-        toast.style.zIndex =
-            "99999";
-
-        toast.style.padding =
-            "13px 18px";
-
-        toast.style.borderRadius =
-            "12px";
-
-        toast.style.background =
-            "#111827";
-
-        toast.style.color =
-            "#ffffff";
-
-        toast.style.border =
-            "1px solid rgba(255,255,255,.12)";
-
-        toast.style.boxShadow =
-            "0 15px 40px rgba(0,0,0,.35)";
-
-        toast.style.fontWeight =
-            "600";
-
-        toast.style.fontSize =
-            "14px";
-
-        toast.style.opacity =
-            "0";
-
-        toast.style.transform =
-            "translateY(15px)";
-
-        toast.style.transition =
-            "all .3s ease";
-
-
         document.body.appendChild(
             toast
         );
@@ -1216,9 +1047,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 toast.style.opacity =
                     "1";
 
-                toast.style.transform =
-                    "translateY(0)";
-
             }
         );
 
@@ -1228,10 +1056,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 toast.style.opacity =
                     "0";
-
-                toast.style.transform =
-                    "translateY(15px)";
-
 
                 setTimeout(
                     () => {
@@ -1243,108 +1067,88 @@ document.addEventListener("DOMContentLoaded", () => {
                 );
 
             },
-            3000
+            2800
         );
 
     }
 
 
-    /* =========================================
-       NOT FOUND
-       ========================================= */
+    /* =====================================================
+       OPTIONAL KEYBOARD SHORTCUT
+       Ctrl/Cmd + P
+       ===================================================== */
 
-    function showNotFound() {
+    document.addEventListener(
+        "keydown",
+        event => {
 
-        document.body.innerHTML = `
+            if (
+                (event.ctrlKey ||
+                 event.metaKey) &&
+                event.key.toLowerCase() === "p"
+            ) {
 
-            <div
-                style="
-                    min-height:100vh;
-                    display:flex;
-                    align-items:center;
-                    justify-content:center;
-                    padding:20px;
-                    background:#f5f7fb;
-                    font-family:Arial,sans-serif;
-                "
-            >
+                event.preventDefault();
 
-                <div
-                    style="
-                        max-width:480px;
-                        width:100%;
-                        padding:40px 25px;
-                        text-align:center;
-                        background:#ffffff;
-                        border-radius:20px;
-                        box-shadow:
-                            0 15px 50px
-                            rgba(0,0,0,.08);
-                    "
-                >
+                window.print();
 
-                    <div
-                        style="
-                            font-size:55px;
-                            margin-bottom:15px;
-                        "
-                    >
-                        👨‍🎓
-                    </div>
+            }
 
-                    <h2
-                        style="
-                            margin:0 0 10px;
-                            color:#111827;
-                        "
-                    >
-                        Student Not Found
-                    </h2>
-
-                    <p
-                        style="
-                            color:#6b7280;
-                            line-height:1.6;
-                            margin-bottom:25px;
-                        "
-                    >
-                        The requested student record
-                        could not be found.
-                    </p>
-
-                    <button
-                        onclick="
-                            window.location.href='students.html'
-                        "
-                        style="
-                            border:0;
-                            padding:12px 20px;
-                            border-radius:10px;
-                            background:#2563eb;
-                            color:#ffffff;
-                            font-weight:700;
-                            cursor:pointer;
-                        "
-                    >
-                        ← Back to Students
-                    </button>
-
-                </div>
-
-            </div>
-
-        `;
-
-    }
-
-
-    /* =========================================
-       MODULE LOADED
-       ========================================= */
-
-    console.log(
-        "SmartSchool360 Student Profile loaded:",
-        student.id
+        }
     );
 
 });
+
+
+/* =========================================================
+   STUDENT NOT FOUND
+   ========================================================= */
+
+function showNotFound() {
+
+    const container =
+        document.querySelector(
+            ".profile-container"
+        );
+
+
+    if (!container) {
+        return;
+    }
+
+
+    container.innerHTML = `
+
+        <div class="profile-not-found">
+
+            <div
+                style="
+                    font-size:52px;
+                    margin-bottom:15px;
+                "
+            >
+                🔍
+            </div>
+
+            <h2>
+                Student Not Found
+            </h2>
+
+            <p>
+                The requested student record
+                could not be found in
+                SmartSchool360.
+            </p>
+
+            <a
+                href="students.html"
+                class="profile-back-btn"
+            >
+                ← Back to Students
+            </a>
+
+        </div>
+
+    `;
+
+}
