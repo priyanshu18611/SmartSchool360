@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Student Profile | SmartSchool360</title>
+
+    <link
+        rel="stylesheet"
+        href="../assets/css/style.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../assets/css/student-profile.css"
+    >
+
+</head>
+
+
+<body>
+
+<div class="app-layout">
+
+
+    <!-- =========================================
+         SIDEBAR
+         ========================================= -->
+
+    <aside
+        class="sidebar"
+        id="sidebar"
+    >
+
+        <div class="sidebar-logo">
+
+            <div class="logo-icon">
+                S
+            </div>
+
+            <div>
+
+                <h2>
+                    SmartSchool<span>360</span>
+                </h2>
+
+                <small>
+                    School ERP
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <nav class="sidebar-nav">
+
+            <p class="nav-title">
+                MAIN
+            </p>
+
+
+            <a
+                href="../index.html"
+                class="nav-item"
+            >
+                <span>▣</span>
+                <span>Dashboard</span>
+            </a>
+
+
+            <a
+                href="students.html"
+                class="nav-item active"
+            >
+                <span>👨‍🎓</span>
+                <span>Students</span>
+            </a>
+
+
+            <a
+                href="add-student.html"
+                class="nav-item"
+            >
+                <span>➕</span>
+                <span>Admission</span>
+            </a>
+
+
+            <p class="nav-title">
+                ACADEMIC
+            </p>
+
+
+            <a
+                href="#"
+                class="nav-item"
+            >
+                <span>📅</span>
+                <span>Attendance</span>
+            </a>
+
+
+            <a
+                href="#"
+                class="nav-item"
+            >
+                <span>📚</span>
+                <span>Examinations</span>
+            </a>
+
+
+            <a
+                href="#"
+                class="nav-item"
+            >
+                <span>🕐</span>
+                <span>Timetable</span>
+            </a>
+
+
+            <p class="nav-title">
+                FINANCE
+            </p>
+
+
+            <a
+                href="#"
+                class="nav-item"
+            >
+                <span>💳</span>
+                <span>Fees</span>
+            </a>
+
+
+            <a
+                href="#"
+                class="nav-item"
+            >
+                <span>📊</span>
+                <span>Reports</span>
+            </a>
+
+
+            <p class="nav-title">
+                MANAGEMENT
+            </p>
+
+
+            <a
+                href="#"
+                class="nav-item"
+            >
+                <span>👨‍🏫</span>
+                <span>Staff</span>
+            </a>
+
+
+            <a
+                href="#"
+                class="nav-item"
+            >
+                <span>⚙️</span>
+                <span>Settings</span>
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-bottom">
+
+            <div class="admin-profile">
+
+                <div class="admin-avatar">
+                    PK
+                </div>
+
+                <div>
+
+                    <strong>
+                        Priyanshu Kumar
+                    </strong>
+
+                    <small>
+                        Administrator
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- =========================================
+         MAIN CONTENT
+         ========================================= -->
+
+    <main class="main-content">
+
+
+        <!-- TOPBAR -->
+
+        <header class="topbar">
+
+            <button
+                class="mobile-menu"
+                id="mobileMenu"
+                type="button"
+            >
+                ☰
+            </button>
+
+
+            <div class="page-heading">
+
+                <h1>
+                    Student Profile
+                </h1>
+
+                <p>
+                    Student information and academic record
+                </p>
+
+            </div>
+
+
+            <div class="topbar-actions">
+
+                <button
+                    class="topbar-btn"
+                    id="notificationBtn"
+                    type="button"
+                >
+                    🔔
+                </button>
+
+
+                <button
+                    class="topbar-btn"
+                    id="fullscreenBtn"
+                    type="button"
+                >
+                    ⛶
+                </button>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- =========================================
+             PROFILE CONTENT
+             ========================================= -->
+
+        <section class="profile-container">
+
+
+            <!-- ACTION BAR -->
+
+            <div class="profile-actions">
+
+                <a
+                    href="students.html"
+                    class="profile-back-btn"
+                >
+                    ← Back to Students
+                </a>
+
+
+                <div class="profile-action-buttons">
+
+                    <button
+                        type="button"
+                        class="profile-btn secondary"
+                        id="printProfileBtn"
+                    >
+                        🖨️ Print
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="profile-btn primary"
+                        id="editStudentBtn"
+                    >
+                        ✏️ Edit Student
+                    </button>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =====================================
+                 PROFILE HERO
+                 ===================================== -->
+
+            <div class="profile-hero">
+
+                <div class="profile-avatar-large">
+                    <span id="profileInitials">
+                        ST
+                    </span>
+                </div>
+
+
+                <div class="profile-hero-info">
+
+                    <span class="profile-label">
+                        STUDENT PROFILE
+                    </span>
+
+
+                    <h2 id="profileName">
+                        Student Name
+                    </h2>
+
+
+                    <p id="profileId">
+                        Student ID: —
+                    </p>
+
+
+                    <div class="profile-tags">
+
+                        <span
+                            class="profile-tag"
+                            id="profileClass"
+                        >
+                            Class —
+                        </span>
+
+
+                        <span
+                            class="profile-tag"
+                            id="profileSection"
+                        >
+                            Section —
+                        </span>
+
+
+                        <span
+                            class="profile-status"
+                            id="profileStatus"
+                        >
+                            Active
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =====================================
+                 QUICK INFORMATION
+                 ===================================== -->
+
+            <div class="profile-stats-grid">
+
+
+                <div class="profile-stat-card">
+
+                    <div class="profile-stat-icon">
+                        🎂
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Date of Birth
+                        </span>
+
+                        <strong id="profileDob">
+                            —
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="profile-stat-card">
+
+                    <div class="profile-stat-icon">
+                        👤
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Gender
+                        </span>
+
+                        <strong id="profileGender">
+                            —
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="profile-stat-card">
+
+                    <div class="profile-stat-icon">
+                        📚
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Academic Session
+                        </span>
+
+                        <strong id="profileSession">
+                            —
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="profile-stat-card">
+
+                    <div class="profile-stat-icon">
+                        📅
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Admission Date
+                        </span>
+
+                        <strong id="profileAdmissionDate">
+                            —
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =====================================
+                 INFORMATION GRID
+                 ===================================== -->
+
+            <div class="profile-grid">
+
+
+                <!-- PERSONAL -->
+
+                <div class="profile-card">
+
+                    <div class="profile-card-header">
+
+                        <div class="profile-card-icon">
+                            👨‍🎓
+                        </div>
+
+                        <div>
+
+                            <h3>
+                                Personal Information
+                            </h3>
+
+                            <p>
+                                Basic student details
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="information-list">
+
+                        <div class="information-row">
+
+                            <span>
+                                Full Name
+                            </span>
+
+                            <strong id="infoName">
+                                —
+                            </strong>
+
+                        </div>
+
+
+                        <div class="information-row">
+
+                            <span>
+                                Date of Birth
+                            </span>
+
+                            <strong id="infoDob">
+                                —
+                            </strong>
+
+                        </div>
+
+
+                        <div class="information-row">
+
+                            <span>
+                                Gender
+                            </span>
+
+                            <strong id="infoGender">
+                                —
+                            </strong>
+
+                        </div>
+
+
+                        <div class="information-row">
+
+                            <span>
+                                Blood Group
+                            </span>
+
+                            <strong id="infoBlood">
+                                —
+                            </strong>
+
+                        </div>
+
+
+                        <div class="information-row">
+
+                            <span>
+                                Student Mobile
+                            </span>
+
+                            <strong id="infoStudentPhone">
+                                —
+                            </strong>
+
+                        </div>
+
+
+                        <div class="information-row">
+
+                            <span>
+                                Address
+                            </span>
+
+                            <strong id="infoAddress">
+                                —
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- PARENT -->
+
+                <div class="profile-card">
+
+                    <div class="profile-card-header">
+
+                        <div class="profile-card-icon parent">
+                            👨‍👩‍👧
+                        </div>
+
+                        <div>
+
+                            <h3>
+                                Parent / Guardian
+                            </h3>
+
+                            <p>
+                                Family and contact details
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="information-list">
+
+                        <div class="information-row">
+
+                            <span>
+                                Father's Name
+                            </span>
+
+                            <strong id="infoFather">
+                                —
+                            </strong>
+
+                        </div>
+
+
+                        <div class="information-row">
+
+                            <span>
+                                Mother's Name
+                            </span>
+
+                            <strong id="infoMother">
+                                —
+                            </strong>
+
+                        </div>
+
+
+                        <div class="information-row">
+
+                            <span>
+                                Parent Mobile
+                            </span>
+
+                            <strong id="infoParentPhone">
+                                —
+                            </strong>
+
+                        </div>
+
+
+                        <div class="information-row">
+
+                            <span>
+                                Parent Email
+                            </span>
+
+                            <strong id="infoParentEmail">
+                                —
+                            </strong>
+
+                        </div>
+
+
+                        <div class="information-row">
+
+                            <span>
+                                Occupation
+                            </span>
+
+                            <strong id="infoOccupation">
+                                —
+                            </strong>
+
+                        </div>
+
+
+                        <div class="information-row">
+
+                            <span>
+                                Emergency Contact
+                            </span>
+
+                            <strong id="infoEmergency">
+                                —
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- ACADEMIC -->
+
+                <div class="profile-card">
+
+                    <div class="profile-card-header">
+
+                        <div class="profile-card-icon academic">
+                            📚
+                        </div>
+
+                        <div>
+
+                            <h3>
+                                Academic Information
+                            </h3>
+
+                            <p>
+                                Class and admission details
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="information-list">
+
+                        <div class="information-row">
+
+                            <span>
+                                Class
+                            </span>
+
+                            <strong id="infoClass">
+                                —
+                            </strong>
+
+                        </div>
+
+
+                        <div class="information-row">
+
+                            <span>
+                                Section
+                            </span>
+
+                            <strong id="infoSection">
+                                —
+                            </strong>
+
+                        </div>
+
+
+                        <div class="information-row">
+
+                            <span>
+                                Academic Session
+                            </span>
+
+                            <strong id="infoSession">
+                                —
+                            </strong>
+
+                        </div>
+
+
+                        <div class="information-row">
+
+                            <span>
+                                Previous School
+                            </span>
+
+                            <strong id="infoPreviousSchool">
+                                —
+                            </strong>
+
+                        </div>
+
+
+                        <div class="information-row">
+
+                            <span>
+                                Admission Date
+                            </span>
+
+                            <strong id="infoAdmissionDate">
+                                —
+                            </strong>
+
+                        </div>
+
+
+                        <div class="information-row">
+
+                            <span>
+                                Status
+                            </span>
+
+                            <strong id="infoStatus">
+                                —
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- ADDRESS / ID -->
+
+                <div class="profile-card">
+
+                    <div class="profile-card-header">
+
+                        <div class="profile-card-icon documents">
+                            📄
+                        </div>
+
+                        <div>
+
+                            <h3>
+                                Student Record
+                            </h3>
+
+                            <p>
+                                Registration information
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="record-box">
+
+                        <div class="record-id-label">
+                            STUDENT ID
+                        </div>
+
+
+                        <div
+                            class="record-id"
+                            id="recordStudentId"
+                        >
+                            —
+                        </div>
+
+
+                        <div class="record-divider"></div>
+
+
+                        <div class="record-meta">
+
+                            <span>
+                                Record Status
+                            </span>
+
+                            <strong id="recordStatus">
+                                Active
+                            </strong>
+
+                        </div>
+
+
+                        <div class="record-meta">
+
+                            <span>
+                                Academic Session
+                            </span>
+
+                            <strong id="recordSession">
+                                —
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =====================================
+                 FOOTER CREDIT
+                 ===================================== -->
+
+            <div class="profile-credit">
+
+                <span>
+                    SmartSchool360
+                </span>
+
+                <span>
+                    •
+                </span>
+
+                <span>
+                    Built by Priyanshu Kumar
+                </span>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- FOOTER -->
+
+        <footer class="dashboard-footer">
+
+            <p>
+                © 2026 SmartSchool360.
+                School Management System.
+            </p>
+
+        </footer>
+
+    </main>
+
+</div>
+
+
+
+<!-- =========================================
+     SCRIPTS
+     ========================================= -->
+
+<script src="../assets/js/app.js"></script>
+
+<script src="../assets/js/student-profile.js"></script>
+
+
+</body>
+
+</html>
