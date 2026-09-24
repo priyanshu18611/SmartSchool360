@@ -1,52 +1,160 @@
+/* =========================================================
+   SMARTSCHOOL360
+   STUDENT PROFILE MODULE
+   ========================================================= */
+
+"use strict";
+
 document.addEventListener("DOMContentLoaded", () => {
+
     const STORAGE_KEY = "smartschool_students";
 
-    // -----------------------------
-    // Get Student ID from URL
-    // -----------------------------
-    const params = new URLSearchParams(window.location.search);
-    const studentId = params.get("id");
 
-    // -----------------------------
-    // Helper Functions
-    // -----------------------------
+    /* =====================================================
+       URL
+    ===================================================== */
+
+    const params =
+        new URLSearchParams(
+            window.location.search
+        );
+
+    const studentId =
+        params.get("id");
+
+
+    /* =====================================================
+       HELPERS
+    ===================================================== */
+
     function getStudents() {
+
         try {
-            const data = localStorage.getItem(STORAGE_KEY);
-            return data ? JSON.parse(data) : [];
+
+            const raw =
+                localStorage.getItem(
+                    STORAGE_KEY
+                );
+
+            if (!raw) {
+                return [];
+            }
+
+            const data =
+                JSON.parse(raw);
+
+            return Array.isArray(data)
+                ? data
+                : [];
+
         } catch (error) {
-            console.error("Unable to read student data:", error);
+
+            console.error(
+                "Unable to load student records:",
+                error
+            );
+
             return [];
         }
     }
 
-    function formatDate(dateValue) {
-        if (!dateValue) return "Not Available";
 
-        const date = new Date(dateValue);
+    function getValue(
+        value,
+        fallback = "Not Available"
+    ) {
 
-        if (Number.isNaN(date.getTime())) {
-            return dateValue;
+        if (
+            value === undefined ||
+            value === null ||
+            String(value).trim() === ""
+        ) {
+
+            return fallback;
         }
 
-        return date.toLocaleDateString("en-IN", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric"
-        });
+        return String(value);
     }
 
-    function getInitials(name) {
-        if (!name) return "ST";
 
-        const words = name
-            .trim()
-            .split(/\s+/)
-            .filter(Boolean);
+    function setText(
+        id,
+        value,
+        fallback = "Not Available"
+    ) {
+
+        const element =
+            document.getElementById(id);
+
+
+        if (!element) {
+            return;
+        }
+
+
+        element.textContent =
+            getValue(
+                value,
+                fallback
+            );
+    }
+
+
+    function formatDate(value) {
+
+        if (!value) {
+            return "Not Available";
+        }
+
+
+        const date =
+            new Date(value);
+
+
+        if (
+            Number.isNaN(
+                date.getTime()
+            )
+        ) {
+
+            return value;
+        }
+
+
+        return date.toLocaleDateString(
+            "en-IN",
+            {
+                day: "2-digit",
+                month: "short",
+                year: "numeric"
+            }
+        );
+    }
+
+
+    function getInitials(name) {
+
+        const cleanName =
+            getValue(
+                name,
+                "Student"
+            );
+
+
+        const words =
+            cleanName
+                .trim()
+                .split(/\s+/)
+                .filter(Boolean);
+
 
         if (words.length === 1) {
-            return words[0].substring(0, 2).toUpperCase();
+
+            return words[0]
+                .substring(0, 2)
+                .toUpperCase();
         }
+
 
         return (
             words[0].charAt(0) +
@@ -54,355 +162,641 @@ document.addEventListener("DOMContentLoaded", () => {
         ).toUpperCase();
     }
 
-    function valueOrFallback(value) {
-        if (
-            value === undefined ||
-            value === null ||
-            String(value).trim() === ""
-        ) {
-            return "Not Available";
+
+    /* =====================================================
+       STATUS
+    ===================================================== */
+
+    function setStatus(
+        id,
+        status
+    ) {
+
+        const element =
+            document.getElementById(id);
+
+
+        if (!element) {
+            return;
         }
 
-        return value;
-    }
 
-    function setText(id, value) {
-        const element = document.getElementById(id);
+        const finalStatus =
+            getValue(
+                status,
+                "Active"
+            );
 
-        if (element) {
-            element.textContent = valueOrFallback(value);
-        }
-    }
 
-    function setStatus(elementId, status) {
-        const element = document.getElementById(elementId);
+        element.textContent =
+            finalStatus;
 
-        if (!element) return;
-
-        const finalStatus = valueOrFallback(status);
-
-        element.textContent = finalStatus;
 
         element.classList.remove(
             "status-active",
             "status-inactive",
-            "status-pending"
+            "status-pending",
+            "active",
+            "inactive"
         );
 
-        const normalizedStatus = String(finalStatus).toLowerCase();
+
+        const normalized =
+            finalStatus.toLowerCase();
+
 
         if (
-            normalizedStatus === "active" ||
-            normalizedStatus === "approved"
+            normalized === "active" ||
+            normalized === "approved"
         ) {
-            element.classList.add("status-active");
+
+            element.classList.add(
+                "status-active"
+            );
+
         } else if (
-            normalizedStatus === "inactive" ||
-            normalizedStatus === "left"
+            normalized === "inactive" ||
+            normalized === "left"
         ) {
-            element.classList.add("status-inactive");
+
+            element.classList.add(
+                "status-inactive"
+            );
+
         } else {
-            element.classList.add("status-pending");
+
+            element.classList.add(
+                "status-pending"
+            );
         }
     }
 
-    // -----------------------------
-    // Find Student
-    // -----------------------------
-    const students = getStudents();
 
-    const student = students.find(
-        item =>
-            String(item.id || item.studentId || "") ===
-            String(studentId || "")
-    );
+    /* =====================================================
+       FIND STUDENT
+    ===================================================== */
 
-    // -----------------------------
-    // Student Not Found
-    // -----------------------------
+    const students =
+        getStudents();
+
+
+    const student =
+        students.find(
+            item =>
+                String(
+                    item.id
+                ) ===
+                String(
+                    studentId
+                )
+        );
+
+
+    /* =====================================================
+       STUDENT NOT FOUND
+    ===================================================== */
+
     if (!student) {
+
         document.body.innerHTML = `
-            <div style="
-                min-height:100vh;
-                display:flex;
-                align-items:center;
-                justify-content:center;
-                padding:24px;
-                font-family:Arial,sans-serif;
-                background:#f5f7fb;
-            ">
-                <div style="
-                    max-width:520px;
-                    width:100%;
-                    background:white;
-                    padding:40px 28px;
-                    border-radius:20px;
-                    text-align:center;
-                    box-shadow:0 15px 50px rgba(0,0,0,0.08);
-                ">
-                    <div style="
-                        width:70px;
-                        height:70px;
-                        margin:0 auto 20px;
-                        border-radius:50%;
-                        display:flex;
-                        align-items:center;
-                        justify-content:center;
-                        background:#fff1f2;
-                        font-size:32px;
-                    ">
+
+            <div
+                style="
+                    min-height:100vh;
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    padding:24px;
+                    background:#f5f7fb;
+                    font-family:Arial,sans-serif;
+                "
+            >
+
+                <div
+                    style="
+                        width:100%;
+                        max-width:480px;
+                        background:#ffffff;
+                        padding:40px 25px;
+                        border-radius:22px;
+                        text-align:center;
+                        box-shadow:0 20px 60px rgba(0,0,0,.10);
+                    "
+                >
+
+                    <div
+                        style="
+                            width:70px;
+                            height:70px;
+                            margin:0 auto 20px;
+                            border-radius:50%;
+                            display:flex;
+                            align-items:center;
+                            justify-content:center;
+                            background:#fff1f2;
+                            font-size:32px;
+                        "
+                    >
                         ⚠️
                     </div>
 
-                    <h2 style="
-                        margin:0 0 10px;
-                        color:#111827;
-                    ">
+
+                    <h2
+                        style="
+                            margin:0 0 10px;
+                            color:#111827;
+                        "
+                    >
                         Student Not Found
                     </h2>
 
-                    <p style="
-                        margin:0 0 25px;
-                        color:#6b7280;
-                        line-height:1.6;
-                    ">
-                        The requested student record could not be found.
-                        Please return to the student list and try again.
+
+                    <p
+                        style="
+                            color:#6b7280;
+                            line-height:1.6;
+                            margin-bottom:25px;
+                        "
+                    >
+                        The requested student record
+                        could not be found.
                     </p>
 
-                    <a href="students.html" style="
-                        display:inline-block;
-                        padding:12px 22px;
-                        border-radius:10px;
-                        background:#2563eb;
-                        color:white;
-                        text-decoration:none;
-                        font-weight:600;
-                    ">
+
+                    <a
+                        href="students.html"
+                        style="
+                            display:inline-block;
+                            padding:12px 22px;
+                            border-radius:10px;
+                            background:#4f46e5;
+                            color:#ffffff;
+                            text-decoration:none;
+                            font-weight:600;
+                        "
+                    >
                         ← Back to Students
                     </a>
+
                 </div>
+
             </div>
+
         `;
 
         return;
     }
 
-    // -----------------------------
-    // Extract Student Information
-    // -----------------------------
+
+    /* =====================================================
+       STUDENT DATA
+    ===================================================== */
+
     const name =
-        student.name ||
-        student.fullName ||
-        student.studentName ||
-        "Student";
+        getValue(
+            student.name,
+            "Student"
+        );
+
 
     const id =
-        student.id ||
-        student.studentId ||
-        "Not Available";
+        getValue(
+            student.id,
+            "N/A"
+        );
+
 
     const className =
-        student.class ||
-        student.className ||
-        student.standard ||
-        "Not Available";
+        getValue(
+            student.className,
+            "N/A"
+        );
+
 
     const section =
-        student.section ||
-        student.classSection ||
-        "Not Available";
+        getValue(
+            student.section,
+            "N/A"
+        );
 
-    const status =
-        student.status ||
-        "Active";
-
-    const dob =
-        student.dob ||
-        student.dateOfBirth ||
-        "";
 
     const gender =
-        student.gender ||
-        "Not Available";
+        getValue(
+            student.gender,
+            "N/A"
+        );
 
-    const session =
-        student.session ||
-        student.academicSession ||
-        "2026-27";
 
-    const admissionDate =
-        student.admissionDate ||
-        student.dateOfAdmission ||
-        "";
+    const dob =
+        student.dob || "";
+
 
     const bloodGroup =
-        student.bloodGroup ||
-        student.blood ||
-        "";
+        getValue(
+            student.bloodGroup,
+            "N/A"
+        );
+
 
     const studentPhone =
-        student.studentPhone ||
-        student.phone ||
-        "";
+        getValue(
+            student.studentPhone,
+            "N/A"
+        );
+
 
     const address =
-        student.address ||
-        student.fullAddress ||
-        "";
+        getValue(
+            student.address,
+            "N/A"
+        );
 
-    const father =
-        student.fatherName ||
-        student.father ||
-        student.parentName ||
-        "";
 
-    const mother =
-        student.motherName ||
-        student.mother ||
-        "";
+    const fatherName =
+        getValue(
+            student.fatherName,
+            "N/A"
+        );
+
+
+    const motherName =
+        getValue(
+            student.motherName,
+            "N/A"
+        );
+
 
     const parentPhone =
-        student.parentPhone ||
-        student.fatherPhone ||
-        student.guardianPhone ||
-        student.contactNumber ||
-        "";
+        getValue(
+            student.parentPhone,
+            "N/A"
+        );
+
 
     const parentEmail =
-        student.parentEmail ||
-        student.email ||
-        "";
+        getValue(
+            student.parentEmail,
+            "N/A"
+        );
+
 
     const occupation =
-        student.parentOccupation ||
-        student.occupation ||
-        "";
+        getValue(
+            student.occupation,
+            "N/A"
+        );
 
-    const emergency =
-        student.emergencyContact ||
-        student.emergencyPhone ||
-        parentPhone ||
-        "";
+
+    const emergencyContact =
+        getValue(
+            student.emergencyContact,
+            "N/A"
+        );
+
+
+    const session =
+        getValue(
+            student.session,
+            "2026-27"
+        );
+
 
     const previousSchool =
-        student.previousSchool ||
-        student.previousSchoolName ||
-        "";
+        getValue(
+            student.previousSchool,
+            "N/A"
+        );
 
-    // -----------------------------
-    // Profile Hero
-    // -----------------------------
-    setText("profileName", name);
-    setText("profileId", id);
-    setText("profileClass", className);
-    setText("profileSection", section);
 
-    const initialsElement = document.getElementById("profileInitials");
+    const admissionDate =
+        student.admissionDate || "";
 
-    if (initialsElement) {
-        initialsElement.textContent = getInitials(name);
+
+    const status =
+        getValue(
+            student.status,
+            "Active"
+        );
+
+
+    /* =====================================================
+       PROFILE HERO
+    ===================================================== */
+
+    setText(
+        "profileName",
+        name
+    );
+
+
+    setText(
+        "profileId",
+        id
+    );
+
+
+    setText(
+        "profileClass",
+        className
+    );
+
+
+    setText(
+        "profileSection",
+        section
+    );
+
+
+    const initials =
+        document.getElementById(
+            "profileInitials"
+        );
+
+
+    if (initials) {
+
+        initials.textContent =
+            getInitials(name);
+
     }
 
-    setStatus("profileStatus", status);
 
-    // -----------------------------
-    // Quick Stats
-    // -----------------------------
-    setText("profileDob", formatDate(dob));
-    setText("profileGender", gender);
-    setText("profileSession", session);
-    setText("profileAdmissionDate", formatDate(admissionDate));
+    setStatus(
+        "profileStatus",
+        status
+    );
 
-    // -----------------------------
-    // Personal Information
-    // -----------------------------
-    setText("infoName", name);
-    setText("infoDob", formatDate(dob));
-    setText("infoGender", gender);
-    setText("infoBlood", bloodGroup);
-    setText("infoStudentPhone", studentPhone);
-    setText("infoAddress", address);
 
-    // -----------------------------
-    // Parent / Guardian Information
-    // -----------------------------
-    setText("infoFather", father);
-    setText("infoMother", mother);
-    setText("infoParentPhone", parentPhone);
-    setText("infoParentEmail", parentEmail);
-    setText("infoOccupation", occupation);
-    setText("infoEmergency", emergency);
+    /* =====================================================
+       QUICK STATS
+    ===================================================== */
 
-    // -----------------------------
-    // Academic Information
-    // -----------------------------
-    setText("infoClass", className);
-    setText("infoSection", section);
-    setText("infoSession", session);
-    setText("infoPreviousSchool", previousSchool);
-    setText("infoAdmissionDate", formatDate(admissionDate));
-    setStatus("infoStatus", status);
+    setText(
+        "profileDob",
+        formatDate(dob)
+    );
 
-    // -----------------------------
-    // Student Record
-    // -----------------------------
-    setText("recordStudentId", id);
-    setStatus("recordStatus", status);
-    setText("recordSession", session);
 
-    // -----------------------------
-    // Print Profile
-    // -----------------------------
-    const printButton = document.getElementById("printProfileBtn");
+    setText(
+        "profileGender",
+        gender
+    );
+
+
+    setText(
+        "profileSession",
+        session
+    );
+
+
+    setText(
+        "profileAdmissionDate",
+        formatDate(
+            admissionDate
+        )
+    );
+
+
+    /* =====================================================
+       PERSONAL INFORMATION
+    ===================================================== */
+
+    setText(
+        "infoName",
+        name
+    );
+
+
+    setText(
+        "infoDob",
+        formatDate(dob)
+    );
+
+
+    setText(
+        "infoGender",
+        gender
+    );
+
+
+    setText(
+        "infoBlood",
+        bloodGroup
+    );
+
+
+    setText(
+        "infoStudentPhone",
+        studentPhone
+    );
+
+
+    setText(
+        "infoAddress",
+        address
+    );
+
+
+    /* =====================================================
+       PARENT / GUARDIAN
+    ===================================================== */
+
+    setText(
+        "infoFather",
+        fatherName
+    );
+
+
+    setText(
+        "infoMother",
+        motherName
+    );
+
+
+    setText(
+        "infoParentPhone",
+        parentPhone
+    );
+
+
+    setText(
+        "infoParentEmail",
+        parentEmail
+    );
+
+
+    setText(
+        "infoOccupation",
+        occupation
+    );
+
+
+    setText(
+        "infoEmergency",
+        emergencyContact
+    );
+
+
+    /* =====================================================
+       ACADEMIC INFORMATION
+    ===================================================== */
+
+    setText(
+        "infoClass",
+        className
+    );
+
+
+    setText(
+        "infoSection",
+        section
+    );
+
+
+    setText(
+        "infoSession",
+        session
+    );
+
+
+    setText(
+        "infoPreviousSchool",
+        previousSchool
+    );
+
+
+    setText(
+        "infoAdmissionDate",
+        formatDate(
+            admissionDate
+        )
+    );
+
+
+    setStatus(
+        "infoStatus",
+        status
+    );
+
+
+    /* =====================================================
+       STUDENT RECORD
+    ===================================================== */
+
+    setText(
+        "recordStudentId",
+        id
+    );
+
+
+    setStatus(
+        "recordStatus",
+        status
+    );
+
+
+    setText(
+        "recordSession",
+        session
+    );
+
+
+    /* =====================================================
+       PRINT
+    ===================================================== */
+
+    const printButton =
+        document.getElementById(
+            "printProfileBtn"
+        );
+
 
     if (printButton) {
-        printButton.addEventListener("click", () => {
-            window.print();
-        });
+
+        printButton.addEventListener(
+            "click",
+            () => {
+
+                window.print();
+
+            }
+        );
+
     }
 
-    // -----------------------------
-    // Back to Students
-    // -----------------------------
-    const backButtons = document.querySelectorAll(
-        '[href="students.html"]'
-    );
 
-    backButtons.forEach(button => {
-        button.addEventListener("click", event => {
-            event.preventDefault();
-            window.location.href = "students.html";
-        });
-    });
+    /* =====================================================
+       EDIT STUDENT
+    ===================================================== */
 
-    // -----------------------------
-    // Edit Student
-    // -----------------------------
-    const editButton = document.getElementById("editStudentBtn");
+    const editButton =
+        document.getElementById(
+            "editStudentBtn"
+        );
+
 
     if (editButton) {
-        editButton.addEventListener("click", () => {
-            alert(
-                "Edit Student module is coming next. Your student record is safe."
-            );
-        });
+
+        editButton.addEventListener(
+            "click",
+            () => {
+
+                window.location.href =
+                    "add-student.html?id=" +
+                    encodeURIComponent(
+                        id
+                    );
+
+            }
+        );
+
     }
 
-    // -----------------------------
-    // Mobile Sidebar Fallback
-    // -----------------------------
-    const menuButton = document.querySelector(
-        ".mobile-menu-btn, .menu-toggle"
+
+    /* =====================================================
+       BACK TO STUDENTS
+    ===================================================== */
+
+    const backButtons =
+        document.querySelectorAll(
+            '[href="students.html"]'
+        );
+
+
+    backButtons.forEach(
+        button => {
+
+            button.addEventListener(
+                "click",
+                event => {
+
+                    event.preventDefault();
+
+                    window.location.href =
+                        "students.html";
+
+                }
+            );
+
+        }
     );
 
-    const sidebar = document.querySelector(".sidebar");
 
-    if (menuButton && sidebar) {
-        menuButton.addEventListener("click", () => {
-            sidebar.classList.toggle("active");
-        });
-    }
+    /* =====================================================
+       DOCUMENT TITLE
+    ===================================================== */
 
-    console.log("SmartSchool360 Student Profile Loaded:", student);
+    document.title =
+        `${name} | Student Profile | SmartSchool360`;
+
+
+    /* =====================================================
+       LOG
+    ===================================================== */
+
+    console.log(
+        "SmartSchool360 Student Profile:",
+        student
+    );
+
 });
