@@ -1,7 +1,8 @@
 /* =========================================================
    SMARTSCHOOL360
    STUDENT PROFILE MODULE
-   PROFILE + PHOTO + EDIT + ID CARD + DELETE + PRINT
+   PROFILE + PHOTO + EDIT + ID CARD + DOCUMENTS
+   + DELETE + PRINT
    ========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -326,13 +327,17 @@ document.addEventListener("DOMContentLoaded", () => {
             image.decoding =
                 "async";
 
+
             image.onerror = () => {
 
                 showInitials();
 
             };
 
-            avatar.appendChild(image);
+
+            avatar.appendChild(
+                image
+            );
 
             avatar.classList.add(
                 "has-photo"
@@ -635,6 +640,103 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================================
+       DOCUMENTS BUTTON
+       ===================================================== */
+
+    createDocumentsButton();
+
+
+    function createDocumentsButton() {
+
+        const actions =
+            getElement(
+                "profileActions"
+            ) ||
+            document.querySelector(
+                ".profile-actions"
+            );
+
+
+        if (!actions) {
+            return;
+        }
+
+
+        /*
+         * Prevent duplicate button
+         */
+
+        if (
+            getElement(
+                "studentDocumentsBtn"
+            )
+        ) {
+            return;
+        }
+
+
+        const documentsButton =
+            document.createElement(
+                "a"
+            );
+
+
+        documentsButton.id =
+            "studentDocumentsBtn";
+
+
+        documentsButton.className =
+            "profile-action-btn profile-documents-btn";
+
+
+        documentsButton.href =
+            "student-documents.html?id=" +
+            encodeURIComponent(
+                student.id
+            );
+
+
+        documentsButton.title =
+            "View Student Documents";
+
+
+        documentsButton.innerHTML =
+            "📄 Documents";
+
+
+        /*
+         * Professional inline styling
+         * so no extra CSS file is required
+         * for this connection step.
+         */
+
+        documentsButton.style.textDecoration =
+            "none";
+
+        documentsButton.style.display =
+            "inline-flex";
+
+        documentsButton.style.alignItems =
+            "center";
+
+        documentsButton.style.justifyContent =
+            "center";
+
+        documentsButton.style.gap =
+            "6px";
+
+        documentsButton.style.cursor =
+            "pointer";
+
+
+        actions.appendChild(
+            documentsButton
+        );
+
+    }
+
+
+    /* =====================================================
        COPY STUDENT ID
        ===================================================== */
 
@@ -837,10 +939,14 @@ document.addEventListener("DOMContentLoaded", () => {
             );
 
 
-        cancelButton.addEventListener(
-            "click",
-            closeModal
-        );
+        if (cancelButton) {
+
+            cancelButton.addEventListener(
+                "click",
+                closeModal
+            );
+
+        }
 
 
         overlay.addEventListener(
@@ -860,10 +966,14 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
 
-        confirmButton.addEventListener(
-            "click",
-            deleteStudent
-        );
+        if (confirmButton) {
+
+            confirmButton.addEventListener(
+                "click",
+                deleteStudent
+            );
+
+        }
 
 
         document.addEventListener(
@@ -875,7 +985,9 @@ document.addEventListener("DOMContentLoaded", () => {
         setTimeout(
             () => {
 
-                cancelButton.focus();
+                if (cancelButton) {
+                    cancelButton.focus();
+                }
 
             },
             50
@@ -967,6 +1079,144 @@ document.addEventListener("DOMContentLoaded", () => {
             );
 
         }
+
+    }
+
+
+    /* =====================================================
+       MOBILE MENU
+       ===================================================== */
+
+    const mobileMenu =
+        getElement(
+            "mobileMenu"
+        );
+
+    const sidebar =
+        getElement(
+            "sidebar"
+        );
+
+
+    if (
+        mobileMenu &&
+        sidebar
+    ) {
+
+        mobileMenu.addEventListener(
+            "click",
+            () => {
+
+                sidebar.classList.toggle(
+                    "active"
+                );
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       CLOSE SIDEBAR ON MOBILE NAVIGATION
+       ===================================================== */
+
+    if (sidebar) {
+
+        const sidebarLinks =
+            sidebar.querySelectorAll(
+                "a"
+            );
+
+
+        sidebarLinks.forEach(
+            link => {
+
+                link.addEventListener(
+                    "click",
+                    () => {
+
+                        sidebar.classList.remove(
+                            "active"
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       FULLSCREEN
+       ===================================================== */
+
+    const fullscreenButton =
+        getElement(
+            "fullscreenBtn"
+        );
+
+
+    if (fullscreenButton) {
+
+        fullscreenButton.addEventListener(
+            "click",
+            async () => {
+
+                try {
+
+                    if (
+                        !document.fullscreenElement
+                    ) {
+
+                        await document.documentElement
+                            .requestFullscreen();
+
+                    } else {
+
+                        await document.exitFullscreen();
+
+                    }
+
+                } catch (error) {
+
+                    console.log(
+                        "Fullscreen unavailable:",
+                        error
+                    );
+
+                }
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       NOTIFICATION BUTTON
+       ===================================================== */
+
+    const notificationButton =
+        getElement(
+            "notificationBtn"
+        );
+
+
+    if (notificationButton) {
+
+        notificationButton.addEventListener(
+            "click",
+            () => {
+
+                showToast(
+                    "No new notifications."
+                );
+
+            }
+        );
 
     }
 
@@ -1074,7 +1324,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================================
-       OPTIONAL KEYBOARD SHORTCUT
+       KEYBOARD PRINT SHORTCUT
        Ctrl/Cmd + P
        ===================================================== */
 
