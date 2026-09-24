@@ -3,12 +3,927 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartSchool360</title>
+
+    <title>SmartSchool360 | School Management System</title>
+
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
 
-    <h1>SmartSchool360</h1>
-    <p>School Management System</p>
+    <!-- =========================
+         APP
+    ========================== -->
+    <div class="app">
+
+        <!-- =========================
+             SIDEBAR
+        ========================== -->
+        <aside class="sidebar">
+
+            <div class="brand">
+                <div class="brand-icon">S</div>
+
+                <div class="brand-text">
+                    <h2>SmartSchool</h2>
+                    <span>360 ERP</span>
+                </div>
+            </div>
+
+            <div class="school-profile">
+                <div class="school-avatar">🏫</div>
+
+                <div>
+                    <strong>Smart Public School</strong>
+                    <small>Academic Session 2026–27</small>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+
+                <p class="nav-title">MAIN MENU</p>
+
+                <a href="#" class="nav-item active">
+                    <span>📊</span>
+                    <span>Dashboard</span>
+                </a>
+
+                <a href="#" class="nav-item">
+                    <span>👨‍🎓</span>
+                    <span>Students</span>
+                </a>
+
+                <a href="#" class="nav-item">
+                    <span>📝</span>
+                    <span>Admissions</span>
+                </a>
+
+                <a href="#" class="nav-item">
+                    <span>👨‍🏫</span>
+                    <span>Teachers</span>
+                </a>
+
+                <a href="#" class="nav-item">
+                    <span>📅</span>
+                    <span>Attendance</span>
+                </a>
+
+                <p class="nav-title">ACADEMICS</p>
+
+                <a href="#" class="nav-item">
+                    <span>📚</span>
+                    <span>Classes & Subjects</span>
+                </a>
+
+                <a href="#" class="nav-item">
+                    <span>📝</span>
+                    <span>Examinations</span>
+                </a>
+
+                <a href="#" class="nav-item">
+                    <span>📈</span>
+                    <span>Results</span>
+                </a>
+
+                <a href="#" class="nav-item">
+                    <span>🗓️</span>
+                    <span>Timetable</span>
+                </a>
+
+                <p class="nav-title">FINANCE</p>
+
+                <a href="#" class="nav-item">
+                    <span>💰</span>
+                    <span>Fees</span>
+                </a>
+
+                <a href="#" class="nav-item">
+                    <span>💳</span>
+                    <span>Expenses</span>
+                </a>
+
+                <p class="nav-title">MANAGEMENT</p>
+
+                <a href="#" class="nav-item">
+                    <span>👥</span>
+                    <span>Staff</span>
+                </a>
+
+                <a href="#" class="nav-item">
+                    <span>🚌</span>
+                    <span>Transport</span>
+                </a>
+
+                <a href="#" class="nav-item">
+                    <span>📢</span>
+                    <span>Notices</span>
+                </a>
+
+                <a href="#" class="nav-item">
+                    <span>📄</span>
+                    <span>Reports</span>
+                </a>
+
+                <p class="nav-title">SYSTEM</p>
+
+                <a href="#" class="nav-item">
+                    <span>⚙️</span>
+                    <span>Settings</span>
+                </a>
+
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="admin-mini-avatar">PK</div>
+
+                <div>
+                    <strong>Administrator</strong>
+                    <small>Super Admin</small>
+                </div>
+
+                <button class="logout-btn" title="Logout">↪</button>
+            </div>
+
+        </aside>
+
+
+        <!-- =========================
+             MAIN CONTENT
+        ========================== -->
+        <main class="main-content">
+
+            <!-- TOPBAR -->
+            <header class="topbar">
+
+                <div class="mobile-brand">
+                    <div class="brand-icon">S</div>
+                    <strong>SmartSchool360</strong>
+                </div>
+
+                <div class="topbar-left">
+
+                    <button class="menu-btn" id="menuBtn">
+                        ☰
+                    </button>
+
+                    <div class="search-box">
+                        <span>⌕</span>
+                        <input
+                            type="search"
+                            placeholder="Search students, teachers, fees..."
+                        >
+                        <kbd>Ctrl K</kbd>
+                    </div>
+
+                </div>
+
+                <div class="topbar-actions">
+
+                    <button class="icon-btn" title="Fullscreen">
+                        ⛶
+                    </button>
+
+                    <button class="icon-btn notification-btn" title="Notifications">
+                        🔔
+                        <span class="notification-dot"></span>
+                    </button>
+
+                    <div class="profile-menu">
+
+                        <div class="profile-avatar">
+                            PK
+                        </div>
+
+                        <div class="profile-info">
+                            <strong>Priyanshu Kumar</strong>
+                            <small>Super Admin</small>
+                        </div>
+
+                        <span>⌄</span>
+
+                    </div>
+
+                </div>
+
+            </header>
+
+
+            <!-- CONTENT -->
+            <section class="content">
+
+                <!-- PAGE HEADER -->
+                <div class="page-header">
+
+                    <div>
+                        <span class="welcome-label">
+                            GOOD MORNING 👋
+                        </span>
+
+                        <h1>School Dashboard</h1>
+
+                        <p>
+                            Here's what's happening in your school today.
+                        </p>
+                    </div>
+
+                    <div class="header-actions">
+
+                        <button class="secondary-btn">
+                            📥 Export Report
+                        </button>
+
+                        <button class="primary-btn">
+                            ＋ Add Student
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- STAT CARDS -->
+                <div class="stats-grid">
+
+                    <div class="stat-card">
+
+                        <div class="stat-top">
+                            <div class="stat-icon students">
+                                👨‍🎓
+                            </div>
+
+                            <span class="growth positive">
+                                ↑ 8.2%
+                            </span>
+                        </div>
+
+                        <div class="stat-number">
+                            1,248
+                        </div>
+
+                        <div class="stat-label">
+                            Total Students
+                        </div>
+
+                        <div class="stat-footer">
+                            <span>vs last month</span>
+                            <strong>1,154</strong>
+                        </div>
+
+                    </div>
+
+
+                    <div class="stat-card">
+
+                        <div class="stat-top">
+                            <div class="stat-icon teachers">
+                                👨‍🏫
+                            </div>
+
+                            <span class="growth positive">
+                                ↑ 3.1%
+                            </span>
+                        </div>
+
+                        <div class="stat-number">
+                            86
+                        </div>
+
+                        <div class="stat-label">
+                            Total Teachers
+                        </div>
+
+                        <div class="stat-footer">
+                            <span>Active staff</span>
+                            <strong>82</strong>
+                        </div>
+
+                    </div>
+
+
+                    <div class="stat-card">
+
+                        <div class="stat-top">
+                            <div class="stat-icon attendance">
+                                📅
+                            </div>
+
+                            <span class="growth positive">
+                                ↑ 2.4%
+                            </span>
+                        </div>
+
+                        <div class="stat-number">
+                            94.8%
+                        </div>
+
+                        <div class="stat-label">
+                            Today's Attendance
+                        </div>
+
+                        <div class="stat-footer">
+                            <span>Present today</span>
+                            <strong>1,183</strong>
+                        </div>
+
+                    </div>
+
+
+                    <div class="stat-card">
+
+                        <div class="stat-top">
+                            <div class="stat-icon fees">
+                                💰
+                            </div>
+
+                            <span class="growth positive">
+                                ↑ 12.6%
+                            </span>
+                        </div>
+
+                        <div class="stat-number">
+                            ₹8.42L
+                        </div>
+
+                        <div class="stat-label">
+                            Fees Collected
+                        </div>
+
+                        <div class="stat-footer">
+                            <span>This month</span>
+                            <strong>₹9.15L</strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ANALYTICS GRID -->
+                <div class="analytics-grid">
+
+                    <!-- STUDENT ANALYTICS -->
+                    <div class="dashboard-card large-card">
+
+                        <div class="card-header">
+
+                            <div>
+                                <h3>Student Analytics</h3>
+                                <p>Student enrollment overview</p>
+                            </div>
+
+                            <select class="period-select">
+                                <option>Last 6 Months</option>
+                                <option>Last 12 Months</option>
+                                <option>This Year</option>
+                            </select>
+
+                        </div>
+
+                        <div class="chart-container">
+                            <canvas id="studentChart"></canvas>
+                        </div>
+
+                    </div>
+
+
+                    <!-- ATTENDANCE -->
+                    <div class="dashboard-card">
+
+                        <div class="card-header">
+
+                            <div>
+                                <h3>Attendance</h3>
+                                <p>Today's overview</p>
+                            </div>
+
+                            <button class="more-btn">•••</button>
+
+                        </div>
+
+                        <div class="attendance-circle">
+
+                            <div class="circle-content">
+                                <strong>94.8%</strong>
+                                <span>Present</span>
+                            </div>
+
+                        </div>
+
+                        <div class="attendance-stats">
+
+                            <div>
+                                <span class="attendance-dot present"></span>
+                                <div>
+                                    <strong>1,183</strong>
+                                    <small>Present</small>
+                                </div>
+                            </div>
+
+                            <div>
+                                <span class="attendance-dot absent"></span>
+                                <div>
+                                    <strong>42</strong>
+                                    <small>Absent</small>
+                                </div>
+                            </div>
+
+                            <div>
+                                <span class="attendance-dot late"></span>
+                                <div>
+                                    <strong>23</strong>
+                                    <small>Late</small>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- SECOND ANALYTICS ROW -->
+                <div class="analytics-grid">
+
+                    <!-- FEES -->
+                    <div class="dashboard-card large-card">
+
+                        <div class="card-header">
+
+                            <div>
+                                <h3>Fee Collection</h3>
+                                <p>Monthly collection performance</p>
+                            </div>
+
+                            <select class="period-select">
+                                <option>2026</option>
+                                <option>2025</option>
+                            </select>
+
+                        </div>
+
+                        <div class="chart-container">
+                            <canvas id="feesChart"></canvas>
+                        </div>
+
+                    </div>
+
+
+                    <!-- QUICK ACTIONS -->
+                    <div class="dashboard-card">
+
+                        <div class="card-header">
+
+                            <div>
+                                <h3>Quick Actions</h3>
+                                <p>Frequently used features</p>
+                            </div>
+
+                        </div>
+
+                        <div class="quick-actions">
+
+                            <button>
+                                <span>👨‍🎓</span>
+                                <strong>Add Student</strong>
+                            </button>
+
+                            <button>
+                                <span>📝</span>
+                                <strong>Take Attendance</strong>
+                            </button>
+
+                            <button>
+                                <span>💰</span>
+                                <strong>Collect Fee</strong>
+                            </button>
+
+                            <button>
+                                <span>📢</span>
+                                <strong>Create Notice</strong>
+                            </button>
+
+                            <button>
+                                <span>📄</span>
+                                <strong>Generate Report</strong>
+                            </button>
+
+                            <button>
+                                <span>🪪</span>
+                                <strong>Student ID Card</strong>
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- BOTTOM GRID -->
+                <div class="bottom-grid">
+
+                    <!-- RECENT STUDENTS -->
+                    <div class="dashboard-card">
+
+                        <div class="card-header">
+
+                            <div>
+                                <h3>Recent Students</h3>
+                                <p>Latest admissions</p>
+                            </div>
+
+                            <button class="text-btn">
+                                View All →
+                            </button>
+
+                        </div>
+
+                        <div class="table-wrapper">
+
+                            <table>
+
+                                <thead>
+                                    <tr>
+                                        <th>Student</th>
+                                        <th>Class</th>
+                                        <th>Admission</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+
+                                    <tr>
+                                        <td>
+                                            <div class="student-cell">
+                                                <div class="student-avatar">AR</div>
+                                                <div>
+                                                    <strong>Aditya Raj</strong>
+                                                    <small>STU-2026-001</small>
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                        <td>Class 10-A</td>
+
+                                        <td>24 Sep 2026</td>
+
+                                        <td>
+                                            <span class="status active">
+                                                Active
+                                            </span>
+                                        </td>
+                                    </tr>
+
+
+                                    <tr>
+                                        <td>
+                                            <div class="student-cell">
+                                                <div class="student-avatar">AS</div>
+                                                <div>
+                                                    <strong>Ananya Singh</strong>
+                                                    <small>STU-2026-002</small>
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                        <td>Class 8-B</td>
+
+                                        <td>23 Sep 2026</td>
+
+                                        <td>
+                                            <span class="status active">
+                                                Active
+                                            </span>
+                                        </td>
+                                    </tr>
+
+
+                                    <tr>
+                                        <td>
+                                            <div class="student-cell">
+                                                <div class="student-avatar">RK</div>
+                                                <div>
+                                                    <strong>Rahul Kumar</strong>
+                                                    <small>STU-2026-003</small>
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                        <td>Class 9-A</td>
+
+                                        <td>22 Sep 2026</td>
+
+                                        <td>
+                                            <span class="status pending">
+                                                Pending
+                                            </span>
+                                        </td>
+                                    </tr>
+
+
+                                    <tr>
+                                        <td>
+                                            <div class="student-cell">
+                                                <div class="student-avatar">NS</div>
+                                                <div>
+                                                    <strong>Neha Sharma</strong>
+                                                    <small>STU-2026-004</small>
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                        <td>Class 7-C</td>
+
+                                        <td>21 Sep 2026</td>
+
+                                        <td>
+                                            <span class="status active">
+                                                Active
+                                            </span>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- UPCOMING EVENTS -->
+                    <div class="dashboard-card">
+
+                        <div class="card-header">
+
+                            <div>
+                                <h3>Upcoming Events</h3>
+                                <p>School calendar</p>
+                            </div>
+
+                            <button class="text-btn">
+                                Calendar →
+                            </button>
+
+                        </div>
+
+                        <div class="events-list">
+
+                            <div class="event-item">
+
+                                <div class="event-date">
+                                    <strong>28</strong>
+                                    <span>SEP</span>
+                                </div>
+
+                                <div class="event-info">
+                                    <strong>Parent-Teacher Meeting</strong>
+                                    <small>10:00 AM · Auditorium</small>
+                                </div>
+
+                            </div>
+
+
+                            <div class="event-item">
+
+                                <div class="event-date">
+                                    <strong>02</strong>
+                                    <span>OCT</span>
+                                </div>
+
+                                <div class="event-info">
+                                    <strong>Gandhi Jayanti</strong>
+                                    <small>School Holiday</small>
+                                </div>
+
+                            </div>
+
+
+                            <div class="event-item">
+
+                                <div class="event-date">
+                                    <strong>08</strong>
+                                    <span>OCT</span>
+                                </div>
+
+                                <div class="event-info">
+                                    <strong>Mid-Term Examination</strong>
+                                    <small>All Classes</small>
+                                </div>
+
+                            </div>
+
+
+                            <div class="event-item">
+
+                                <div class="event-date">
+                                    <strong>15</strong>
+                                    <span>OCT</span>
+                                </div>
+
+                                <div class="event-info">
+                                    <strong>Annual Sports Day</strong>
+                                    <small>School Ground</small>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- FOOTER -->
+                <footer class="footer">
+
+                    <span>
+                        © 2026 SmartSchool360
+                    </span>
+
+                    <span>
+                        School Management System · v1.0.0
+                    </span>
+
+                </footer>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <!-- =========================
+         JAVASCRIPT
+    ========================== -->
+
+    <script>
+
+        // Student Analytics
+        const studentCtx =
+            document.getElementById('studentChart');
+
+        new Chart(studentCtx, {
+            type: 'line',
+
+            data: {
+                labels: [
+                    'Apr',
+                    'May',
+                    'Jun',
+                    'Jul',
+                    'Aug',
+                    'Sep'
+                ],
+
+                datasets: [
+                    {
+                        label: 'Students',
+
+                        data: [
+                            1080,
+                            1125,
+                            1148,
+                            1180,
+                            1210,
+                            1248
+                        ],
+
+                        borderWidth: 3,
+
+                        tension: 0.4,
+
+                        fill: true
+                    }
+                ]
+            },
+
+            options: {
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+
+                scales: {
+                    y: {
+                        beginAtZero: false
+                    }
+                }
+            }
+        });
+
+
+        // Fee Collection
+        const feesCtx =
+            document.getElementById('feesChart');
+
+        new Chart(feesCtx, {
+            type: 'bar',
+
+            data: {
+                labels: [
+                    'Apr',
+                    'May',
+                    'Jun',
+                    'Jul',
+                    'Aug',
+                    'Sep'
+                ],
+
+                datasets: [
+                    {
+                        label: 'Fees Collected',
+
+                        data: [
+                            6.4,
+                            7.2,
+                            7.8,
+                            8.1,
+                            8.7,
+                            8.42
+                        ],
+
+                        borderWidth: 0,
+
+                        borderRadius: 8
+                    }
+                ]
+            },
+
+            options: {
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+
+                scales: {
+                    y: {
+                        beginAtZero: true,
+
+                        ticks: {
+                            callback: function(value) {
+                                return '₹' + value + 'L';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+
+        // Mobile menu
+        const menuBtn =
+            document.getElementById('menuBtn');
+
+        const sidebar =
+            document.querySelector('.sidebar');
+
+        menuBtn.addEventListener('click', function () {
+
+            sidebar.classList.toggle('mobile-open');
+
+        });
+
+
+        // Keyboard shortcut
+        document.addEventListener('keydown', function(event) {
+
+            if (
+                (event.ctrlKey || event.metaKey) &&
+                event.key.toLowerCase() === 'k'
+            ) {
+
+                event.preventDefault();
+
+                const search =
+                    document.querySelector('.search-box input');
+
+                if (search) {
+                    search.focus();
+                }
+
+            }
+
+        });
+
+    </script>
 
 </body>
 </html>
