@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>SmartSchool360 | School Management System</title>
+
+    <meta
+        name="description"
+        content="SmartSchool360 - Modern School Management System"
+    >
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background:
+                radial-gradient(
+                    circle at top left,
+                    #312e81,
+                    transparent 35%
+                ),
+                radial-gradient(
+                    circle at bottom right,
+                    #1e3a8a,
+                    transparent 35%
+                ),
+                #020617;
+            color: #ffffff;
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            text-align: center;
+        }
+
+        .logo {
+            width: 82px;
+            height: 82px;
+            margin: 0 auto 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 24px;
+            background: linear-gradient(
+                135deg,
+                #6366f1,
+                #8b5cf6
+            );
+            font-size: 38px;
+            font-weight: 900;
+            box-shadow:
+                0 20px 50px
+                rgba(99, 102, 241, 0.35);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 8px 15px;
+            margin-bottom: 20px;
+            border: 1px solid
+                rgba(129, 140, 248, 0.35);
+            border-radius: 30px;
+            background:
+                rgba(99, 102, 241, 0.12);
+            color: #c7d2fe;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        h1 {
+            margin-bottom: 14px;
+            font-size: clamp(
+                38px,
+                8vw,
+                72px
+            );
+            line-height: 1;
+            font-weight: 900;
+            letter-spacing: -2px;
+        }
+
+        h1 span {
+            background:
+                linear-gradient(
+                    90deg,
+                    #818cf8,
+                    #c084fc,
+                    #67e8f9
+                );
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .subtitle {
+            max-width: 650px;
+            margin: 0 auto 35px;
+            color: #94a3b8;
+            font-size: 17px;
+            line-height: 1.7;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin-bottom: 50px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 190px;
+            padding: 14px 22px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 800;
+            transition: 0.25s ease;
+        }
+
+        .btn-primary {
+            background: #6366f1;
+            color: #ffffff;
+            box-shadow:
+                0 12px 30px
+                rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            background: #4f46e5;
+        }
+
+        .btn-secondary {
+            border: 1px solid #334155;
+            background: rgba(15, 23, 42, 0.7);
+            color: #e2e8f0;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-3px);
+            border-color: #6366f1;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns:
+                repeat(3, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .feature {
+            padding: 25px 18px;
+            border: 1px solid
+                rgba(148, 163, 184, 0.15);
+            border-radius: 18px;
+            background:
+                rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(12px);
+        }
+
+        .feature-icon {
+            margin-bottom: 12px;
+            font-size: 30px;
+        }
+
+        .feature h3 {
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        .feature p {
+            color: #94a3b8;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .footer {
+            margin-top: 35px;
+            color: #64748b;
+            font-size: 12px;
+        }
+
+        @media (max-width: 700px) {
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+
+            .subtitle {
+                font-size: 15px;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 330px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+    <main class="container">
+
+        <div class="logo">
+            S
+        </div>
+
+
+        <div class="badge">
+            SCHOOL MANAGEMENT PLATFORM
+        </div>
+
+
+        <h1>
+            SmartSchool<span>360</span>
+        </h1>
+
+
+        <p class="subtitle">
+            A modern School Management System designed
+            to manage students, admissions, attendance,
+            fees, examinations, staff and reports from
+            one powerful platform.
+        </p>
+
+
+        <div class="buttons">
+
+            <a
+                href="frontend/index.html"
+                class="btn btn-primary"
+            >
+                🚀 Open Dashboard
+            </a>
+
+
+            <a
+                href="frontend/pages/add-student.html"
+                class="btn btn-secondary"
+            >
+                ➕ Student Admission
+            </a>
+
+        </div>
+
+
+        <section class="features">
+
+            <div class="feature">
+
+                <div class="feature-icon">
+                    👨‍🎓
+                </div>
+
+                <h3>
+                    Student Management
+                </h3>
+
+                <p>
+                    Manage student records,
+                    admissions and academic information.
+                </p>
+
+            </div>
+
+
+            <div class="feature">
+
+                <div class="feature-icon">
+                    📊
+                </div>
+
+                <h3>
+                    Smart Dashboard
+                </h3>
+
+                <p>
+                    Get a centralized view of
+                    important school activities.
+                </p>
+
+            </div>
+
+
+            <div class="feature">
+
+                <div class="feature-icon">
+                    🔐
+                </div>
+
+                <h3>
+                    Secure ERP
+                </h3>
+
+                <p>
+                    Built for future role-based
+                    authentication and school security.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <div class="footer">
+
+            © 2026 SmartSchool360 ·
+            School Management System
+
+        </div>
+
+    </main>
+
+</body>
+
+</html>
