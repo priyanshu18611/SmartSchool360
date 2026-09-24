@@ -10,12 +10,29 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Student Profile | SmartSchool360</title>
+    <meta
+        name="description"
+        content="SmartSchool360 Student Profile Management"
+    >
+
+    <title>
+        Student Profile | SmartSchool360
+    </title>
+
+
+    <!-- =====================================================
+         MAIN CSS
+         ===================================================== -->
 
     <link
         rel="stylesheet"
         href="../assets/css/style.css"
     >
+
+
+    <!-- =====================================================
+         STUDENT PROFILE CSS
+         ===================================================== -->
 
     <link
         rel="stylesheet"
@@ -27,51 +44,46 @@
 
 <body>
 
-<div class="app-layout">
 
-
-    <!-- =========================================
+    <!-- =====================================================
          SIDEBAR
-         ========================================= -->
+         ===================================================== -->
 
     <aside
         class="sidebar"
         id="sidebar"
     >
 
-        <div class="sidebar-logo">
+        <div class="sidebar-brand">
 
-            <div class="logo-icon">
-                S
+            <div class="brand-logo">
+                🎓
             </div>
 
             <div>
 
-                <h2>
-                    SmartSchool<span>360</span>
-                </h2>
+                <strong>
+                    SmartSchool360
+                </strong>
 
-                <small>
+                <span>
                     School ERP
-                </small>
+                </span>
 
             </div>
 
         </div>
 
 
+        <!-- NAVIGATION -->
+
         <nav class="sidebar-nav">
-
-            <p class="nav-title">
-                MAIN
-            </p>
-
 
             <a
                 href="../index.html"
                 class="nav-item"
             >
-                <span>▣</span>
+                <span>🏠</span>
                 <span>Dashboard</span>
             </a>
 
@@ -94,9 +106,9 @@
             </a>
 
 
-            <p class="nav-title">
-                ACADEMIC
-            </p>
+            <div class="nav-section-title">
+                ACADEMICS
+            </div>
 
 
             <a
@@ -113,7 +125,7 @@
                 class="nav-item"
             >
                 <span>📚</span>
-                <span>Examinations</span>
+                <span>Classes & Subjects</span>
             </a>
 
 
@@ -121,14 +133,14 @@
                 href="#"
                 class="nav-item"
             >
-                <span>🕐</span>
-                <span>Timetable</span>
+                <span>📝</span>
+                <span>Examinations</span>
             </a>
 
 
-            <p class="nav-title">
+            <div class="nav-section-title">
                 FINANCE
-            </p>
+            </div>
 
 
             <a
@@ -144,14 +156,14 @@
                 href="#"
                 class="nav-item"
             >
-                <span>📊</span>
-                <span>Reports</span>
+                <span>🧾</span>
+                <span>Receipts</span>
             </a>
 
 
-            <p class="nav-title">
+            <div class="nav-section-title">
                 MANAGEMENT
-            </p>
+            </div>
 
 
             <a
@@ -167,32 +179,30 @@
                 href="#"
                 class="nav-item"
             >
-                <span>⚙️</span>
-                <span>Settings</span>
+                <span>📊</span>
+                <span>Reports</span>
             </a>
 
         </nav>
 
 
-        <div class="sidebar-bottom">
+        <!-- SIDEBAR USER -->
 
-            <div class="admin-profile">
+        <div class="sidebar-user">
 
-                <div class="admin-avatar">
-                    PK
-                </div>
+            <div class="user-avatar">
+                PK
+            </div>
 
-                <div>
+            <div>
 
-                    <strong>
-                        Priyanshu Kumar
-                    </strong>
+                <strong>
+                    Priyanshu Kumar
+                </strong>
 
-                    <small>
-                        Administrator
-                    </small>
-
-                </div>
+                <small>
+                    Administrator
+                </small>
 
             </div>
 
@@ -201,15 +211,16 @@
     </aside>
 
 
-
-    <!-- =========================================
+    <!-- =====================================================
          MAIN CONTENT
-         ========================================= -->
+         ===================================================== -->
 
     <main class="main-content">
 
 
-        <!-- TOPBAR -->
+        <!-- =================================================
+             TOPBAR
+             ================================================= -->
 
         <header class="topbar">
 
@@ -229,7 +240,7 @@
                 </h1>
 
                 <p>
-                    Student information and academic record
+                    Complete student information
                 </p>
 
             </div>
@@ -241,6 +252,7 @@
                     class="topbar-btn"
                     id="notificationBtn"
                     type="button"
+                    title="Notifications"
                 >
                     🔔
                 </button>
@@ -250,6 +262,7 @@
                     class="topbar-btn"
                     id="fullscreenBtn"
                     type="button"
+                    title="Fullscreen"
                 >
                     ⛶
                 </button>
@@ -259,17 +272,18 @@
         </header>
 
 
-
-        <!-- =========================================
+        <!-- =================================================
              PROFILE CONTENT
-             ========================================= -->
+             ================================================= -->
 
         <section class="profile-container">
 
 
-            <!-- ACTION BAR -->
+            <!-- =================================================
+                 ACTION BAR
+                 ================================================= -->
 
-            <div class="profile-actions">
+            <div class="profile-action-bar">
 
                 <a
                     href="students.html"
@@ -279,11 +293,11 @@
                 </a>
 
 
-                <div class="profile-action-buttons">
+                <div class="profile-actions">
 
                     <button
                         type="button"
-                        class="profile-btn secondary"
+                        class="profile-print-btn"
                         id="printProfileBtn"
                     >
                         🖨️ Print
@@ -292,7 +306,7 @@
 
                     <button
                         type="button"
-                        class="profile-btn primary"
+                        class="profile-edit-btn"
                         id="editStudentBtn"
                     >
                         ✏️ Edit Student
@@ -303,75 +317,106 @@
             </div>
 
 
-
-            <!-- =====================================
+            <!-- =================================================
                  PROFILE HERO
-                 ===================================== -->
+                 ================================================= -->
 
-            <div class="profile-hero">
+            <section class="profile-hero">
 
-                <div class="profile-avatar-large">
-                    <span id="profileInitials">
+
+                <div class="profile-hero-left">
+
+
+                    <div
+                        class="profile-avatar"
+                        id="profileInitials"
+                    >
                         ST
-                    </span>
-                </div>
+                    </div>
 
 
-                <div class="profile-hero-info">
+                    <div class="profile-identity">
 
-                    <span class="profile-label">
-                        STUDENT PROFILE
-                    </span>
+                        <div class="profile-name-row">
 
+                            <h2 id="profileName">
+                                Student Name
+                            </h2>
 
-                    <h2 id="profileName">
-                        Student Name
-                    </h2>
+                            <span
+                                class="profile-status"
+                                id="profileStatus"
+                            >
+                                Active
+                            </span>
 
-
-                    <p id="profileId">
-                        Student ID: —
-                    </p>
-
-
-                    <div class="profile-tags">
-
-                        <span
-                            class="profile-tag"
-                            id="profileClass"
-                        >
-                            Class —
-                        </span>
+                        </div>
 
 
-                        <span
-                            class="profile-tag"
-                            id="profileSection"
-                        >
-                            Section —
-                        </span>
+                        <div class="profile-meta">
+
+                            <span>
+                                🆔
+                                <strong>
+                                    Student ID:
+                                </strong>
+
+                                <span id="profileId">
+                                    —
+                                </span>
+                            </span>
 
 
-                        <span
-                            class="profile-status"
-                            id="profileStatus"
-                        >
-                            Active
-                        </span>
+                            <span>
+                                📚
+                                <strong>
+                                    Class:
+                                </strong>
+
+                                <span id="profileClass">
+                                    —
+                                </span>
+                            </span>
+
+
+                            <span>
+                                🏷️
+                                <strong>
+                                    Section:
+                                </strong>
+
+                                <span id="profileSection">
+                                    —
+                                </span>
+                            </span>
+
+                        </div>
 
                     </div>
 
                 </div>
 
-            </div>
+
+                <div class="profile-hero-badge">
+
+                    <span>
+                        SMARTSCHOOL360
+                    </span>
+
+                    <strong>
+                        STUDENT RECORD
+                    </strong>
+
+                </div>
+
+            </section>
 
 
+            <!-- =================================================
+                 QUICK STATS
+                 ================================================= -->
 
-            <!-- =====================================
-                 QUICK INFORMATION
-                 ===================================== -->
-
-            <div class="profile-stats-grid">
+            <section class="profile-stats-grid">
 
 
                 <div class="profile-stat-card">
@@ -398,7 +443,7 @@
                 <div class="profile-stat-card">
 
                     <div class="profile-stat-icon">
-                        👤
+                        ⚧️
                     </div>
 
                     <div>
@@ -419,7 +464,7 @@
                 <div class="profile-stat-card">
 
                     <div class="profile-stat-icon">
-                        📚
+                        📅
                     </div>
 
                     <div>
@@ -440,7 +485,7 @@
                 <div class="profile-stat-card">
 
                     <div class="profile-stat-icon">
-                        📅
+                        🏫
                     </div>
 
                     <div>
@@ -457,25 +502,26 @@
 
                 </div>
 
-            </div>
+            </section>
 
 
-
-            <!-- =====================================
+            <!-- =================================================
                  INFORMATION GRID
-                 ===================================== -->
+                 ================================================= -->
 
             <div class="profile-grid">
 
 
-                <!-- PERSONAL -->
+                <!-- =================================================
+                     PERSONAL INFORMATION
+                     ================================================= -->
 
-                <div class="profile-card">
+                <article class="profile-card">
 
                     <div class="profile-card-header">
 
                         <div class="profile-card-icon">
-                            👨‍🎓
+                            👤
                         </div>
 
                         <div>
@@ -493,9 +539,10 @@
                     </div>
 
 
-                    <div class="information-list">
+                    <div class="profile-info-list">
 
-                        <div class="information-row">
+
+                        <div class="profile-info-row">
 
                             <span>
                                 Full Name
@@ -508,7 +555,7 @@
                         </div>
 
 
-                        <div class="information-row">
+                        <div class="profile-info-row">
 
                             <span>
                                 Date of Birth
@@ -521,7 +568,7 @@
                         </div>
 
 
-                        <div class="information-row">
+                        <div class="profile-info-row">
 
                             <span>
                                 Gender
@@ -534,7 +581,7 @@
                         </div>
 
 
-                        <div class="information-row">
+                        <div class="profile-info-row">
 
                             <span>
                                 Blood Group
@@ -547,10 +594,10 @@
                         </div>
 
 
-                        <div class="information-row">
+                        <div class="profile-info-row">
 
                             <span>
-                                Student Mobile
+                                Student Phone
                             </span>
 
                             <strong id="infoStudentPhone">
@@ -560,7 +607,7 @@
                         </div>
 
 
-                        <div class="information-row">
+                        <div class="profile-info-row address-row">
 
                             <span>
                                 Address
@@ -574,17 +621,18 @@
 
                     </div>
 
-                </div>
+                </article>
 
 
+                <!-- =================================================
+                     PARENT INFORMATION
+                     ================================================= -->
 
-                <!-- PARENT -->
-
-                <div class="profile-card">
+                <article class="profile-card">
 
                     <div class="profile-card-header">
 
-                        <div class="profile-card-icon parent">
+                        <div class="profile-card-icon">
                             👨‍👩‍👧
                         </div>
 
@@ -595,7 +643,7 @@
                             </h3>
 
                             <p>
-                                Family and contact details
+                                Family and contact information
                             </p>
 
                         </div>
@@ -603,12 +651,13 @@
                     </div>
 
 
-                    <div class="information-list">
+                    <div class="profile-info-list">
 
-                        <div class="information-row">
+
+                        <div class="profile-info-row">
 
                             <span>
-                                Father's Name
+                                Father Name
                             </span>
 
                             <strong id="infoFather">
@@ -618,10 +667,10 @@
                         </div>
 
 
-                        <div class="information-row">
+                        <div class="profile-info-row">
 
                             <span>
-                                Mother's Name
+                                Mother Name
                             </span>
 
                             <strong id="infoMother">
@@ -631,10 +680,10 @@
                         </div>
 
 
-                        <div class="information-row">
+                        <div class="profile-info-row">
 
                             <span>
-                                Parent Mobile
+                                Parent Phone
                             </span>
 
                             <strong id="infoParentPhone">
@@ -644,7 +693,7 @@
                         </div>
 
 
-                        <div class="information-row">
+                        <div class="profile-info-row">
 
                             <span>
                                 Parent Email
@@ -657,7 +706,7 @@
                         </div>
 
 
-                        <div class="information-row">
+                        <div class="profile-info-row">
 
                             <span>
                                 Occupation
@@ -670,7 +719,7 @@
                         </div>
 
 
-                        <div class="information-row">
+                        <div class="profile-info-row">
 
                             <span>
                                 Emergency Contact
@@ -684,18 +733,19 @@
 
                     </div>
 
-                </div>
+                </article>
 
 
+                <!-- =================================================
+                     ACADEMIC INFORMATION
+                     ================================================= -->
 
-                <!-- ACADEMIC -->
-
-                <div class="profile-card">
+                <article class="profile-card">
 
                     <div class="profile-card-header">
 
-                        <div class="profile-card-icon academic">
-                            📚
+                        <div class="profile-card-icon">
+                            🎓
                         </div>
 
                         <div>
@@ -713,9 +763,10 @@
                     </div>
 
 
-                    <div class="information-list">
+                    <div class="profile-info-list">
 
-                        <div class="information-row">
+
+                        <div class="profile-info-row">
 
                             <span>
                                 Class
@@ -728,7 +779,7 @@
                         </div>
 
 
-                        <div class="information-row">
+                        <div class="profile-info-row">
 
                             <span>
                                 Section
@@ -741,7 +792,7 @@
                         </div>
 
 
-                        <div class="information-row">
+                        <div class="profile-info-row">
 
                             <span>
                                 Academic Session
@@ -754,7 +805,7 @@
                         </div>
 
 
-                        <div class="information-row">
+                        <div class="profile-info-row">
 
                             <span>
                                 Previous School
@@ -767,7 +818,7 @@
                         </div>
 
 
-                        <div class="information-row">
+                        <div class="profile-info-row">
 
                             <span>
                                 Admission Date
@@ -780,13 +831,16 @@
                         </div>
 
 
-                        <div class="information-row">
+                        <div class="profile-info-row">
 
                             <span>
-                                Status
+                                Student Status
                             </span>
 
-                            <strong id="infoStatus">
+                            <strong
+                                id="infoStatus"
+                                class="info-status"
+                            >
                                 —
                             </strong>
 
@@ -794,18 +848,19 @@
 
                     </div>
 
-                </div>
+                </article>
 
 
+                <!-- =================================================
+                     STUDENT RECORD
+                     ================================================= -->
 
-                <!-- ADDRESS / ID -->
-
-                <div class="profile-card">
+                <article class="profile-card record-card">
 
                     <div class="profile-card-header">
 
-                        <div class="profile-card-icon documents">
-                            📄
+                        <div class="profile-card-icon">
+                            📋
                         </div>
 
                         <div>
@@ -815,7 +870,7 @@
                             </h3>
 
                             <p>
-                                Registration information
+                                Official SmartSchool360 record
                             </p>
 
                         </div>
@@ -823,41 +878,42 @@
                     </div>
 
 
-                    <div class="record-box">
-
-                        <div class="record-id-label">
-                            STUDENT ID
-                        </div>
+                    <div class="record-highlight">
 
 
-                        <div
-                            class="record-id"
-                            id="recordStudentId"
-                        >
-                            —
-                        </div>
-
-
-                        <div class="record-divider"></div>
-
-
-                        <div class="record-meta">
+                        <div class="record-item">
 
                             <span>
-                                Record Status
+                                Student ID
                             </span>
 
-                            <strong id="recordStatus">
-                                Active
+                            <strong id="recordStudentId">
+                                —
                             </strong>
 
                         </div>
 
 
-                        <div class="record-meta">
+                        <div class="record-item">
 
                             <span>
-                                Academic Session
+                                Status
+                            </span>
+
+                            <strong
+                                id="recordStatus"
+                                class="info-status"
+                            >
+                                —
+                            </strong>
+
+                        </div>
+
+
+                        <div class="record-item">
+
+                            <span>
+                                Session
                             </span>
 
                             <strong id="recordSession">
@@ -868,29 +924,70 @@
 
                     </div>
 
-                </div>
+
+                    <div class="record-note">
+
+                        <span>
+                            🔒
+                        </span>
+
+                        <p>
+                            This student record is maintained
+                            securely by SmartSchool360.
+                        </p>
+
+                    </div>
+
+                </article>
 
             </div>
 
 
+            <!-- =================================================
+                 FOOTER BRAND STRIP
+                 ================================================= -->
 
-            <!-- =====================================
-                 FOOTER CREDIT
-                 ===================================== -->
+            <div class="profile-footer-brand">
 
-            <div class="profile-credit">
+                <div class="footer-brand-main">
 
-                <span>
-                    SmartSchool360
-                </span>
+                    <div class="footer-brand-icon">
+                        🎓
+                    </div>
 
-                <span>
-                    •
-                </span>
+                    <div>
 
-                <span>
-                    Built by Priyanshu Kumar
-                </span>
+                        <strong>
+                            SmartSchool360
+                        </strong>
+
+                        <span>
+                            School Management System
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="footer-brand-meta">
+
+                    <span>
+                        © 2026 SmartSchool360
+                    </span>
+
+                    <span class="footer-divider">
+                        •
+                    </span>
+
+                    <span>
+                        Built by
+                        <strong>
+                            Priyanshu Kumar
+                        </strong>
+                    </span>
+
+                </div>
 
             </div>
 
@@ -898,31 +995,21 @@
         </section>
 
 
-
-        <!-- FOOTER -->
-
-        <footer class="dashboard-footer">
-
-            <p>
-                © 2026 SmartSchool360.
-                School Management System.
-            </p>
-
-        </footer>
-
     </main>
 
-</div>
+
+    <!-- =====================================================
+         JAVASCRIPT
+         ===================================================== -->
+
+    <script
+        src="../assets/js/app.js"
+    ></script>
 
 
-
-<!-- =========================================
-     SCRIPTS
-     ========================================= -->
-
-<script src="../assets/js/app.js"></script>
-
-<script src="../assets/js/student-profile.js"></script>
+    <script
+        src="../assets/js/student-profile.js"
+    ></script>
 
 
 </body>
