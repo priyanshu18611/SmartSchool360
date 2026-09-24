@@ -1,221 +1,197 @@
-document.addEventListener("DOMContentLoaded", () => {
+/* =========================================================
+   SMARTSCHOOL360
+   STUDENT MANAGEMENT MODULE
+   ========================================================= */
+
+"use strict";
+
+document.addEventListener("DOMContentLoaded", function () {
+
     const STORAGE_KEY = "smartschool_students";
 
-    // =====================================================
-    // DOM ELEMENTS
-    // =====================================================
+    /* =====================================================
+       DOM
+    ===================================================== */
 
     const tableBody = document.getElementById("studentsTableBody");
+    const emptyState = document.getElementById("emptyState");
+
     const searchInput = document.getElementById("studentSearch");
     const classFilter = document.getElementById("classFilter");
 
-    const totalStudentsEl = document.getElementById("totalStudents");
-    const activeStudentsEl = document.getElementById("activeStudents");
-    const classCountEl = document.getElementById("classCount");
-    const newAdmissionsEl = document.getElementById("newAdmissions");
-
-    const emptyState = document.getElementById("emptyState");
+    const totalStudents = document.getElementById("totalStudents");
+    const activeStudents = document.getElementById("activeStudents");
+    const classCount = document.getElementById("classCount");
+    const newAdmissions = document.getElementById("newAdmissions");
 
     const addStudentBtn = document.getElementById("addStudentBtn");
     const emptyAddBtn = document.getElementById("emptyAddBtn");
 
-    const exportButton = document.getElementById("exportStudents");
+    const exportButton =
+        document.getElementById("exportStudents");
 
 
-    // =====================================================
-    // STUDENT DATA
-    // =====================================================
+    /* =====================================================
+       STUDENTS
+    ===================================================== */
 
     let students = [];
 
 
-    // =====================================================
-    // LOAD STUDENTS
-    // =====================================================
+    /* =====================================================
+       LOAD STUDENTS
+    ===================================================== */
 
     function loadStudents() {
+
         try {
-            const savedData = localStorage.getItem(STORAGE_KEY);
 
-            if (!savedData) {
+            const raw =
+                localStorage.getItem(STORAGE_KEY);
+
+            if (!raw) {
+
                 students = [];
-            } else {
-                const parsedData = JSON.parse(savedData);
 
-                students = Array.isArray(parsedData)
-                    ? parsedData
-                    : [];
+            } else {
+
+                const data = JSON.parse(raw);
+
+                students =
+                    Array.isArray(data)
+                        ? data
+                        : [];
+
             }
 
         } catch (error) {
+
             console.error(
-                "SmartSchool360: Error loading students",
+                "SmartSchool360 student data error:",
                 error
             );
 
             students = [];
         }
 
-        updateDashboardStats();
+
+        console.log(
+            "SmartSchool360 students:",
+            students
+        );
+
+        updateStats();
+
         renderStudents();
     }
 
 
-    // =====================================================
-    // SAFE VALUE
-    // =====================================================
+    /* =====================================================
+       VALUE HELPERS
+    ===================================================== */
 
-    function safeValue(value, fallback = "") {
+    function value(value, fallback = "N/A") {
+
         if (
             value === undefined ||
-            value === null
+            value === null ||
+            String(value).trim() === ""
         ) {
+
             return fallback;
         }
 
-        const text = String(value).trim();
-
-        return text === ""
-            ? fallback
-            : text;
+        return String(value).trim();
     }
 
 
-    // =====================================================
-    // GET STUDENT ID
-    // =====================================================
+    function studentId(student) {
 
-    function getStudentId(student) {
-        return safeValue(
-            student.studentId ||
-            student.id ||
-            student.admissionId ||
-            student.registrationId ||
-            student.rollNumber,
+        return value(
+            student.id,
             "N/A"
         );
     }
 
 
-    // =====================================================
-    // GET STUDENT NAME
-    // =====================================================
+    function studentName(student) {
 
-    function getStudentName(student) {
-        return safeValue(
-            student.name ||
-            student.fullName ||
-            student.studentName ||
-            student.studentFullName,
+        return value(
+            student.name,
             "Unnamed Student"
         );
     }
 
 
-    // =====================================================
-    // GET CLASS
-    // =====================================================
+    function studentClass(student) {
 
-    function getStudentClass(student) {
-        return safeValue(
-            student.className ||
-            student.class ||
-            student.standard ||
-            student.grade,
+        return value(
+            student.className,
             "N/A"
         );
     }
 
 
-    // =====================================================
-    // GET SECTION
-    // =====================================================
+    function studentSection(student) {
 
-    function getStudentSection(student) {
-        return safeValue(
-            student.section ||
-            student.classSection,
-            "-"
-        );
-    }
-
-
-    // =====================================================
-    // GET PARENT CONTACT
-    // =====================================================
-
-    function getParentContact(student) {
-        return safeValue(
-            student.parentPhone ||
-            student.fatherPhone ||
-            student.motherPhone ||
-            student.guardianPhone ||
-            student.contactNumber ||
-            student.phone ||
-            student.mobile,
+        return value(
+            student.section,
             "N/A"
         );
     }
 
 
-    // =====================================================
-    // GET PARENT NAME
-    // =====================================================
+    function parentName(student) {
 
-    function getParentName(student) {
-        return safeValue(
-            student.fatherName ||
-            student.father ||
-            student.motherName ||
-            student.mother ||
-            student.parentName ||
-            student.guardianName,
+        return value(
+            student.fatherName,
             "N/A"
         );
     }
 
 
-    // =====================================================
-    // GET ADMISSION DATE
-    // =====================================================
+    function parentPhone(student) {
 
-    function getAdmissionDate(student) {
-        return (
-            student.admissionDate ||
-            student.dateOfAdmission ||
-            student.admission_date ||
+        return value(
+            student.parentPhone,
+            "N/A"
+        );
+    }
+
+
+    function admissionDate(student) {
+
+        return value(
+            student.admissionDate,
             ""
         );
     }
 
 
-    // =====================================================
-    // GET STATUS
-    // =====================================================
+    function status(student) {
 
-    function getStudentStatus(student) {
-        return safeValue(
-            student.status ||
-            student.studentStatus,
+        return value(
+            student.status,
             "Active"
         );
     }
 
 
-    // =====================================================
-    // FORMAT DATE
-    // =====================================================
+    /* =====================================================
+       DATE FORMAT
+    ===================================================== */
 
-    function formatDate(value) {
+    function formatDate(dateValue) {
 
-        if (!value) {
+        if (!dateValue) {
             return "N/A";
         }
 
-        const date = new Date(value);
+        const date =
+            new Date(dateValue);
 
         if (Number.isNaN(date.getTime())) {
-            return safeValue(value, "N/A");
+            return dateValue;
         }
 
         return date.toLocaleDateString(
@@ -229,41 +205,43 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    // =====================================================
-    // GET INITIALS
-    // =====================================================
+    /* =====================================================
+       INITIALS
+    ===================================================== */
 
     function getInitials(name) {
 
-        const cleanName = safeValue(
-            name,
-            "Student"
-        );
+        const clean =
+            value(name, "Student");
 
-        const words = cleanName
-            .split(/\s+/)
-            .filter(Boolean);
+        const parts =
+            clean
+                .split(/\s+/)
+                .filter(Boolean);
 
-        if (words.length === 1) {
-            return words[0]
+
+        if (parts.length === 1) {
+
+            return parts[0]
                 .substring(0, 2)
                 .toUpperCase();
         }
 
+
         return (
-            words[0].charAt(0) +
-            words[words.length - 1].charAt(0)
+            parts[0][0] +
+            parts[parts.length - 1][0]
         ).toUpperCase();
     }
 
 
-    // =====================================================
-    // ESCAPE HTML
-    // =====================================================
+    /* =====================================================
+       HTML ESCAPE
+    ===================================================== */
 
-    function escapeHTML(value) {
+    function escapeHTML(text) {
 
-        return String(value)
+        return String(text)
             .replace(/&/g, "&amp;")
             .replace(/</g, "&lt;")
             .replace(/>/g, "&gt;")
@@ -272,118 +250,128 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    // =====================================================
-    // UPDATE DASHBOARD STATS
-    // =====================================================
+    /* =====================================================
+       UPDATE STATS
+    ===================================================== */
 
-    function updateDashboardStats() {
+    function updateStats() {
 
-        const total = students.length;
-
-        const active = students.filter(student => {
-
-            const status =
-                getStudentStatus(student)
-                    .toLowerCase();
-
-            return (
-                status === "active" ||
-                status === "approved"
-            );
-
-        }).length;
+        const total =
+            students.length;
 
 
-        const classes = new Set();
+        const active =
+            students.filter(function (student) {
 
-        students.forEach(student => {
+                return status(student)
+                    .toLowerCase() === "active";
 
-            const studentClass =
-                getStudentClass(student);
+            }).length;
+
+
+        const uniqueClasses =
+            new Set();
+
+
+        students.forEach(function (student) {
+
+            const cls =
+                studentClass(student);
 
             if (
-                studentClass &&
-                studentClass !== "N/A"
+                cls !== "N/A" &&
+                cls !== ""
             ) {
-                classes.add(
-                    studentClass.toLowerCase()
+
+                uniqueClasses.add(
+                    cls.toLowerCase()
                 );
             }
 
         });
 
 
-        // New admissions:
-        // Records from the last 30 days
+        let newCount = 0;
 
-        const now = new Date();
+        const today = new Date();
 
-        const newAdmissions =
-            students.filter(student => {
+        students.forEach(function (student) {
 
-                const admissionDate =
-                    getAdmissionDate(student);
+            const date =
+                admissionDate(student);
 
-                if (!admissionDate) {
-                    return false;
-                }
+            if (!date) {
+                return;
+            }
 
-                const date =
-                    new Date(admissionDate);
+            const admission =
+                new Date(date);
 
-                if (Number.isNaN(date.getTime())) {
-                    return false;
-                }
+            if (Number.isNaN(admission.getTime())) {
+                return;
+            }
 
-                const difference =
-                    now.getTime() -
-                    date.getTime();
+            const difference =
+                today.getTime() -
+                admission.getTime();
 
-                const days =
-                    difference /
-                    (1000 * 60 * 60 * 24);
+            const days =
+                difference /
+                (1000 * 60 * 60 * 24);
 
-                return days >= 0 && days <= 30;
+            if (
+                days >= 0 &&
+                days <= 30
+            ) {
 
-            }).length;
+                newCount++;
+            }
+
+        });
 
 
-        if (totalStudentsEl) {
-            totalStudentsEl.textContent = total;
+        if (totalStudents) {
+            totalStudents.textContent =
+                total;
         }
 
-        if (activeStudentsEl) {
-            activeStudentsEl.textContent = active;
+
+        if (activeStudents) {
+            activeStudents.textContent =
+                active;
         }
 
-        if (classCountEl) {
-            classCountEl.textContent =
-                classes.size;
+
+        if (classCount) {
+            classCount.textContent =
+                uniqueClasses.size;
         }
 
-        if (newAdmissionsEl) {
-            newAdmissionsEl.textContent =
-                newAdmissions;
+
+        if (newAdmissions) {
+            newAdmissions.textContent =
+                newCount;
         }
     }
 
 
-    // =====================================================
-    // RENDER STUDENTS
-    // =====================================================
+    /* =====================================================
+       RENDER
+    ===================================================== */
 
     function renderStudents() {
 
         if (!tableBody) {
+
             console.error(
-                "studentsTableBody not found."
+                "studentsTableBody not found"
             );
 
             return;
         }
 
 
-        const searchTerm =
+        const search =
             searchInput
                 ? searchInput.value
                     .trim()
@@ -399,47 +387,47 @@ document.addEventListener("DOMContentLoaded", () => {
                 : "";
 
 
-        const filteredStudents =
-            students.filter(student => {
+        const filtered =
+            students.filter(function (student) {
 
                 const id =
-                    getStudentId(student)
+                    studentId(student)
                         .toLowerCase();
 
                 const name =
-                    getStudentName(student)
+                    studentName(student)
                         .toLowerCase();
 
-                const studentClass =
-                    getStudentClass(student)
+                const cls =
+                    studentClass(student)
                         .toLowerCase();
 
                 const section =
-                    getStudentSection(student)
+                    studentSection(student)
                         .toLowerCase();
 
-                const parent =
-                    getParentName(student)
+                const father =
+                    parentName(student)
                         .toLowerCase();
 
                 const phone =
-                    getParentContact(student)
+                    parentPhone(student)
                         .toLowerCase();
 
 
                 const matchesSearch =
-                    !searchTerm ||
-                    id.includes(searchTerm) ||
-                    name.includes(searchTerm) ||
-                    studentClass.includes(searchTerm) ||
-                    section.includes(searchTerm) ||
-                    parent.includes(searchTerm) ||
-                    phone.includes(searchTerm);
+                    !search ||
+                    id.includes(search) ||
+                    name.includes(search) ||
+                    cls.includes(search) ||
+                    section.includes(search) ||
+                    father.includes(search) ||
+                    phone.includes(search);
 
 
                 const matchesClass =
                     !selectedClass ||
-                    studentClass === selectedClass;
+                    cls === selectedClass;
 
 
                 return (
@@ -449,346 +437,331 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
 
-        // =================================================
-        // EMPTY STATE
-        // =================================================
+        /* =================================================
+           NO STUDENTS
+        ================================================= */
 
-        if (filteredStudents.length === 0) {
+        if (filtered.length === 0) {
 
             tableBody.innerHTML = "";
 
+
             if (emptyState) {
-                emptyState.style.display = "flex";
+
+                emptyState.style.display =
+                    "block";
+
             }
 
             return;
         }
 
 
-        // Hide empty state
+        /* =================================================
+           STUDENTS FOUND
+        ================================================= */
 
         if (emptyState) {
-            emptyState.style.display = "none";
+
+            emptyState.style.display =
+                "none";
         }
 
 
-        // =================================================
-        // TABLE ROWS
-        // =================================================
-
         tableBody.innerHTML =
-            filteredStudents
-                .map(student => {
+            filtered.map(function (student) {
 
-                    const id =
-                        getStudentId(student);
+                const id =
+                    studentId(student);
 
-                    const name =
-                        getStudentName(student);
+                const name =
+                    studentName(student);
 
-                    const studentClass =
-                        getStudentClass(student);
+                const cls =
+                    studentClass(student);
 
-                    const section =
-                        getStudentSection(student);
+                const section =
+                    studentSection(student);
 
-                    const parent =
-                        getParentName(student);
+                const father =
+                    parentName(student);
 
-                    const phone =
-                        getParentContact(student);
+                const phone =
+                    parentPhone(student);
 
-                    const admissionDate =
-                        getAdmissionDate(student);
+                const date =
+                    admissionDate(student);
 
-                    const status =
-                        getStudentStatus(student);
-
-
-                    const normalizedStatus =
-                        status.toLowerCase();
+                const currentStatus =
+                    status(student);
 
 
-                    const statusClass =
-                        normalizedStatus === "active" ||
-                        normalizedStatus === "approved"
-                            ? "active"
-                            : "inactive";
+                const isActive =
+                    currentStatus
+                        .toLowerCase() === "active";
 
 
-                    return `
-                        <tr>
-
-                            <!-- STUDENT ID -->
-                            <td>
-                                <strong>
-                                    ${escapeHTML(id)}
-                                </strong>
-                            </td>
+                const statusClass =
+                    isActive
+                        ? "active"
+                        : "inactive";
 
 
-                            <!-- STUDENT -->
-                            <td>
+                return `
+
+                    <tr>
+
+                        <!-- STUDENT ID -->
+
+                        <td>
+                            <strong>
+                                ${escapeHTML(id)}
+                            </strong>
+                        </td>
+
+
+                        <!-- STUDENT -->
+
+                        <td>
+
+                            <div
+                                class="student-cell"
+                                style="
+                                    display:flex;
+                                    align-items:center;
+                                    gap:10px;
+                                "
+                            >
 
                                 <div
-                                    class="student-cell"
-                                    style="
-                                        display:flex;
-                                        align-items:center;
-                                        gap:10px;
-                                    "
+                                    class="student-avatar"
                                 >
-
-                                    <div
-                                        class="student-avatar"
-                                        style="
-                                            width:40px;
-                                            height:40px;
-                                            min-width:40px;
-                                            border-radius:50%;
-                                            display:flex;
-                                            align-items:center;
-                                            justify-content:center;
-                                            font-weight:700;
-                                        "
-                                    >
-                                        ${escapeHTML(
-                                            getInitials(name)
-                                        )}
-                                    </div>
-
-
-                                    <div>
-
-                                        <strong>
-                                            ${escapeHTML(name)}
-                                        </strong>
-
-                                    </div>
-
+                                    ${escapeHTML(
+                                        getInitials(name)
+                                    )}
                                 </div>
 
-                            </td>
-
-
-                            <!-- CLASS -->
-                            <td>
-                                ${escapeHTML(studentClass)}
-                            </td>
-
-
-                            <!-- SECTION -->
-                            <td>
-                                ${escapeHTML(section)}
-                            </td>
-
-
-                            <!-- PARENT CONTACT -->
-                            <td>
 
                                 <div>
+
                                     <strong>
-                                        ${escapeHTML(parent)}
+                                        ${escapeHTML(name)}
                                     </strong>
 
-                                    <br>
-
-                                    <small>
-                                        ${escapeHTML(phone)}
-                                    </small>
                                 </div>
 
-                            </td>
+                            </div>
+
+                        </td>
 
 
-                            <!-- ADMISSION DATE -->
-                            <td>
+                        <!-- CLASS -->
+
+                        <td>
+                            ${escapeHTML(cls)}
+                        </td>
+
+
+                        <!-- SECTION -->
+
+                        <td>
+                            ${escapeHTML(section)}
+                        </td>
+
+
+                        <!-- PARENT -->
+
+                        <td>
+
+                            <strong>
+                                ${escapeHTML(father)}
+                            </strong>
+
+                            <br>
+
+                            <small>
+                                ${escapeHTML(phone)}
+                            </small>
+
+                        </td>
+
+
+                        <!-- ADMISSION DATE -->
+
+                        <td>
+                            ${escapeHTML(
+                                formatDate(date)
+                            )}
+                        </td>
+
+
+                        <!-- STATUS -->
+
+                        <td>
+
+                            <span
+                                class="status-badge ${statusClass}"
+                            >
                                 ${escapeHTML(
-                                    formatDate(admissionDate)
+                                    currentStatus
                                 )}
-                            </td>
+                            </span>
+
+                        </td>
 
 
-                            <!-- STATUS -->
-                            <td>
+                        <!-- ACTION -->
 
-                                <span
-                                    class="status-badge ${statusClass}"
+                        <td>
+
+                            <div
+                                style="
+                                    display:flex;
+                                    gap:6px;
+                                    flex-wrap:wrap;
+                                "
+                            >
+
+                                <button
+                                    type="button"
+                                    class="action-btn view-student-btn"
+                                    data-id="${escapeHTML(id)}"
                                 >
-                                    ${escapeHTML(status)}
-                                </span>
-
-                            </td>
+                                    👁️ View
+                                </button>
 
 
-                            <!-- ACTION -->
-                            <td>
-
-                                <div
-                                    class="student-actions"
-                                    style="
-                                        display:flex;
-                                        gap:6px;
-                                        flex-wrap:wrap;
-                                    "
+                                <button
+                                    type="button"
+                                    class="action-btn edit-student-btn"
+                                    data-id="${escapeHTML(id)}"
                                 >
+                                    ✏️ Edit
+                                </button>
 
-                                    <button
-                                        type="button"
-                                        class="action-btn view-btn"
-                                        data-student-id="${escapeHTML(id)}"
-                                        title="View Student Profile"
-                                    >
-                                        👁️ View
-                                    </button>
+                            </div>
 
+                        </td>
 
-                                    <button
-                                        type="button"
-                                        class="action-btn edit-btn"
-                                        data-student-id="${escapeHTML(id)}"
-                                        title="Edit Student"
-                                    >
-                                        ✏️ Edit
-                                    </button>
+                    </tr>
 
-                                </div>
+                `;
 
-                            </td>
-
-                        </tr>
-                    `;
-
-                })
-                .join("");
+            }).join("");
 
 
-        attachActionEvents();
+        attachButtons();
     }
 
 
-    // =====================================================
-    // VIEW + EDIT BUTTONS
-    // =====================================================
+    /* =====================================================
+       BUTTON EVENTS
+    ===================================================== */
 
-    function attachActionEvents() {
+    function attachButtons() {
 
         const viewButtons =
             document.querySelectorAll(
-                ".view-btn"
+                ".view-student-btn"
             );
 
 
-        viewButtons.forEach(button => {
+        viewButtons.forEach(function (button) {
 
             button.addEventListener(
                 "click",
-                () => {
+                function () {
 
-                    const studentId =
-                        button.getAttribute(
-                            "data-student-id"
-                        );
+                    const id =
+                        button.dataset.id;
 
 
-                    if (
-                        !studentId ||
-                        studentId === "N/A"
-                    ) {
+                    if (!id) {
 
                         alert(
-                            "Student ID is missing."
+                            "Student ID not found."
                         );
 
                         return;
                     }
 
 
-                    // Student Profile page
+                    console.log(
+                        "Opening student profile:",
+                        id
+                    );
+
+
                     window.location.href =
                         "student-profile.html?id=" +
-                        encodeURIComponent(
-                            studentId
-                        );
+                        encodeURIComponent(id);
                 }
             );
+
         });
 
 
         const editButtons =
             document.querySelectorAll(
-                ".edit-btn"
+                ".edit-student-btn"
             );
 
 
-        editButtons.forEach(button => {
+        editButtons.forEach(function (button) {
 
             button.addEventListener(
                 "click",
-                () => {
-
-                    const studentId =
-                        button.getAttribute(
-                            "data-student-id"
-                        );
-
-
-                    if (!studentId) {
-                        alert(
-                            "Student ID is missing."
-                        );
-
-                        return;
-                    }
-
+                function () {
 
                     alert(
-                        "Edit Student module will be connected next."
+                        "Edit Student module will be connected in the next step."
                     );
+
                 }
             );
+
         });
+
     }
 
 
-    // =====================================================
-    // SEARCH
-    // =====================================================
+    /* =====================================================
+       SEARCH
+    ===================================================== */
 
     if (searchInput) {
 
         searchInput.addEventListener(
             "input",
-            () => {
-                renderStudents();
-            }
+            renderStudents
         );
+
     }
 
 
-    // =====================================================
-    // CLASS FILTER
-    // =====================================================
+    /* =====================================================
+       CLASS FILTER
+    ===================================================== */
 
     if (classFilter) {
 
         classFilter.addEventListener(
             "change",
-            () => {
-                renderStudents();
-            }
+            renderStudents
         );
+
     }
 
 
-    // =====================================================
-    // ADD STUDENT BUTTON
-    // =====================================================
+    /* =====================================================
+       ADD STUDENT
+    ===================================================== */
 
-    function openAdmissionPage() {
+    function openAdmission() {
 
         window.location.href =
             "add-student.html";
+
     }
 
 
@@ -796,8 +769,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         addStudentBtn.addEventListener(
             "click",
-            openAdmissionPage
+            openAdmission
         );
+
     }
 
 
@@ -805,25 +779,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
         emptyAddBtn.addEventListener(
             "click",
-            openAdmissionPage
+            openAdmission
         );
+
     }
 
 
-    // =====================================================
-    // EXPORT STUDENTS
-    // =====================================================
+    /* =====================================================
+       EXPORT
+    ===================================================== */
 
     if (exportButton) {
 
         exportButton.addEventListener(
             "click",
-            () => {
+            function () {
 
                 if (students.length === 0) {
 
                     alert(
-                        "No student records available for export."
+                        "No students available to export."
                     );
 
                     return;
@@ -835,61 +810,69 @@ document.addEventListener("DOMContentLoaded", () => {
                     "Student Name",
                     "Class",
                     "Section",
-                    "Parent Name",
-                    "Parent Contact",
+                    "Father Name",
+                    "Parent Phone",
                     "Admission Date",
                     "Status"
                 ];
 
 
                 const rows =
-                    students.map(student => {
+                    students.map(function (student) {
 
                         return [
-                            getStudentId(student),
-                            getStudentName(student),
-                            getStudentClass(student),
-                            getStudentSection(student),
-                            getParentName(student),
-                            getParentContact(student),
+
+                            studentId(student),
+
+                            studentName(student),
+
+                            studentClass(student),
+
+                            studentSection(student),
+
+                            parentName(student),
+
+                            parentPhone(student),
+
                             formatDate(
-                                getAdmissionDate(student)
+                                admissionDate(student)
                             ),
-                            getStudentStatus(student)
+
+                            status(student)
+
                         ];
 
                     });
 
 
-                const csvRows = [
-                    headers,
-                    ...rows
-                ];
+                const csv =
+                    [
+                        headers,
+                        ...rows
+                    ]
+                    .map(function (row) {
 
+                        return row
+                            .map(function (cell) {
 
-                const csvContent =
-                    csvRows
-                        .map(row => {
-
-                            return row
-                                .map(value => {
-
-                                    return `"${String(value)
+                                return '"' +
+                                    String(cell)
                                         .replace(
                                             /"/g,
                                             '""'
-                                        )}"`;
+                                        ) +
+                                    '"';
 
-                                })
-                                .join(",");
+                            })
+                            .join(",");
 
-                        })
-                        .join("\n");
+                    })
+                    .join("\n");
 
 
                 const blob =
                     new Blob(
-                        [csvContent],
+                        [csv],
                         {
                             type:
                                 "text/csv;charset=utf-8;"
@@ -917,26 +900,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 document.body.removeChild(link);
 
-
                 URL.revokeObjectURL(url);
+
             }
         );
+
     }
 
 
-    // =====================================================
-    // INITIAL LOAD
-    // =====================================================
+    /* =====================================================
+       START
+    ===================================================== */
 
     loadStudents();
 
 
     console.log(
-        "SmartSchool360 Students Module Loaded"
+        "SmartSchool360 Student Management loaded successfully."
     );
 
-    console.log(
-        "Students found:",
-        students.length
-    );
 });
