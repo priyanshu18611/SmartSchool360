@@ -1,72 +1,56 @@
-/* =========================================================
+/* =========================================
    SMARTSCHOOL360
    STUDENT PROFILE MODULE
-   VIEW • EDIT • PRINT • DELETE
-   ========================================================= */
+   PHOTO + EDIT + DELETE + PRINT
+   ========================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    /* =====================================================
-       STORAGE
-       ===================================================== */
-
-    const STORAGE_KEY =
-        "smartschool_students";
-
-
-    /* =====================================================
-       GET STUDENT ID FROM URL
-       ===================================================== */
+    /* =========================================
+       GET STUDENT ID
+       ========================================= */
 
     const params =
-        new URLSearchParams(
-            window.location.search
-        );
+        new URLSearchParams(window.location.search);
 
     const studentId =
         params.get("id");
 
 
-    /* =====================================================
-       BASIC ELEMENTS
-       ===================================================== */
+    /* =========================================
+       STORAGE
+       ========================================= */
 
-    const editButton =
-        document.getElementById("editStudent");
+    function getStudents() {
 
-    const printButton =
-        document.getElementById("printStudent");
+        try {
 
-
-    /* =====================================================
-       READ STUDENTS
-       ===================================================== */
-
-    let students = [];
-
-    try {
-
-        students =
-            JSON.parse(
+            return JSON.parse(
                 localStorage.getItem(
-                    STORAGE_KEY
+                    "smartschool_students"
                 )
             ) || [];
 
-    } catch (error) {
+        } catch (error) {
 
-        console.error(
-            "Unable to read student records:",
-            error
-        );
+            console.error(
+                "Unable to read student data:",
+                error
+            );
 
-        students = [];
+            return [];
+
+        }
+
     }
 
 
-    /* =====================================================
-       FIND CURRENT STUDENT
-       ===================================================== */
+    /* =========================================
+       FIND STUDENT
+       ========================================= */
+
+    const students =
+        getStudents();
 
     const student =
         students.find(
@@ -76,28 +60,544 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
 
-    /* =====================================================
-       STUDENT NOT FOUND
-       ===================================================== */
+    /* =========================================
+       NOT FOUND
+       ========================================= */
 
     if (!student) {
 
-        showStudentNotFound();
+        showNotFound();
 
         return;
+
     }
 
 
-    /* =====================================================
-       POPULATE PROFILE
-       ===================================================== */
+    /* =========================================
+       BASIC HELPERS
+       ========================================= */
 
-    populateProfile(student);
+    function getElement(id) {
+
+        return document.getElementById(id);
+
+    }
 
 
-    /* =====================================================
-       EDIT BUTTON
-       ===================================================== */
+    function setText(id, value) {
+
+        const element =
+            getElement(id);
+
+        if (!element) return;
+
+        element.textContent =
+            value || "—";
+
+    }
+
+
+    function formatDate(value) {
+
+        if (!value) return "—";
+
+        const date =
+            new Date(value);
+
+        if (Number.isNaN(date.getTime())) {
+
+            return value;
+
+        }
+
+        return date.toLocaleDateString(
+            "en-IN",
+            {
+                day: "2-digit",
+                month: "short",
+                year: "numeric"
+            }
+        );
+
+    }
+
+
+    function getInitials(name) {
+
+        if (!name) return "ST";
+
+        const parts =
+            name
+                .trim()
+                .split(/\s+/)
+                .filter(Boolean);
+
+        if (parts.length === 1) {
+
+            return parts[0]
+                .substring(0, 2)
+                .toUpperCase();
+
+        }
+
+        return (
+            parts[0][0] +
+            parts[parts.length - 1][0]
+        ).toUpperCase();
+
+    }
+
+
+    /* =========================================
+       PAGE TITLE
+       ========================================= */
+
+    document.title =
+        `${student.name || "Student"} | SmartSchool360`;
+
+
+    /* =========================================
+       PROFILE BASIC INFORMATION
+       ========================================= */
+
+    setText(
+        "profileName",
+        student.name
+    );
+
+    setText(
+        "profileStudentId",
+        student.id
+    );
+
+    setText(
+        "studentId",
+        student.id
+    );
+
+    setText(
+        "profileClass",
+        student.className
+    );
+
+    setText(
+        "profileSection",
+        student.section
+    );
+
+    setText(
+        "profileSession",
+        student.session
+    );
+
+
+    /* =========================================
+       PERSONAL INFORMATION
+       ========================================= */
+
+    setText(
+        "profileDob",
+        formatDate(student.dob)
+    );
+
+    setText(
+        "profileGender",
+        student.gender
+    );
+
+    setText(
+        "profileBloodGroup",
+        student.bloodGroup
+    );
+
+    setText(
+        "profilePhone",
+        student.studentPhone
+    );
+
+    setText(
+        "profileAddress",
+        student.address
+    );
+
+
+    /* =========================================
+       PARENT INFORMATION
+       ========================================= */
+
+    setText(
+        "profileFather",
+        student.fatherName
+    );
+
+    setText(
+        "profileMother",
+        student.motherName
+    );
+
+    setText(
+        "profileParentPhone",
+        student.parentPhone
+    );
+
+    setText(
+        "profileParentEmail",
+        student.parentEmail
+    );
+
+    setText(
+        "profileOccupation",
+        student.occupation
+    );
+
+    setText(
+        "profileEmergency",
+        student.emergencyContact
+    );
+
+
+    /* =========================================
+       ACADEMIC INFORMATION
+       ========================================= */
+
+    setText(
+        "profileClassAcademic",
+        student.className
+    );
+
+    setText(
+        "profileSectionAcademic",
+        student.section
+    );
+
+    setText(
+        "profileSessionAcademic",
+        student.session
+    );
+
+    setText(
+        "profilePreviousSchool",
+        student.previousSchool
+    );
+
+
+    /* =========================================
+       ADMISSION INFORMATION
+       ========================================= */
+
+    setText(
+        "profileAdmissionDate",
+        formatDate(
+            student.admissionDate
+        )
+    );
+
+    setText(
+        "profileCreatedAt",
+        formatDate(
+            student.createdAt
+        )
+    );
+
+
+    /* =========================================
+       STATUS
+       ========================================= */
+
+    const status =
+        student.status ||
+        "Active";
+
+    setText(
+        "profileStatus",
+        status
+    );
+
+
+    const statusElements =
+        document.querySelectorAll(
+            ".profile-status, .status-badge"
+        );
+
+
+    statusElements.forEach(element => {
+
+        element.classList.remove(
+            "active",
+            "inactive",
+            "pending"
+        );
+
+
+        const normalized =
+            String(status)
+                .toLowerCase();
+
+
+        if (
+            normalized === "active"
+        ) {
+
+            element.classList.add(
+                "active"
+            );
+
+        } else if (
+            normalized === "inactive"
+        ) {
+
+            element.classList.add(
+                "inactive"
+            );
+
+        } else {
+
+            element.classList.add(
+                "pending"
+            );
+
+        }
+
+    });
+
+
+    /* =========================================
+       PROFILE AVATAR / PHOTO
+       ========================================= */
+
+    renderStudentPhoto();
+
+
+    function renderStudentPhoto() {
+
+        const avatar =
+            document.querySelector(
+                ".profile-avatar"
+            );
+
+
+        if (!avatar) return;
+
+
+        const initials =
+            getInitials(
+                student.name
+            );
+
+
+        /*
+         * Remove old dynamic image
+         */
+
+        const oldImage =
+            avatar.querySelector(
+                ".student-profile-photo"
+            );
+
+
+        if (oldImage) {
+
+            oldImage.remove();
+
+        }
+
+
+        /*
+         * Remove old initials
+         */
+
+        const oldInitials =
+            avatar.querySelector(
+                ".student-avatar-initials"
+            );
+
+
+        if (oldInitials) {
+
+            oldInitials.remove();
+
+        }
+
+
+        /*
+         * PHOTO EXISTS
+         */
+
+        const photo =
+            student.photo ||
+            student.studentPhoto ||
+            "";
+
+
+        if (
+            photo &&
+            typeof photo === "string"
+        ) {
+
+            const image =
+                document.createElement("img");
+
+
+            image.className =
+                "student-profile-photo";
+
+
+            image.src =
+                photo;
+
+
+            image.alt =
+                `${student.name || "Student"} Photo`;
+
+
+            image.loading =
+                "eager";
+
+
+            image.decoding =
+                "async";
+
+
+            image.style.width =
+                "100%";
+
+
+            image.style.height =
+                "100%";
+
+
+            image.style.objectFit =
+                "cover";
+
+
+            image.style.borderRadius =
+                "inherit";
+
+
+            image.style.display =
+                "block";
+
+
+            image.onerror =
+                () => {
+
+                    image.remove();
+
+                    showInitials();
+
+                };
+
+
+            avatar.appendChild(
+                image
+            );
+
+
+            avatar.classList.add(
+                "has-photo"
+            );
+
+
+        } else {
+
+            showInitials();
+
+        }
+
+
+        function showInitials() {
+
+            avatar.classList.remove(
+                "has-photo"
+            );
+
+
+            const initialsElement =
+                document.createElement(
+                    "span"
+                );
+
+
+            initialsElement.className =
+                "student-avatar-initials";
+
+
+            initialsElement.textContent =
+                initials;
+
+
+            avatar.appendChild(
+                initialsElement
+            );
+
+        }
+
+    }
+
+
+    /* =========================================
+       QUICK STATS
+       ========================================= */
+
+    setText(
+        "statStudentId",
+        student.id
+    );
+
+    setText(
+        "statClass",
+        student.className
+    );
+
+    setText(
+        "statSection",
+        student.section
+    );
+
+    setText(
+        "statAdmission",
+        formatDate(
+            student.admissionDate
+        )
+    );
+
+
+    /* =========================================
+       BACK BUTTONS
+       ========================================= */
+
+    const backButtons =
+        document.querySelectorAll(
+            "[data-back-students], .profile-back"
+        );
+
+
+    backButtons.forEach(button => {
+
+        button.addEventListener(
+            "click",
+            event => {
+
+                event.preventDefault();
+
+                window.location.href =
+                    "students.html";
+
+            }
+        );
+
+    });
+
+
+    /* =========================================
+       EDIT STUDENT
+       ========================================= */
+
+    const editButton =
+        document.getElementById(
+            "editStudentBtn"
+        );
+
 
     if (editButton) {
 
@@ -117,9 +617,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /* =====================================================
-       PRINT BUTTON
-       ===================================================== */
+    /* =========================================
+       PRINT PROFILE
+       ========================================= */
+
+    const printButton =
+        document.getElementById(
+            "printStudentBtn"
+        );
+
 
     if (printButton) {
 
@@ -135,294 +641,86 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /* =====================================================
-       CREATE DELETE BUTTON
-       ===================================================== */
+    /* =========================================
+       COPY STUDENT ID
+       ========================================= */
 
-    createDeleteButton(student);
-
-
-    /* =====================================================
-       BACK BUTTONS
-       ===================================================== */
-
-    setupBackButtons();
-
-
-    /* =====================================================
-       PAGE TITLE
-       ===================================================== */
-
-    document.title =
-        `${student.name || "Student"} | SmartSchool360`;
-
-
-    /* =====================================================
-       PROFILE POPULATION
-       ===================================================== */
-
-    function populateProfile(data) {
-
-        /* -------------------------------------------------
-           BASIC
-           ------------------------------------------------- */
-
-        setText(
-            "profileStudentName",
-            data.name
-        );
-
-        setText(
-            "profileStudentId",
-            data.id
+    const copyButtons =
+        document.querySelectorAll(
+            "[data-copy-student-id], .copy-student-id"
         );
 
 
-        /* -------------------------------------------------
-           AVATAR
-           ------------------------------------------------- */
+    copyButtons.forEach(button => {
 
-        const avatar =
-            document.getElementById(
-                "profileAvatar"
-            );
+        button.addEventListener(
+            "click",
+            async () => {
 
-        if (avatar) {
+                try {
 
-            avatar.textContent =
-                getInitials(
-                    data.name
-                );
+                    await navigator.clipboard.writeText(
+                        String(student.id)
+                    );
 
-        }
+                    showToast(
+                        "Student ID copied successfully.",
+                        "success"
+                    );
 
+                } catch (error) {
 
-        /* -------------------------------------------------
-           PERSONAL INFORMATION
-           ------------------------------------------------- */
+                    showToast(
+                        `Student ID: ${student.id}`,
+                        "success"
+                    );
 
-        setText(
-            "profileName",
-            data.name
+                }
+
+            }
         );
 
-        setText(
-            "profileDob",
-            formatDate(data.dob)
-        );
-
-        setText(
-            "profileGender",
-            data.gender
-        );
-
-        setText(
-            "profileBloodGroup",
-            data.bloodGroup
-        );
-
-        setText(
-            "profileStudentPhone",
-            data.studentPhone
-        );
-
-        setText(
-            "profileAddress",
-            data.address
-        );
+    });
 
 
-        /* -------------------------------------------------
-           PARENT INFORMATION
-           ------------------------------------------------- */
+    /* =========================================
+       DELETE BUTTON
+       ========================================= */
 
-        setText(
-            "profileFatherName",
-            data.fatherName
-        );
-
-        setText(
-            "profileMotherName",
-            data.motherName
-        );
-
-        setText(
-            "profileParentPhone",
-            data.parentPhone
-        );
-
-        setText(
-            "profileParentEmail",
-            data.parentEmail
-        );
-
-        setText(
-            "profileOccupation",
-            data.occupation
-        );
-
-        setText(
-            "profileEmergencyContact",
-            data.emergencyContact
-        );
+    createDeleteButton();
 
 
-        /* -------------------------------------------------
-           ACADEMIC INFORMATION
-           ------------------------------------------------- */
+    function createDeleteButton() {
 
-        setText(
-            "profileClass",
-            data.className
-        );
-
-        setText(
-            "profileSection",
-            data.section
-        );
-
-        setText(
-            "profileSession",
-            data.session
-        );
-
-        setText(
-            "profilePreviousSchool",
-            data.previousSchool
-        );
-
-
-        /* -------------------------------------------------
-           ADMISSION INFORMATION
-           ------------------------------------------------- */
-
-        setText(
-            "profileAdmissionDate",
-            formatDate(
-                data.admissionDate
-            )
-        );
-
-        setText(
-            "profileCreatedAt",
-            formatDateTime(
-                data.createdAt
-            )
-        );
-
-        setText(
-            "profileUpdatedAt",
-            formatDateTime(
-                data.updatedAt
-            )
-        );
-
-
-        /* -------------------------------------------------
-           STATUS
-           ------------------------------------------------- */
-
-        setStatus(
-            data.status
-        );
-
-
-        /* -------------------------------------------------
-           QUICK STATS
-           ------------------------------------------------- */
-
-        setText(
-            "profileStatClass",
-            data.className
-        );
-
-        setText(
-            "profileStatSection",
-            data.section
-        );
-
-        setText(
-            "profileStatSession",
-            data.session
-        );
-
-        setText(
-            "profileStatStatus",
-            data.status
-        );
-
-
-        /* -------------------------------------------------
-           OPTIONAL CONTACT LINKS
-           ------------------------------------------------- */
-
-        setupContactLinks(data);
-
-    }
-
-
-    /* =====================================================
-       CREATE DELETE BUTTON
-       ===================================================== */
-
-    function createDeleteButton(data) {
-
-        /*
-         * Try to find existing action area.
-         */
-
-        let actionArea =
+        const actions =
             document.querySelector(
                 ".profile-actions"
+            ) ||
+            document.querySelector(
+                ".profile-action-bar"
             );
 
 
-        /*
-         * If not available, try action bar.
-         */
-
-        if (!actionArea) {
-
-            actionArea =
-                document.querySelector(
-                    ".profile-action-bar"
-                );
-
-        }
-
-
-        if (!actionArea) {
-
-            console.warn(
-                "Profile action area not found."
-            );
-
-            return;
-        }
+        if (!actions) return;
 
 
         /*
-         * Prevent duplicate button.
+         * Prevent duplicate delete button
          */
 
         if (
             document.getElementById(
-                "deleteStudent"
+                "deleteStudentBtn"
             )
         ) {
 
             return;
+
         }
 
 
-        /*
-         * Create button.
-         */
-
         const deleteButton =
-            document.createElement(
-                "button"
-            );
+            document.createElement("button");
 
 
         deleteButton.type =
@@ -430,7 +728,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         deleteButton.id =
-            "deleteStudent";
+            "deleteStudentBtn";
 
 
         deleteButton.className =
@@ -441,78 +739,45 @@ document.addEventListener("DOMContentLoaded", () => {
             "🗑 Delete";
 
 
-        deleteButton.setAttribute(
-            "aria-label",
-            "Delete student"
-        );
-
-
-        /*
-         * Add button.
-         */
-
-        actionArea.appendChild(
-            deleteButton
-        );
-
-
-        /*
-         * Delete click.
-         */
-
         deleteButton.addEventListener(
             "click",
-            () => {
+            openDeleteModal
+        );
 
-                openDeleteModal(data);
 
-            }
+        actions.appendChild(
+            deleteButton
         );
 
     }
 
 
-    /* =====================================================
+    /* =========================================
        DELETE CONFIRMATION MODAL
-       ===================================================== */
+       ========================================= */
 
-    function openDeleteModal(data) {
+    function openDeleteModal() {
 
-        /*
-         * Remove old modal if it exists.
-         */
+        if (
+            document.querySelector(
+                ".student-delete-modal"
+            )
+        ) {
 
-        const oldModal =
-            document.getElementById(
-                "deleteStudentModal"
-            );
-
-        if (oldModal) {
-
-            oldModal.remove();
+            return;
 
         }
 
 
-        /*
-         * Create modal.
-         */
-
-        const modal =
-            document.createElement(
-                "div"
-            );
+        const backdrop =
+            document.createElement("div");
 
 
-        modal.id =
-            "deleteStudentModal";
-
-
-        modal.className =
+        backdrop.className =
             "student-delete-modal";
 
 
-        modal.innerHTML = `
+        backdrop.innerHTML = `
 
             <div class="student-delete-backdrop"></div>
 
@@ -520,53 +785,39 @@ document.addEventListener("DOMContentLoaded", () => {
                 class="student-delete-dialog"
                 role="dialog"
                 aria-modal="true"
-                aria-labelledby="deleteModalTitle"
+                aria-labelledby="deleteStudentTitle"
             >
 
                 <div class="student-delete-icon">
                     🗑️
                 </div>
 
-                <h2 id="deleteModalTitle">
+                <h2 id="deleteStudentTitle">
                     Delete Student?
                 </h2>
 
-                <p>
-                    Are you sure you want to delete
+                <p class="student-delete-info">
+                    You are about to delete
                     <strong>
                         ${escapeHtml(
-                            data.name || "this student"
+                            student.name ||
+                            "this student"
                         )}
-                    </strong>
-                    from SmartSchool360?
+                    </strong>.
                 </p>
 
-                <div class="student-delete-info">
-
-                    <span>
-                        Student ID
-                    </span>
-
-                    <strong>
-                        ${escapeHtml(
-                            data.id || "-"
-                        )}
-                    </strong>
-
-                </div>
-
-                <div class="student-delete-warning">
-
-                    ⚠ This action cannot be undone.
-
-                </div>
+                <p class="student-delete-warning">
+                    This action cannot be undone.
+                    The student record will be permanently
+                    removed from this browser.
+                </p>
 
                 <div class="student-delete-actions">
 
                     <button
                         type="button"
                         class="student-delete-cancel"
-                        id="cancelDeleteStudent"
+                        id="cancelStudentDelete"
                     >
                         Cancel
                     </button>
@@ -574,756 +825,192 @@ document.addEventListener("DOMContentLoaded", () => {
                     <button
                         type="button"
                         class="student-delete-confirm"
-                        id="confirmDeleteStudent"
+                        id="confirmStudentDelete"
                     >
-                        Yes, Delete Student
+                        Delete Student
                     </button>
 
                 </div>
 
             </div>
-
         `;
 
 
         document.body.appendChild(
-            modal
+            backdrop
         );
 
 
-        /*
-         * Small delay for animation.
-         */
-
-        requestAnimationFrame(() => {
-
-            modal.classList.add(
-                "show"
-            );
-
-        });
-
-
-        /*
-         * Cancel.
-         */
-
         const cancelButton =
             document.getElementById(
-                "cancelDeleteStudent"
+                "cancelStudentDelete"
             );
 
 
-        if (cancelButton) {
-
-            cancelButton.addEventListener(
-                "click",
-                closeDeleteModal
+        const confirmButton =
+            document.getElementById(
+                "confirmStudentDelete"
             );
 
-        }
 
-
-        /*
-         * Backdrop click.
-         */
-
-        const backdrop =
-            modal.querySelector(
+        const background =
+            backdrop.querySelector(
                 ".student-delete-backdrop"
             );
 
 
-        if (backdrop) {
-
-            backdrop.addEventListener(
-                "click",
-                closeDeleteModal
-            );
-
-        }
+        cancelButton.addEventListener(
+            "click",
+            closeModal
+        );
 
 
-        /*
-         * Confirm.
-         */
-
-        const confirmButton =
-            document.getElementById(
-                "confirmDeleteStudent"
-            );
+        background.addEventListener(
+            "click",
+            closeModal
+        );
 
 
-        if (confirmButton) {
+        confirmButton.addEventListener(
+            "click",
+            deleteStudent
+        );
 
-            confirmButton.addEventListener(
-                "click",
-                () => {
-
-                    deleteStudent(
-                        data.id
-                    );
-
-                }
-            );
-
-        }
-
-
-        /*
-         * Escape key.
-         */
 
         document.addEventListener(
             "keydown",
             handleEscape
         );
 
-    }
-
-
-    /* =====================================================
-       CLOSE DELETE MODAL
-       ===================================================== */
-
-    function closeDeleteModal() {
-
-        const modal =
-            document.getElementById(
-                "deleteStudentModal"
-            );
-
-
-        if (!modal) {
-
-            return;
-        }
-
-
-        modal.classList.remove(
-            "show"
-        );
-
 
         setTimeout(
             () => {
 
-                modal.remove();
+                cancelButton.focus();
 
             },
-            220
+            50
         );
 
 
-        document.removeEventListener(
-            "keydown",
-            handleEscape
-        );
+        function handleEscape(event) {
 
-    }
+            if (
+                event.key === "Escape"
+            ) {
+
+                closeModal();
+
+            }
+
+        }
 
 
-    /* =====================================================
-       ESCAPE KEY
-       ===================================================== */
+        function closeModal() {
 
-    function handleEscape(event) {
+            backdrop.remove();
 
-        if (
-            event.key ===
-            "Escape"
-        ) {
-
-            closeDeleteModal();
+            document.removeEventListener(
+                "keydown",
+                handleEscape
+            );
 
         }
 
     }
 
 
-    /* =====================================================
+    /* =========================================
        DELETE STUDENT
-       ===================================================== */
+       ========================================= */
 
-    function deleteStudent(id) {
+    function deleteStudent() {
 
-        let currentStudents = [];
+        let allStudents =
+            getStudents();
+
+
+        const updatedStudents =
+            allStudents.filter(
+                item =>
+                    String(item.id) !==
+                    String(student.id)
+            );
 
 
         try {
 
-            currentStudents =
-                JSON.parse(
-                    localStorage.getItem(
-                        STORAGE_KEY
-                    )
-                ) || [];
+            localStorage.setItem(
+                "smartschool_students",
+                JSON.stringify(
+                    updatedStudents
+                )
+            );
+
+
+            showToast(
+                "Student deleted successfully.",
+                "success"
+            );
+
+
+            setTimeout(
+                () => {
+
+                    window.location.href =
+                        "students.html";
+
+                },
+                900
+            );
+
 
         } catch (error) {
 
             console.error(
-                "Unable to read student records:",
+                "Delete failed:",
                 error
             );
+
 
             showToast(
                 "Unable to delete student.",
                 "error"
             );
 
-            return;
         }
-
-
-        const updatedStudents =
-            currentStudents.filter(
-                item =>
-                    String(item.id) !==
-                    String(id)
-            );
-
-
-        /*
-         * Verify that a student was actually removed.
-         */
-
-        if (
-            updatedStudents.length ===
-            currentStudents.length
-        ) {
-
-            showToast(
-                "Student record was not found.",
-                "error"
-            );
-
-            return;
-        }
-
-
-        /*
-         * Save updated records.
-         */
-
-        localStorage.setItem(
-            STORAGE_KEY,
-            JSON.stringify(
-                updatedStudents
-            )
-        );
-
-
-        /*
-         * Close modal.
-         */
-
-        closeDeleteModal();
-
-
-        /*
-         * Success notification.
-         */
-
-        showToast(
-            "Student deleted successfully.",
-            "success"
-        );
-
-
-        /*
-         * Redirect to student directory.
-         */
-
-        setTimeout(
-            () => {
-
-                window.location.href =
-                    "students.html";
-
-            },
-            900
-        );
 
     }
 
 
-    /* =====================================================
-       STATUS
-       ===================================================== */
-
-    function setStatus(status) {
-
-        const elements =
-            document.querySelectorAll(
-                "[data-profile-status]"
-            );
-
-
-        elements.forEach(
-            element => {
-
-                element.textContent =
-                    status || "Active";
-
-                element.classList.remove(
-                    "active",
-                    "inactive"
-                );
-
-
-                if (
-                    String(status)
-                        .toLowerCase() ===
-                    "active"
-                ) {
-
-                    element.classList.add(
-                        "active"
-                    );
-
-                } else {
-
-                    element.classList.add(
-                        "inactive"
-                    );
-
-                }
-
-            }
-        );
-
-
-        /*
-         * Support common status IDs.
-         */
-
-        const statusIds = [
-            "profileStatus",
-            "profileStudentStatus",
-            "studentStatusDisplay"
-        ];
-
-
-        statusIds.forEach(
-            id => {
-
-                const element =
-                    document.getElementById(
-                        id
-                    );
-
-
-                if (!element) {
-
-                    return;
-                }
-
-
-                element.textContent =
-                    status || "Active";
-
-
-                element.classList.remove(
-                    "active",
-                    "inactive"
-                );
-
-
-                if (
-                    String(status)
-                        .toLowerCase() ===
-                    "active"
-                ) {
-
-                    element.classList.add(
-                        "active"
-                    );
-
-                } else {
-
-                    element.classList.add(
-                        "inactive"
-                    );
-
-                }
-
-            }
-        );
-
-    }
-
-
-    /* =====================================================
-       CONTACT LINKS
-       ===================================================== */
-
-    function setupContactLinks(data) {
-
-        /*
-         * Parent phone.
-         */
-
-        const phoneLinks =
-            document.querySelectorAll(
-                "[data-parent-phone]"
-            );
-
-
-        phoneLinks.forEach(
-            element => {
-
-                if (!data.parentPhone) {
-
-                    return;
-                }
-
-
-                element.href =
-                    "tel:" +
-                    data.parentPhone;
-
-            }
-        );
-
-
-        /*
-         * Parent email.
-         */
-
-        const emailLinks =
-            document.querySelectorAll(
-                "[data-parent-email]"
-            );
-
-
-        emailLinks.forEach(
-            element => {
-
-                if (!data.parentEmail) {
-
-                    return;
-                }
-
-
-                element.href =
-                    "mailto:" +
-                    data.parentEmail;
-
-            }
-        );
-
-    }
-
-
-    /* =====================================================
-       BACK BUTTONS
-       ===================================================== */
-
-    function setupBackButtons() {
-
-        const backButtons =
-            document.querySelectorAll(
-                "[data-back-students]"
-            );
-
-
-        backButtons.forEach(
-            button => {
-
-                button.addEventListener(
-                    "click",
-                    event => {
-
-                        event.preventDefault();
-
-                        window.location.href =
-                            "students.html";
-
-                    }
-                );
-
-            }
-        );
-
-    }
-
-
-    /* =====================================================
-       TEXT HELPER
-       ===================================================== */
-
-    function setText(
-        id,
-        value
-    ) {
-
-        const element =
-            document.getElementById(
-                id
-            );
-
-
-        if (!element) {
-
-            return;
-        }
-
-
-        const cleanValue =
-            value === undefined ||
-            value === null ||
-            String(value).trim() === ""
-                ? "—"
-                : value;
-
-
-        element.textContent =
-            cleanValue;
-
-    }
-
-
-    /* =====================================================
-       DATE FORMAT
-       ===================================================== */
-
-    function formatDate(value) {
-
-        if (!value) {
-
-            return "—";
-        }
-
-
-        const date =
-            new Date(value);
-
-
-        if (
-            Number.isNaN(
-                date.getTime()
-            )
-        ) {
-
-            return value;
-        }
-
-
-        return date.toLocaleDateString(
-            "en-IN",
-            {
-                day: "2-digit",
-                month: "short",
-                year: "numeric"
-            }
-        );
-
-    }
-
-
-    /* =====================================================
-       DATE + TIME FORMAT
-       ===================================================== */
-
-    function formatDateTime(value) {
-
-        if (!value) {
-
-            return "—";
-        }
-
-
-        const date =
-            new Date(value);
-
-
-        if (
-            Number.isNaN(
-                date.getTime()
-            )
-        ) {
-
-            return value;
-        }
-
-
-        return date.toLocaleString(
-            "en-IN",
-            {
-                day: "2-digit",
-                month: "short",
-                year: "numeric",
-                hour: "2-digit",
-                minute: "2-digit"
-            }
-        );
-
-    }
-
-
-    /* =====================================================
-       INITIALS
-       ===================================================== */
-
-    function getInitials(name) {
-
-        if (!name) {
-
-            return "S";
-        }
-
-
-        const parts =
-            String(name)
-                .trim()
-                .split(/\s+/)
-                .filter(Boolean);
-
-
-        if (parts.length === 1) {
-
-            return parts[0]
-                .substring(0, 2)
-                .toUpperCase();
-
-        }
-
-
-        return (
-            parts[0][0] +
-            parts[parts.length - 1][0]
-        ).toUpperCase();
-
-    }
-
-
-    /* =====================================================
+    /* =========================================
        ESCAPE HTML
-       ===================================================== */
+       ========================================= */
 
     function escapeHtml(value) {
 
         return String(value)
-            .replace(
-                /&/g,
-                "&amp;"
-            )
-            .replace(
-                /</g,
-                "&lt;"
-            )
-            .replace(
-                />/g,
-                "&gt;"
-            )
-            .replace(
-                /"/g,
-                "&quot;"
-            )
-            .replace(
-                /'/g,
-                "&#039;"
-            );
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
 
     }
 
 
-    /* =====================================================
-       STUDENT NOT FOUND
-       ===================================================== */
-
-    function showStudentNotFound() {
-
-        const page =
-            document.querySelector(
-                ".profile-page"
-            );
-
-
-        if (page) {
-
-            page.innerHTML = `
-
-                <div
-                    style="
-                        min-height:420px;
-                        display:flex;
-                        align-items:center;
-                        justify-content:center;
-                        text-align:center;
-                        padding:30px;
-                    "
-                >
-
-                    <div>
-
-                        <div
-                            style="
-                                font-size:55px;
-                                margin-bottom:15px;
-                            "
-                        >
-                            🔍
-                        </div>
-
-                        <h2>
-                            Student Not Found
-                        </h2>
-
-                        <p
-                            style="
-                                margin:10px 0 22px;
-                                opacity:.7;
-                            "
-                        >
-                            The requested student record
-                            does not exist.
-                        </p>
-
-                        <a
-                            href="students.html"
-                            style="
-                                display:inline-flex;
-                                align-items:center;
-                                justify-content:center;
-                                padding:11px 18px;
-                                border-radius:10px;
-                                background:#635cff;
-                                color:#fff;
-                                text-decoration:none;
-                                font-weight:700;
-                            "
-                        >
-                            ← Back to Students
-                        </a>
-
-                    </div>
-
-                </div>
-
-            `;
-
-        }
-
-    }
-
-
-    /* =====================================================
+    /* =========================================
        TOAST
-       ===================================================== */
+       ========================================= */
 
     function showToast(
         message,
         type = "success"
     ) {
 
-        /*
-         * Remove previous toast.
-         */
-
         const oldToast =
-            document.getElementById(
-                "profileToast"
+            document.querySelector(
+                ".profile-toast"
             );
 
 
@@ -1334,39 +1021,76 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
-        /*
-         * Create toast.
-         */
-
         const toast =
-            document.createElement(
-                "div"
-            );
-
-
-        toast.id =
-            "profileToast";
+            document.createElement("div");
 
 
         toast.className =
             `profile-toast ${type}`;
 
 
-        toast.innerHTML = `
+        toast.textContent =
+            message;
 
-            <span class="profile-toast-icon">
-                ${
-                    type === "error"
-                        ? "!"
-                        : "✓"
-                }
-            </span>
 
-            <span>
-                ${escapeHtml(message)}
-            </span>
+        toast.style.position =
+            "fixed";
 
-        `;
+
+        toast.style.right =
+            "20px";
+
+
+        toast.style.bottom =
+            "20px";
+
+
+        toast.style.zIndex =
+            "99999";
+
+
+        toast.style.padding =
+            "13px 18px";
+
+
+        toast.style.borderRadius =
+            "12px";
+
+
+        toast.style.background =
+            "#111827";
+
+
+        toast.style.color =
+            "#ffffff";
+
+
+        toast.style.border =
+            "1px solid rgba(255,255,255,.12)";
+
+
+        toast.style.boxShadow =
+            "0 15px 40px rgba(0,0,0,.35)";
+
+
+        toast.style.fontWeight =
+            "600";
+
+
+        toast.style.fontSize =
+            "14px";
+
+
+        toast.style.opacity =
+            "0";
+
+
+        toast.style.transform =
+            "translateY(15px)";
+
+
+        toast.style.transition =
+            "all .3s ease";
 
 
         document.body.appendChild(
@@ -1377,9 +1101,11 @@ document.addEventListener("DOMContentLoaded", () => {
         requestAnimationFrame(
             () => {
 
-                toast.classList.add(
-                    "show"
-                );
+                toast.style.opacity =
+                    "1";
+
+                toast.style.transform =
+                    "translateY(0)";
 
             }
         );
@@ -1388,9 +1114,11 @@ document.addEventListener("DOMContentLoaded", () => {
         setTimeout(
             () => {
 
-                toast.classList.remove(
-                    "show"
-                );
+                toast.style.opacity =
+                    "0";
+
+                toast.style.transform =
+                    "translateY(15px)";
 
 
                 setTimeout(
@@ -1399,13 +1127,108 @@ document.addEventListener("DOMContentLoaded", () => {
                         toast.remove();
 
                     },
-                    250
+                    300
                 );
 
             },
-            2800
+            3000
         );
 
     }
+
+
+    /* =========================================
+       NOT FOUND SCREEN
+       ========================================= */
+
+    function showNotFound() {
+
+        document.body.innerHTML = `
+
+            <div
+                style="
+                    min-height:100vh;
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    padding:20px;
+                    background:#f5f7fb;
+                    font-family:Arial,sans-serif;
+                "
+            >
+
+                <div
+                    style="
+                        max-width:480px;
+                        width:100%;
+                        padding:40px 25px;
+                        text-align:center;
+                        background:#ffffff;
+                        border-radius:20px;
+                        box-shadow:0 15px 50px rgba(0,0,0,.08);
+                    "
+                >
+
+                    <div
+                        style="
+                            font-size:55px;
+                            margin-bottom:15px;
+                        "
+                    >
+                        👨‍🎓
+                    </div>
+
+                    <h2
+                        style="
+                            margin:0 0 10px;
+                            color:#111827;
+                        "
+                    >
+                        Student Not Found
+                    </h2>
+
+                    <p
+                        style="
+                            color:#6b7280;
+                            line-height:1.6;
+                            margin-bottom:25px;
+                        "
+                    >
+                        The requested student record
+                        could not be found.
+                    </p>
+
+                    <button
+                        onclick="window.location.href='students.html'"
+                        style="
+                            border:0;
+                            padding:12px 20px;
+                            border-radius:10px;
+                            background:#2563eb;
+                            color:#ffffff;
+                            font-weight:700;
+                            cursor:pointer;
+                        "
+                    >
+                        ← Back to Students
+                    </button>
+
+                </div>
+
+            </div>
+
+        `;
+
+    }
+
+
+    /* =========================================
+       MODULE READY
+       ========================================= */
+
+    console.log(
+        "SmartSchool360 Student Profile Module loaded:",
+        student.id
+    );
 
 });
