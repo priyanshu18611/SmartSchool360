@@ -20,9 +20,7 @@
     </title>
 
 
-    <!-- =====================================================
-         MAIN CSS
-         ===================================================== -->
+    <!-- MAIN CSS -->
 
     <link
         rel="stylesheet"
@@ -30,13 +28,11 @@
     >
 
 
-    <!-- =====================================================
-         STUDENT PROFILE CSS
-         ===================================================== -->
+    <!-- STUDENT PROFILE CSS -->
 
     <link
         rel="stylesheet"
-        href="../assets/css/student-profile.css"
+        href="../assets/css/student-profile.css?v=8"
     >
 
 </head>
@@ -75,16 +71,20 @@
         </div>
 
 
-        <!-- NAVIGATION -->
-
         <nav class="sidebar-nav">
+
 
             <a
                 href="../index.html"
                 class="nav-item"
             >
+
                 <span>🏠</span>
-                <span>Dashboard</span>
+
+                <span>
+                    Dashboard
+                </span>
+
             </a>
 
 
@@ -92,8 +92,13 @@
                 href="students.html"
                 class="nav-item active"
             >
+
                 <span>👨‍🎓</span>
-                <span>Students</span>
+
+                <span>
+                    Students
+                </span>
+
             </a>
 
 
@@ -101,8 +106,13 @@
                 href="add-student.html"
                 class="nav-item"
             >
+
                 <span>➕</span>
-                <span>Admission</span>
+
+                <span>
+                    Admission
+                </span>
+
             </a>
 
 
@@ -115,8 +125,13 @@
                 href="#"
                 class="nav-item"
             >
+
                 <span>📅</span>
-                <span>Attendance</span>
+
+                <span>
+                    Attendance
+                </span>
+
             </a>
 
 
@@ -124,8 +139,13 @@
                 href="#"
                 class="nav-item"
             >
+
                 <span>📚</span>
-                <span>Classes & Subjects</span>
+
+                <span>
+                    Classes & Subjects
+                </span>
+
             </a>
 
 
@@ -133,8 +153,13 @@
                 href="#"
                 class="nav-item"
             >
+
                 <span>📝</span>
-                <span>Examinations</span>
+
+                <span>
+                    Examinations
+                </span>
+
             </a>
 
 
@@ -147,8 +172,13 @@
                 href="#"
                 class="nav-item"
             >
+
                 <span>💳</span>
-                <span>Fees</span>
+
+                <span>
+                    Fees
+                </span>
+
             </a>
 
 
@@ -156,8 +186,13 @@
                 href="#"
                 class="nav-item"
             >
+
                 <span>🧾</span>
-                <span>Receipts</span>
+
+                <span>
+                    Receipts
+                </span>
+
             </a>
 
 
@@ -170,8 +205,13 @@
                 href="#"
                 class="nav-item"
             >
+
                 <span>👨‍🏫</span>
-                <span>Staff</span>
+
+                <span>
+                    Staff
+                </span>
+
             </a>
 
 
@@ -179,8 +219,13 @@
                 href="#"
                 class="nav-item"
             >
+
                 <span>📊</span>
-                <span>Reports</span>
+
+                <span>
+                    Reports
+                </span>
+
             </a>
 
         </nav>
@@ -211,6 +256,7 @@
     </aside>
 
 
+
     <!-- =====================================================
          MAIN CONTENT
          ===================================================== -->
@@ -218,16 +264,16 @@
     <main class="main-content">
 
 
-        <!-- =================================================
-             TOPBAR
-             ================================================= -->
+        <!-- TOPBAR -->
 
         <header class="topbar">
+
 
             <button
                 class="mobile-menu"
                 id="mobileMenu"
                 type="button"
+                aria-label="Open menu"
             >
                 ☰
             </button>
@@ -247,6 +293,7 @@
 
 
             <div class="topbar-actions">
+
 
                 <button
                     class="topbar-btn"
@@ -272,33 +319,39 @@
         </header>
 
 
-        <!-- =================================================
+
+        <!-- =====================================================
              PROFILE CONTENT
-             ================================================= -->
+             ===================================================== -->
 
         <section class="profile-container">
 
 
-            <!-- =================================================
-                 ACTION BAR
-                 ================================================= -->
+            <!-- ACTION BAR -->
 
             <div class="profile-action-bar">
 
+
                 <a
                     href="students.html"
-                    class="profile-back-btn"
+                    class="profile-back-btn profile-back"
+                    data-back-students
                 >
                     ← Back to Students
                 </a>
 
 
-                <div class="profile-actions">
+                <div
+                    class="profile-actions"
+                    id="profileActions"
+                >
+
 
                     <button
                         type="button"
-                        class="profile-print-btn"
+                        class="profile-action-btn profile-print-btn"
                         id="printProfileBtn"
+                        title="Print Student Profile"
                     >
                         🖨️ Print
                     </button>
@@ -306,20 +359,33 @@
 
                     <button
                         type="button"
-                        class="profile-edit-btn"
+                        class="profile-action-btn profile-edit-btn"
                         id="editStudentBtn"
+                        title="Edit Student"
                     >
                         ✏️ Edit Student
                     </button>
+
+
+                    <button
+                        type="button"
+                        class="profile-action-btn id-card-btn"
+                        id="generateIdCardBtn"
+                        title="Generate Student ID Card"
+                    >
+                        🪪 Generate ID Card
+                    </button>
+
 
                 </div>
 
             </div>
 
 
-            <!-- =================================================
+
+            <!-- =====================================================
                  PROFILE HERO
-                 ================================================= -->
+                 ===================================================== -->
 
             <section class="profile-hero">
 
@@ -331,17 +397,24 @@
                         class="profile-avatar"
                         id="profileInitials"
                     >
-                        ST
+                        <span
+                            class="student-avatar-initials"
+                            id="studentAvatarInitials"
+                        >
+                            ST
+                        </span>
                     </div>
 
 
                     <div class="profile-identity">
+
 
                         <div class="profile-name-row">
 
                             <h2 id="profileName">
                                 Student Name
                             </h2>
+
 
                             <span
                                 class="profile-status"
@@ -355,8 +428,11 @@
 
                         <div class="profile-meta">
 
+
                             <span>
+
                                 🆔
+
                                 <strong>
                                     Student ID:
                                 </strong>
@@ -364,11 +440,14 @@
                                 <span id="profileId">
                                     —
                                 </span>
+
                             </span>
 
 
                             <span>
+
                                 📚
+
                                 <strong>
                                     Class:
                                 </strong>
@@ -376,11 +455,14 @@
                                 <span id="profileClass">
                                     —
                                 </span>
+
                             </span>
 
 
                             <span>
+
                                 🏷️
+
                                 <strong>
                                     Section:
                                 </strong>
@@ -388,13 +470,31 @@
                                 <span id="profileSection">
                                     —
                                 </span>
+
                             </span>
+
+
+                            <span>
+
+                                📅
+
+                                <strong>
+                                    Session:
+                                </strong>
+
+                                <span id="profileSession">
+                                    —
+                                </span>
+
+                            </span>
+
 
                         </div>
 
                     </div>
 
                 </div>
+
 
 
                 <div class="profile-hero-badge">
@@ -409,14 +509,19 @@
 
                 </div>
 
+
             </section>
 
 
-            <!-- =================================================
-                 QUICK STATS
-                 ================================================= -->
 
-            <section class="profile-stats-grid">
+            <!-- =====================================================
+                 QUICK STATS
+                 ===================================================== -->
+
+            <section
+                class="profile-stats-grid"
+                id="profile-stats-grid"
+            >
 
 
                 <div class="profile-stat-card">
@@ -440,6 +545,7 @@
                 </div>
 
 
+
                 <div class="profile-stat-card">
 
                     <div class="profile-stat-icon">
@@ -461,6 +567,7 @@
                 </div>
 
 
+
                 <div class="profile-stat-card">
 
                     <div class="profile-stat-icon">
@@ -473,13 +580,14 @@
                             Academic Session
                         </span>
 
-                        <strong id="profileSession">
+                        <strong id="profileSessionStat">
                             —
                         </strong>
 
                     </div>
 
                 </div>
+
 
 
                 <div class="profile-stat-card">
@@ -502,21 +610,22 @@
 
                 </div>
 
+
             </section>
 
 
-            <!-- =================================================
+
+            <!-- =====================================================
                  INFORMATION GRID
-                 ================================================= -->
+                 ===================================================== -->
 
             <div class="profile-grid">
 
 
-                <!-- =================================================
-                     PERSONAL INFORMATION
-                     ================================================= -->
+                <!-- PERSONAL INFORMATION -->
 
                 <article class="profile-card">
+
 
                     <div class="profile-card-header">
 
@@ -619,16 +728,17 @@
 
                         </div>
 
+
                     </div>
 
                 </article>
 
 
-                <!-- =================================================
-                     PARENT INFORMATION
-                     ================================================= -->
+
+                <!-- PARENT INFORMATION -->
 
                 <article class="profile-card">
+
 
                     <div class="profile-card-header">
 
@@ -731,16 +841,17 @@
 
                         </div>
 
+
                     </div>
 
                 </article>
 
 
-                <!-- =================================================
-                     ACADEMIC INFORMATION
-                     ================================================= -->
+
+                <!-- ACADEMIC INFORMATION -->
 
                 <article class="profile-card">
+
 
                     <div class="profile-card-header">
 
@@ -846,16 +957,17 @@
 
                         </div>
 
+
                     </div>
 
                 </article>
 
 
-                <!-- =================================================
-                     STUDENT RECORD
-                     ================================================= -->
+
+                <!-- STUDENT RECORD -->
 
                 <article class="profile-card record-card">
+
 
                     <div class="profile-card-header">
 
@@ -922,6 +1034,7 @@
 
                         </div>
 
+
                     </div>
 
 
@@ -938,16 +1051,20 @@
 
                     </div>
 
+
                 </article>
+
 
             </div>
 
 
-            <!-- =================================================
-                 FOOTER BRAND STRIP
-                 ================================================= -->
 
-            <div class="profile-footer-brand">
+            <!-- =====================================================
+                 FOOTER BRAND
+                 ===================================================== -->
+
+            <footer class="profile-footer-brand">
+
 
                 <div class="footer-brand-main">
 
@@ -989,13 +1106,15 @@
 
                 </div>
 
-            </div>
+
+            </footer>
 
 
         </section>
 
 
     </main>
+
 
 
     <!-- =====================================================
@@ -1008,7 +1127,7 @@
 
 
     <script
-        src="../assets/js/student-profile.js"
+        src="../assets/js/student-profile.js?v=8"
     ></script>
 
 
