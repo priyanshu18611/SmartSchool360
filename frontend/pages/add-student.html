@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Student Admission | SmartSchool360</title>
+
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/add-student.css">
+</head>
+
+<body>
+
+<div class="app-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+
+        <div class="sidebar-logo">
+            <div class="logo-icon">S</div>
+            <div>
+                <h2>SmartSchool<span>360</span></h2>
+                <small>School ERP</small>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+
+            <p class="nav-title">MAIN</p>
+
+            <a href="../index.html" class="nav-item">
+                <span>▣</span>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="students.html" class="nav-item active">
+                <span>👨‍🎓</span>
+                <span>Students</span>
+            </a>
+
+            <a href="add-student.html" class="nav-item active">
+                <span>➕</span>
+                <span>Admission</span>
+            </a>
+
+            <p class="nav-title">ACADEMIC</p>
+
+            <a href="#" class="nav-item">
+                <span>📅</span>
+                <span>Attendance</span>
+            </a>
+
+            <a href="#" class="nav-item">
+                <span>📚</span>
+                <span>Examinations</span>
+            </a>
+
+            <a href="#" class="nav-item">
+                <span>🕐</span>
+                <span>Timetable</span>
+            </a>
+
+            <p class="nav-title">FINANCE</p>
+
+            <a href="#" class="nav-item">
+                <span>💳</span>
+                <span>Fees</span>
+            </a>
+
+            <a href="#" class="nav-item">
+                <span>📊</span>
+                <span>Reports</span>
+            </a>
+
+            <p class="nav-title">MANAGEMENT</p>
+
+            <a href="#" class="nav-item">
+                <span>👨‍🏫</span>
+                <span>Staff</span>
+            </a>
+
+            <a href="#" class="nav-item">
+                <span>⚙️</span>
+                <span>Settings</span>
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="admin-profile">
+                <div class="admin-avatar">PK</div>
+                <div>
+                    <strong>Priyanshu Kumar</strong>
+                    <small>Administrator</small>
+                </div>
+            </div>
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN -->
+    <main class="main-content">
+
+        <!-- TOPBAR -->
+        <header class="topbar">
+
+            <button class="mobile-menu" id="mobileMenu">
+                ☰
+            </button>
+
+            <div class="page-heading">
+                <h1>Student Admission</h1>
+                <p>Register a new student in SmartSchool360</p>
+            </div>
+
+            <div class="topbar-actions">
+
+                <button class="topbar-btn" id="notificationBtn">
+                    🔔
+                </button>
+
+                <button class="topbar-btn" id="fullscreenBtn">
+                    ⛶
+                </button>
+
+            </div>
+
+        </header>
+
+
+        <!-- PAGE CONTENT -->
+        <section class="admission-container">
+
+            <!-- PAGE HEADER -->
+            <div class="admission-header">
+
+                <div>
+                    <span class="section-badge">ADMISSION MODULE</span>
+                    <h2>New Student Registration</h2>
+                    <p>
+                        Enter student, parent and academic information carefully.
+                    </p>
+                </div>
+
+                <a href="students.html" class="back-btn">
+                    ← Back to Students
+                </a>
+
+            </div>
+
+
+            <!-- PROGRESS -->
+            <div class="form-progress">
+
+                <div class="progress-step active">
+                    <div class="step-number">1</div>
+                    <span>Student Details</span>
+                </div>
+
+                <div class="progress-line"></div>
+
+                <div class="progress-step">
+                    <div class="step-number">2</div>
+                    <span>Parent Details</span>
+                </div>
+
+                <div class="progress-line"></div>
+
+                <div class="progress-step">
+                    <div class="step-number">3</div>
+                    <span>Academic Details</span>
+                </div>
+
+            </div>
+
+
+            <!-- FORM -->
+            <form id="admissionForm" class="admission-form">
+
+                <!-- STUDENT DETAILS -->
+                <div class="form-card">
+
+                    <div class="form-card-header">
+
+                        <div class="form-icon">👨‍🎓</div>
+
+                        <div>
+                            <h3>Student Information</h3>
+                            <p>Basic personal information of the student</p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-grid">
+
+                        <div class="form-group full-width">
+
+                            <label for="studentName">
+                                Student Full Name <span>*</span>
+                            </label>
+
+                            <input
+                                type="text"
+                                id="studentName"
+                                name="studentName"
+                                placeholder="Enter student's full name"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="dob">
+                                Date of Birth <span>*</span>
+                            </label>
+
+                            <input
+                                type="date"
+                                id="dob"
+                                name="dob"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="gender">
+                                Gender <span>*</span>
+                            </label>
+
+                            <select id="gender" name="gender" required>
+
+                                <option value="">
+                                    Select Gender
+                                </option>
+
+                                <option value="Male">
+                                    Male
+                                </option>
+
+                                <option value="Female">
+                                    Female
+                                </option>
+
+                                <option value="Other">
+                                    Other
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="bloodGroup">
+                                Blood Group
+                            </label>
+
+                            <select id="bloodGroup" name="bloodGroup">
+
+                                <option value="">
+                                    Select Blood Group
+                                </option>
+
+                                <option>A+</option>
+                                <option>A-</option>
+                                <option>B+</option>
+                                <option>B-</option>
+                                <option>AB+</option>
+                                <option>AB-</option>
+                                <option>O+</option>
+                                <option>O-</option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="studentPhone">
+                                Student Phone
+                            </label>
+
+                            <input
+                                type="tel"
+                                id="studentPhone"
+                                name="studentPhone"
+                                placeholder="10-digit mobile number"
+                                maxlength="10"
+                            >
+
+                        </div>
+
+
+                        <div class="form-group full-width">
+
+                            <label for="address">
+                                Residential Address <span>*</span>
+                            </label>
+
+                            <textarea
+                                id="address"
+                                name="address"
+                                rows="3"
+                                placeholder="Enter complete residential address"
+                                required
+                            ></textarea>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- PARENT DETAILS -->
+                <div class="form-card">
+
+                    <div class="form-card-header">
+
+                        <div class="form-icon parent-icon">👨‍👩‍👧</div>
+
+                        <div>
+                            <h3>Parent / Guardian Information</h3>
+                            <p>Parent or guardian contact information</p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+
+                            <label for="fatherName">
+                                Father's Name <span>*</span>
+                            </label>
+
+                            <input
+                                type="text"
+                                id="fatherName"
+                                name="fatherName"
+                                placeholder="Enter father's name"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="motherName">
+                                Mother's Name
+                            </label>
+
+                            <input
+                                type="text"
+                                id="motherName"
+                                name="motherName"
+                                placeholder="Enter mother's name"
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="parentPhone">
+                                Parent Mobile Number <span>*</span>
+                            </label>
+
+                            <input
+                                type="tel"
+                                id="parentPhone"
+                                name="parentPhone"
+                                placeholder="10-digit mobile number"
+                                maxlength="10"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="parentEmail">
+                                Parent Email
+                            </label>
+
+                            <input
+                                type="email"
+                                id="parentEmail"
+                                name="parentEmail"
+                                placeholder="parent@example.com"
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="occupation">
+                                Parent Occupation
+                            </label>
+
+                            <input
+                                type="text"
+                                id="occupation"
+                                name="occupation"
+                                placeholder="e.g. Business, Teacher"
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="emergencyContact">
+                                Emergency Contact
+                            </label>
+
+                            <input
+                                type="tel"
+                                id="emergencyContact"
+                                name="emergencyContact"
+                                placeholder="Emergency mobile number"
+                                maxlength="10"
+                            >
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ACADEMIC DETAILS -->
+                <div class="form-card">
+
+                    <div class="form-card-header">
+
+                        <div class="form-icon academic-icon">📚</div>
+
+                        <div>
+                            <h3>Academic Information</h3>
+                            <p>Class and admission related information</p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+
+                            <label for="className">
+                                Admission Class <span>*</span>
+                            </label>
+
+                            <select id="className" name="className" required>
+
+                                <option value="">
+                                    Select Class
+                                </option>
+
+                                <option>Nursery</option>
+                                <option>LKG</option>
+                                <option>UKG</option>
+                                <option>Class 1</option>
+                                <option>Class 2</option>
+                                <option>Class 3</option>
+                                <option>Class 4</option>
+                                <option>Class 5</option>
+                                <option>Class 6</option>
+                                <option>Class 7</option>
+                                <option>Class 8</option>
+                                <option>Class 9</option>
+                                <option>Class 10</option>
+                                <option>Class 11</option>
+                                <option>Class 12</option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="section">
+                                Section <span>*</span>
+                            </label>
+
+                            <select id="section" name="section" required>
+
+                                <option value="">
+                                    Select Section
+                                </option>
+
+                                <option>A</option>
+                                <option>B</option>
+                                <option>C</option>
+                                <option>D</option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="session">
+                                Academic Session <span>*</span>
+                            </label>
+
+                            <select id="session" name="session" required>
+
+                                <option value="2026-27">
+                                    2026 - 27
+                                </option>
+
+                                <option value="2027-28">
+                                    2027 - 28
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="previousSchool">
+                                Previous School
+                            </label>
+
+                            <input
+                                type="text"
+                                id="previousSchool"
+                                name="previousSchool"
+                                placeholder="Previous school name"
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="admissionDate">
+                                Admission Date <span>*</span>
+                            </label>
+
+                            <input
+                                type="date"
+                                id="admissionDate"
+                                name="admissionDate"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="studentStatus">
+                                Admission Status
+                            </label>
+
+                            <select id="studentStatus" name="studentStatus">
+
+                                <option value="Active">
+                                    Active
+                                </option>
+
+                                <option value="Pending">
+                                    Pending
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- DOCUMENTS -->
+                <div class="form-card">
+
+                    <div class="form-card-header">
+
+                        <div class="form-icon document-icon">📄</div>
+
+                        <div>
+                            <h3>Documents</h3>
+                            <p>Upload student documents</p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="document-grid">
+
+                        <label class="upload-box">
+
+                            <input
+                                type="file"
+                                id="studentPhoto"
+                                accept="image/*"
+                            >
+
+                            <div class="upload-icon">📷</div>
+
+                            <strong>Student Photo</strong>
+
+                            <small>JPG / PNG</small>
+
+                        </label>
+
+
+                        <label class="upload-box">
+
+                            <input
+                                type="file"
+                                id="birthCertificate"
+                                accept=".pdf,image/*"
+                            >
+
+                            <div class="upload-icon">📜</div>
+
+                            <strong>Birth Certificate</strong>
+
+                            <small>PDF / Image</small>
+
+                        </label>
+
+
+                        <label class="upload-box">
+
+                            <input
+                                type="file"
+                                id="previousCertificate"
+                                accept=".pdf,image/*"
+                            >
+
+                            <div class="upload-icon">🎓</div>
+
+                            <strong>Previous Certificate</strong>
+
+                            <small>PDF / Image</small>
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ACTIONS -->
+                <div class="form-actions">
+
+                    <button
+                        type="button"
+                        class="btn secondary-btn"
+                        id="resetBtn"
+                    >
+                        Reset Form
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="btn primary-btn"
+                        id="saveStudentBtn"
+                    >
+                        <span>✓</span>
+                        Register Student
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+
+        <footer class="dashboard-footer">
+            <p>© 2026 SmartSchool360. School Management System.</p>
+        </footer>
+
+    </main>
+
+</div>
+
+
+<script src="../assets/js/app.js"></script>
+<script src="../assets/js/add-student.js"></script>
+
+</body>
+</html>
