@@ -10,14 +10,24 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>SmartSchool360 | School Management System</title>
+    <meta
+        name="theme-color"
+        content="#050817"
+    >
 
     <meta
         name="description"
         content="SmartSchool360 - Modern School Management System"
     >
 
+    <title>SmartSchool360 | School Management Platform</title>
+
+
     <style>
+
+        /* =========================================
+           RESET
+           ========================================= */
 
         * {
             margin: 0;
@@ -25,205 +35,835 @@
             box-sizing: border-box;
         }
 
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+
         body {
+
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
+
+            font-family:
+                Inter,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Roboto,
+                Arial,
+                sans-serif;
+
+            color: #f5f7ff;
+
             background:
                 radial-gradient(
-                    circle at top left,
-                    #312e81,
-                    transparent 35%
+                    circle at 50% -10%,
+                    rgba(92, 80, 255, 0.42),
+                    transparent 38%
                 ),
+
                 radial-gradient(
-                    circle at bottom right,
-                    #1e3a8a,
-                    transparent 35%
+                    circle at 100% 80%,
+                    rgba(0, 174, 255, 0.20),
+                    transparent 32%
                 ),
-                #020617;
-            color: #ffffff;
-            font-family:
-                Arial,
-                Helvetica,
-                sans-serif;
+
+                linear-gradient(
+                    135deg,
+                    #12164b 0%,
+                    #070b28 45%,
+                    #020516 100%
+                );
+
+            overflow-x: hidden;
         }
+
+
+        body::before {
+
+            content: "";
+
+            position: fixed;
+
+            inset: 0;
+
+            pointer-events: none;
+
+            background:
+                linear-gradient(
+                    120deg,
+                    transparent 0%,
+                    rgba(255,255,255,0.025) 50%,
+                    transparent 100%
+                );
+
+            z-index: -1;
+        }
+
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+
+        /* =========================================
+           PAGE
+           ========================================= */
+
+        .page {
+
+            width: 100%;
+
+            min-height: 100vh;
+
+            display: flex;
+
+            flex-direction: column;
+        }
+
 
         .container {
-            width: 100%;
-            max-width: 1000px;
-            text-align: center;
+
+            width: min(
+                1100px,
+                calc(100% - 32px)
+            );
+
+            margin: 0 auto;
         }
 
-        .logo {
-            width: 82px;
-            height: 82px;
-            margin: 0 auto 22px;
+
+        /* =========================================
+           HERO
+           ========================================= */
+
+        .hero {
+
+            min-height: 720px;
+
             display: flex;
+
             align-items: center;
+
             justify-content: center;
-            border-radius: 24px;
-            background: linear-gradient(
-                135deg,
-                #6366f1,
-                #8b5cf6
-            );
-            font-size: 38px;
-            font-weight: 900;
-            box-shadow:
-                0 20px 50px
-                rgba(99, 102, 241, 0.35);
+
+            text-align: center;
+
+            padding:
+                70px
+                0
+                55px;
+
+            position: relative;
         }
 
-        .badge {
-            display: inline-block;
-            padding: 8px 15px;
-            margin-bottom: 20px;
-            border: 1px solid
-                rgba(129, 140, 248, 0.35);
+
+        .hero-content {
+
+            width: 100%;
+
+            max-width: 850px;
+
+            margin: auto;
+        }
+
+
+        /* =========================================
+           LOGO
+           ========================================= */
+
+        .logo-mark {
+
+            width: 106px;
+
+            height: 106px;
+
+            margin: 0 auto 24px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
             border-radius: 30px;
+
+            font-size: 48px;
+
+            font-weight: 500;
+
             background:
-                rgba(99, 102, 241, 0.12);
-            color: #c7d2fe;
-            font-size: 12px;
-            font-weight: 800;
-            letter-spacing: 1px;
+                linear-gradient(
+                    145deg,
+                    #6c63ff,
+                    #874df3
+                );
+
+            box-shadow:
+                0 20px 55px
+                rgba(89, 75, 255, 0.42),
+
+                inset 0 1px 0
+                rgba(255,255,255,0.22);
+
+            animation:
+                floatLogo 4s ease-in-out infinite;
         }
 
-        h1 {
-            margin-bottom: 14px;
+
+        @keyframes floatLogo {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+
+
+        /* =========================================
+           PLATFORM BADGE
+           ========================================= */
+
+        .platform-badge {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding:
+                9px
+                20px;
+
+            border-radius: 999px;
+
+            border:
+                1px solid
+                rgba(138, 125, 255, 0.34);
+
+            background:
+                rgba(90, 78, 220, 0.12);
+
+            color: #b9c2e8;
+
+            font-size: 15px;
+
+            font-weight: 600;
+
+            letter-spacing: 1.4px;
+
+            text-transform: uppercase;
+
+            margin-bottom: 22px;
+
+            backdrop-filter: blur(12px);
+
+            box-shadow:
+                inset 0 1px 0
+                rgba(255,255,255,0.05);
+        }
+
+
+        /* =========================================
+           BRAND TITLE
+           ========================================= */
+
+        .brand-title {
+
             font-size: clamp(
-                38px,
+                43px,
                 8vw,
-                72px
+                64px
             );
-            line-height: 1;
-            font-weight: 900;
-            letter-spacing: -2px;
+
+            line-height: 1.05;
+
+            letter-spacing: -2.5px;
+
+            font-weight: 760;
+
+            margin-bottom: 20px;
+
+            color: #ffffff;
+
+            text-shadow:
+                0 10px 40px
+                rgba(0,0,0,0.25);
         }
 
-        h1 span {
+
+        .brand-title span {
+
             background:
                 linear-gradient(
                     90deg,
-                    #818cf8,
-                    #c084fc,
-                    #67e8f9
+                    #836cff,
+                    #ae6cff,
+                    #27d9ff
                 );
+
             -webkit-background-clip: text;
+
             background-clip: text;
+
             color: transparent;
         }
 
-        .subtitle {
+
+        /* =========================================
+           HERO DESCRIPTION
+           ========================================= */
+
+        .hero-description {
+
+            max-width: 760px;
+
+            margin: 0 auto;
+
+            color: #aab4d0;
+
+            font-size: clamp(
+                17px,
+                3.8vw,
+                21px
+            );
+
+            line-height: 1.65;
+
+            font-weight: 450;
+        }
+
+
+        /* =========================================
+           BUTTONS
+           ========================================= */
+
+        .hero-actions {
+
+            width: 100%;
+
             max-width: 650px;
-            margin: 0 auto 35px;
-            color: #94a3b8;
-            font-size: 17px;
-            line-height: 1.7;
-        }
 
-        .buttons {
-            display: flex;
-            justify-content: center;
-            gap: 14px;
-            flex-wrap: wrap;
-            margin-bottom: 50px;
-        }
+            margin: 44px auto 0;
 
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 190px;
-            padding: 14px 22px;
-            border-radius: 12px;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 800;
-            transition: 0.25s ease;
-        }
-
-        .btn-primary {
-            background: #6366f1;
-            color: #ffffff;
-            box-shadow:
-                0 12px 30px
-                rgba(99, 102, 241, 0.3);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            background: #4f46e5;
-        }
-
-        .btn-secondary {
-            border: 1px solid #334155;
-            background: rgba(15, 23, 42, 0.7);
-            color: #e2e8f0;
-        }
-
-        .btn-secondary:hover {
-            transform: translateY(-3px);
-            border-color: #6366f1;
-        }
-
-        .features {
             display: grid;
+
             grid-template-columns:
-                repeat(3, minmax(0, 1fr));
-            gap: 16px;
+                1fr
+                1fr;
+
+            gap: 14px;
         }
 
-        .feature {
-            padding: 25px 18px;
-            border: 1px solid
-                rgba(148, 163, 184, 0.15);
-            border-radius: 18px;
+
+        .hero-button {
+
+            min-height: 58px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border-radius: 15px;
+
+            font-size: 17px;
+
+            font-weight: 650;
+
+            transition:
+                transform 0.25s ease,
+                box-shadow 0.25s ease,
+                border-color 0.25s ease;
+        }
+
+
+        .hero-button:hover {
+
+            transform: translateY(-3px);
+        }
+
+
+        .primary-button {
+
             background:
-                rgba(15, 23, 42, 0.65);
+                linear-gradient(
+                    135deg,
+                    #635cff,
+                    #7065ff
+                );
+
+            color: white;
+
+            box-shadow:
+                0 14px 35px
+                rgba(93, 83, 255, 0.32);
+        }
+
+
+        .primary-button:hover {
+
+            box-shadow:
+                0 20px 45px
+                rgba(93, 83, 255, 0.46);
+        }
+
+
+        .secondary-button {
+
+            border:
+                1px solid
+                rgba(157, 171, 210, 0.24);
+
+            background:
+                rgba(12, 18, 42, 0.70);
+
+            color: #e7ebff;
+
             backdrop-filter: blur(12px);
         }
 
+
+        .secondary-button:hover {
+
+            border-color:
+                rgba(132, 116, 255, 0.55);
+
+            background:
+                rgba(28, 32, 69, 0.82);
+        }
+
+
+        /* =========================================
+           FEATURES
+           ========================================= */
+
+        .features-section {
+
+            padding:
+                15px
+                0
+                80px;
+        }
+
+
+        .features-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 20px;
+        }
+
+
+        .feature-card {
+
+            min-height: 210px;
+
+            padding: 32px 24px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            justify-content: center;
+
+            text-align: center;
+
+            border-radius: 24px;
+
+            border:
+                1px solid
+                rgba(133, 149, 198, 0.15);
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(14, 22, 49, 0.90),
+                    rgba(7, 13, 32, 0.82)
+                );
+
+            box-shadow:
+                0 20px 55px
+                rgba(0,0,0,0.18),
+
+                inset 0 1px 0
+                rgba(255,255,255,0.025);
+
+            backdrop-filter: blur(18px);
+
+            transition:
+                transform 0.3s ease,
+                border-color 0.3s ease,
+                box-shadow 0.3s ease;
+        }
+
+
+        .feature-card:hover {
+
+            transform: translateY(-7px);
+
+            border-color:
+                rgba(111, 99, 255, 0.36);
+
+            box-shadow:
+                0 25px 65px
+                rgba(0,0,0,0.25);
+        }
+
+
         .feature-icon {
-            margin-bottom: 12px;
-            font-size: 30px;
+
+            font-size: 42px;
+
+            margin-bottom: 18px;
+
+            filter:
+                drop-shadow(
+                    0 8px 15px
+                    rgba(0,0,0,0.25)
+                );
         }
 
-        .feature h3 {
-            margin-bottom: 8px;
-            font-size: 16px;
+
+        .feature-card h3 {
+
+            font-size: 21px;
+
+            margin-bottom: 10px;
+
+            color: #ffffff;
         }
 
-        .feature p {
-            color: #94a3b8;
-            font-size: 13px;
+
+        .feature-card p {
+
+            color: #98a4c2;
+
+            font-size: 15.5px;
+
             line-height: 1.6;
+
+            max-width: 300px;
         }
 
-        .footer {
-            margin-top: 35px;
-            color: #64748b;
+
+        /* =========================================
+           FOOTER
+           ========================================= */
+
+        .site-footer {
+
+            margin-top: auto;
+
+            border-top:
+                1px solid
+                rgba(126, 141, 188, 0.13);
+
+            background:
+                rgba(3, 7, 21, 0.72);
+
+            backdrop-filter: blur(20px);
+
+            padding:
+                30px
+                20px
+                34px;
+        }
+
+
+        .footer-inner {
+
+            width: min(
+                1100px,
+                calc(100% - 20px)
+            );
+
+            margin: 0 auto;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 25px;
+        }
+
+
+        .footer-brand {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+        }
+
+
+        .footer-brand-icon {
+
+            width: 42px;
+
+            height: 42px;
+
+            border-radius: 12px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #635cff,
+                    #8d4fff
+                );
+
+            font-size: 20px;
+
+            box-shadow:
+                0 8px 24px
+                rgba(91, 75, 255, 0.25);
+        }
+
+
+        .footer-brand-text {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 3px;
+        }
+
+
+        .footer-brand-text strong {
+
+            font-size: 15px;
+
+            color: #edf0ff;
+
+            letter-spacing: 0.2px;
+        }
+
+
+        .footer-brand-text span {
+
             font-size: 12px;
+
+            color: #7683a5;
         }
 
-        @media (max-width: 700px) {
 
-            .features {
+        .footer-credit {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: flex-end;
+
+            flex-wrap: wrap;
+
+            gap: 7px;
+
+            color: #75819e;
+
+            font-size: 13px;
+
+            line-height: 1.6;
+
+            text-align: right;
+        }
+
+
+        .footer-credit strong {
+
+            color: #b9b4ff;
+
+            font-weight: 650;
+        }
+
+
+        .footer-dot {
+
+            color: #525e7d;
+
+            margin: 0 2px;
+        }
+
+
+        /* =========================================
+           MOBILE
+           ========================================= */
+
+        @media (max-width: 760px) {
+
+            .hero {
+
+                min-height: auto;
+
+                padding:
+                    26px
+                    0
+                    45px;
+            }
+
+
+            .logo-mark {
+
+                width: 104px;
+
+                height: 104px;
+
+                margin-bottom: 22px;
+            }
+
+
+            .platform-badge {
+
+                font-size: 13px;
+
+                padding:
+                    8px
+                    15px;
+
+                letter-spacing: 1px;
+            }
+
+
+            .brand-title {
+
+                font-size: 45px;
+
+                letter-spacing: -2.2px;
+
+                margin-bottom: 19px;
+            }
+
+
+            .hero-description {
+
+                font-size: 17px;
+
+                line-height: 1.7;
+
+                padding:
+                    0
+                    5px;
+            }
+
+
+            .hero-actions {
+
                 grid-template-columns: 1fr;
+
+                gap: 14px;
+
+                margin-top: 38px;
             }
 
-            .subtitle {
-                font-size: 15px;
+
+            .hero-button {
+
+                min-height: 58px;
             }
 
-            .btn {
-                width: 100%;
-                max-width: 330px;
+
+            .features-section {
+
+                padding:
+                    10px
+                    0
+                    55px;
+            }
+
+
+            .features-grid {
+
+                grid-template-columns: 1fr;
+
+                gap: 18px;
+            }
+
+
+            .feature-card {
+
+                min-height: 215px;
+
+                padding:
+                    30px
+                    20px;
+            }
+
+
+            .footer-inner {
+
+                flex-direction: column;
+
+                align-items: center;
+
+                text-align: center;
+
+                gap: 18px;
+            }
+
+
+            .footer-credit {
+
+                justify-content: center;
+
+                text-align: center;
+
+                font-size: 12.5px;
             }
 
         }
+
+
+        @media (max-width: 390px) {
+
+            .container {
+
+                width:
+                    calc(100% - 26px);
+            }
+
+
+            .brand-title {
+
+                font-size: 40px;
+            }
+
+
+            .hero-description {
+
+                font-size: 16px;
+            }
+
+
+            .platform-badge {
+
+                font-size: 12px;
+            }
+
+        }
+
 
     </style>
 
@@ -232,117 +872,258 @@
 
 <body>
 
-    <main class="container">
 
-        <div class="logo">
-            S
-        </div>
+<div class="page">
 
 
-        <div class="badge">
-            SCHOOL MANAGEMENT PLATFORM
-        </div>
+    <!-- =========================================
+         HERO
+         ========================================= -->
+
+    <main>
 
 
-        <h1>
-            SmartSchool<span>360</span>
-        </h1>
+        <section class="hero">
 
 
-        <p class="subtitle">
-            A modern School Management System designed
-            to manage students, admissions, attendance,
-            fees, examinations, staff and reports from
-            one powerful platform.
-        </p>
+            <div class="container">
 
 
-        <div class="buttons">
-
-            <a
-                href="frontend/index.html"
-                class="btn btn-primary"
-            >
-                🚀 Open Dashboard
-            </a>
+                <div class="hero-content">
 
 
-            <a
-                href="frontend/pages/add-student.html"
-                class="btn btn-secondary"
-            >
-                ➕ Student Admission
-            </a>
+                    <!-- LOGO -->
 
-        </div>
+                    <div class="logo-mark">
+                        S
+                    </div>
 
 
-        <section class="features">
+                    <!-- BADGE -->
 
-            <div class="feature">
+                    <div class="platform-badge">
+                        School Management Platform
+                    </div>
 
-                <div class="feature-icon">
-                    👨‍🎓
+
+                    <!-- BRAND -->
+
+                    <h1 class="brand-title">
+                        SmartSchool<span>360</span>
+                    </h1>
+
+
+                    <!-- DESCRIPTION -->
+
+                    <p class="hero-description">
+
+                        A modern School Management System
+                        designed to manage students,
+                        admissions, attendance, fees,
+                        examinations, staff and reports
+                        from one powerful platform.
+
+                    </p>
+
+
+                    <!-- ACTIONS -->
+
+                    <div class="hero-actions">
+
+
+                        <a
+                            href="frontend/index.html"
+                            class="hero-button primary-button"
+                        >
+                            🚀 Open Dashboard
+                        </a>
+
+
+                        <a
+                            href="frontend/pages/add-student.html"
+                            class="hero-button secondary-button"
+                        >
+                            ➕ Student Admission
+                        </a>
+
+
+                    </div>
+
+
                 </div>
 
-                <h3>
-                    Student Management
-                </h3>
-
-                <p>
-                    Manage student records,
-                    admissions and academic information.
-                </p>
 
             </div>
 
-
-            <div class="feature">
-
-                <div class="feature-icon">
-                    📊
-                </div>
-
-                <h3>
-                    Smart Dashboard
-                </h3>
-
-                <p>
-                    Get a centralized view of
-                    important school activities.
-                </p>
-
-            </div>
-
-
-            <div class="feature">
-
-                <div class="feature-icon">
-                    🔐
-                </div>
-
-                <h3>
-                    Secure ERP
-                </h3>
-
-                <p>
-                    Built for future role-based
-                    authentication and school security.
-                </p>
-
-            </div>
 
         </section>
 
 
-        <div class="footer">
 
-            © 2026 SmartSchool360 ·
-            School Management System
+        <!-- =========================================
+             FEATURES
+             ========================================= -->
+
+        <section class="features-section">
+
+
+            <div class="container">
+
+
+                <div class="features-grid">
+
+
+                    <article class="feature-card">
+
+
+                        <div class="feature-icon">
+                            👨‍🎓
+                        </div>
+
+
+                        <h3>
+                            Student Management
+                        </h3>
+
+
+                        <p>
+                            Manage student records,
+                            admissions and academic
+                            information.
+                        </p>
+
+
+                    </article>
+
+
+
+                    <article class="feature-card">
+
+
+                        <div class="feature-icon">
+                            📊
+                        </div>
+
+
+                        <h3>
+                            Smart Dashboard
+                        </h3>
+
+
+                        <p>
+                            Get a centralized view
+                            of important school
+                            activities.
+                        </p>
+
+
+                    </article>
+
+
+
+                    <article class="feature-card">
+
+
+                        <div class="feature-icon">
+                            🔐
+                        </div>
+
+
+                        <h3>
+                            Secure ERP
+                        </h3>
+
+
+                        <p>
+                            Built for future role-based
+                            authentication and school
+                            security.
+                        </p>
+
+
+                    </article>
+
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+    </main>
+
+
+
+    <!-- =========================================
+         PROFESSIONAL FOOTER
+         ========================================= -->
+
+    <footer class="site-footer">
+
+
+        <div class="footer-inner">
+
+
+            <!-- BRAND -->
+
+            <div class="footer-brand">
+
+
+                <div class="footer-brand-icon">
+                    🎓
+                </div>
+
+
+                <div class="footer-brand-text">
+
+                    <strong>
+                        SmartSchool360
+                    </strong>
+
+                    <span>
+                        School Management System
+                    </span>
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- CREATOR CREDIT -->
+
+            <div class="footer-credit">
+
+                <span>
+                    © 2026 SmartSchool360
+                </span>
+
+                <span class="footer-dot">
+                    •
+                </span>
+
+                <span>
+                    Built by
+                    <strong>
+                        Priyanshu Kumar
+                    </strong>
+                </span>
+
+            </div>
+
 
         </div>
 
-    </main>
+
+    </footer>
+
+
+</div>
+
 
 </body>
 
