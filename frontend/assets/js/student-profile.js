@@ -1,7 +1,7 @@
 /* =========================================
    SMARTSCHOOL360
    STUDENT PROFILE MODULE
-   PHOTO + EDIT + DELETE + PRINT
+   PHOTO + EDIT + ID CARD + DELETE + PRINT
    ========================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -45,12 +45,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /* =========================================
-       FIND STUDENT
-       ========================================= */
+    const students = getStudents();
 
-    const students =
-        getStudents();
 
     const student =
         students.find(
@@ -61,7 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =========================================
-       NOT FOUND
+       STUDENT NOT FOUND
        ========================================= */
 
     if (!student) {
@@ -74,7 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =========================================
-       BASIC HELPERS
+       HELPERS
        ========================================= */
 
     function getElement(id) {
@@ -104,7 +100,11 @@ document.addEventListener("DOMContentLoaded", () => {
         const date =
             new Date(value);
 
-        if (Number.isNaN(date.getTime())) {
+        if (
+            Number.isNaN(
+                date.getTime()
+            )
+        ) {
 
             return value;
 
@@ -127,7 +127,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!name) return "ST";
 
         const parts =
-            name
+            String(name)
                 .trim()
                 .split(/\s+/)
                 .filter(Boolean);
@@ -157,7 +157,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =========================================
-       PROFILE BASIC INFORMATION
+       PROFILE INFORMATION
        ========================================= */
 
     setText(
@@ -192,7 +192,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =========================================
-       PERSONAL INFORMATION
+       PERSONAL
        ========================================= */
 
     setText(
@@ -222,7 +222,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =========================================
-       PARENT INFORMATION
+       PARENT
        ========================================= */
 
     setText(
@@ -257,7 +257,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =========================================
-       ACADEMIC INFORMATION
+       ACADEMIC
        ========================================= */
 
     setText(
@@ -282,7 +282,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =========================================
-       ADMISSION INFORMATION
+       ADMISSION
        ========================================= */
 
     setText(
@@ -305,8 +305,7 @@ document.addEventListener("DOMContentLoaded", () => {
        ========================================= */
 
     const status =
-        student.status ||
-        "Active";
+        student.status || "Active";
 
     setText(
         "profileStatus",
@@ -320,49 +319,49 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
 
-    statusElements.forEach(element => {
+    statusElements.forEach(
+        element => {
 
-        element.classList.remove(
-            "active",
-            "inactive",
-            "pending"
-        );
-
-
-        const normalized =
-            String(status)
-                .toLowerCase();
-
-
-        if (
-            normalized === "active"
-        ) {
-
-            element.classList.add(
-                "active"
-            );
-
-        } else if (
-            normalized === "inactive"
-        ) {
-
-            element.classList.add(
-                "inactive"
-            );
-
-        } else {
-
-            element.classList.add(
+            element.classList.remove(
+                "active",
+                "inactive",
                 "pending"
             );
 
-        }
+            const normalized =
+                String(status).toLowerCase();
 
-    });
+
+            if (
+                normalized === "active"
+            ) {
+
+                element.classList.add(
+                    "active"
+                );
+
+            } else if (
+                normalized === "inactive"
+            ) {
+
+                element.classList.add(
+                    "inactive"
+                );
+
+            } else {
+
+                element.classList.add(
+                    "pending"
+                );
+
+            }
+
+        }
+    );
 
 
     /* =========================================
-       PROFILE AVATAR / PHOTO
+       STUDENT PHOTO
        ========================================= */
 
     renderStudentPhoto();
@@ -375,7 +374,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 ".profile-avatar"
             );
 
-
         if (!avatar) return;
 
 
@@ -385,15 +383,10 @@ document.addEventListener("DOMContentLoaded", () => {
             );
 
 
-        /*
-         * Remove old dynamic image
-         */
-
         const oldImage =
             avatar.querySelector(
                 ".student-profile-photo"
             );
-
 
         if (oldImage) {
 
@@ -402,15 +395,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
-        /*
-         * Remove old initials
-         */
-
         const oldInitials =
             avatar.querySelector(
                 ".student-avatar-initials"
             );
-
 
         if (oldInitials) {
 
@@ -418,10 +406,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         }
 
-
-        /*
-         * PHOTO EXISTS
-         */
 
         const photo =
             student.photo ||
@@ -435,7 +419,9 @@ document.addEventListener("DOMContentLoaded", () => {
         ) {
 
             const image =
-                document.createElement("img");
+                document.createElement(
+                    "img"
+                );
 
 
             image.className =
@@ -461,31 +447,26 @@ document.addEventListener("DOMContentLoaded", () => {
             image.style.width =
                 "100%";
 
-
             image.style.height =
                 "100%";
-
 
             image.style.objectFit =
                 "cover";
 
-
             image.style.borderRadius =
                 "inherit";
-
 
             image.style.display =
                 "block";
 
 
-            image.onerror =
-                () => {
+            image.onerror = () => {
 
-                    image.remove();
+                image.remove();
 
-                    showInitials();
+                showInitials();
 
-                };
+            };
 
 
             avatar.appendChild(
@@ -572,25 +553,27 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
 
-    backButtons.forEach(button => {
+    backButtons.forEach(
+        button => {
 
-        button.addEventListener(
-            "click",
-            event => {
+            button.addEventListener(
+                "click",
+                event => {
 
-                event.preventDefault();
+                    event.preventDefault();
 
-                window.location.href =
-                    "students.html";
+                    window.location.href =
+                        "students.html";
 
-            }
-        );
+                }
+            );
 
-    });
+        }
+    );
 
 
     /* =========================================
-       EDIT STUDENT
+       EDIT BUTTON
        ========================================= */
 
     const editButton =
@@ -618,7 +601,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =========================================
-       PRINT PROFILE
+       PRINT BUTTON
        ========================================= */
 
     const printButton =
@@ -642,6 +625,112 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =========================================
+       GENERATE ID CARD BUTTON
+       ========================================= */
+
+    createIdCardButton();
+
+
+    function createIdCardButton() {
+
+        const actions =
+            document.querySelector(
+                ".profile-actions"
+            ) ||
+            document.querySelector(
+                ".profile-action-bar"
+            );
+
+
+        if (!actions) {
+
+            console.warn(
+                "Profile action container not found."
+            );
+
+            return;
+
+        }
+
+
+        if (
+            document.getElementById(
+                "generateIdCardBtn"
+            )
+        ) {
+
+            return;
+
+        }
+
+
+        const button =
+            document.createElement(
+                "button"
+            );
+
+
+        button.type =
+            "button";
+
+
+        button.id =
+            "generateIdCardBtn";
+
+
+        button.className =
+            "profile-action-btn id-card-btn";
+
+
+        button.innerHTML =
+            "🪪 Generate ID Card";
+
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                window.location.href =
+                    "student-id-card.html?id=" +
+                    encodeURIComponent(
+                        student.id
+                    );
+
+            }
+        );
+
+
+        actions.appendChild(
+            button
+        );
+
+
+        /* =====================================
+           BUTTON STYLE
+           ===================================== */
+
+        button.style.background =
+            "linear-gradient(135deg,#2563eb,#4f46e5)";
+
+        button.style.color =
+            "#ffffff";
+
+        button.style.border =
+            "1px solid #2563eb";
+
+        button.style.boxShadow =
+            "0 8px 20px rgba(37,99,235,.18)";
+
+        button.style.fontWeight =
+            "700";
+
+        button.style.cursor =
+            "pointer";
+
+    }
+
+
+    /* =========================================
        COPY STUDENT ID
        ========================================= */
 
@@ -651,36 +740,44 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
 
-    copyButtons.forEach(button => {
+    copyButtons.forEach(
+        button => {
 
-        button.addEventListener(
-            "click",
-            async () => {
+            button.addEventListener(
+                "click",
+                async () => {
 
-                try {
+                    try {
 
-                    await navigator.clipboard.writeText(
-                        String(student.id)
-                    );
+                        await navigator
+                            .clipboard
+                            .writeText(
+                                String(
+                                    student.id
+                                )
+                            );
 
-                    showToast(
-                        "Student ID copied successfully.",
-                        "success"
-                    );
 
-                } catch (error) {
+                        showToast(
+                            "Student ID copied successfully.",
+                            "success"
+                        );
 
-                    showToast(
-                        `Student ID: ${student.id}`,
-                        "success"
-                    );
+
+                    } catch (error) {
+
+                        showToast(
+                            `Student ID: ${student.id}`,
+                            "success"
+                        );
+
+                    }
 
                 }
+            );
 
-            }
-        );
-
-    });
+        }
+    );
 
 
     /* =========================================
@@ -704,10 +801,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!actions) return;
 
 
-        /*
-         * Prevent duplicate delete button
-         */
-
         if (
             document.getElementById(
                 "deleteStudentBtn"
@@ -720,7 +813,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         const deleteButton =
-            document.createElement("button");
+            document.createElement(
+                "button"
+            );
 
 
         deleteButton.type =
@@ -753,7 +848,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =========================================
-       DELETE CONFIRMATION MODAL
+       DELETE MODAL
        ========================================= */
 
     function openDeleteModal() {
@@ -770,7 +865,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         const backdrop =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
 
 
         backdrop.className =
@@ -779,7 +876,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         backdrop.innerHTML = `
 
-            <div class="student-delete-backdrop"></div>
+            <div
+                class="student-delete-backdrop"
+            ></div>
 
             <div
                 class="student-delete-dialog"
@@ -788,15 +887,21 @@ document.addEventListener("DOMContentLoaded", () => {
                 aria-labelledby="deleteStudentTitle"
             >
 
-                <div class="student-delete-icon">
+                <div
+                    class="student-delete-icon"
+                >
                     🗑️
                 </div>
 
-                <h2 id="deleteStudentTitle">
+                <h2
+                    id="deleteStudentTitle"
+                >
                     Delete Student?
                 </h2>
 
-                <p class="student-delete-info">
+                <p
+                    class="student-delete-info"
+                >
                     You are about to delete
                     <strong>
                         ${escapeHtml(
@@ -806,13 +911,18 @@ document.addEventListener("DOMContentLoaded", () => {
                     </strong>.
                 </p>
 
-                <p class="student-delete-warning">
+                <p
+                    class="student-delete-warning"
+                >
                     This action cannot be undone.
-                    The student record will be permanently
-                    removed from this browser.
+                    The student record will be
+                    permanently removed from
+                    this browser.
                 </p>
 
-                <div class="student-delete-actions">
+                <div
+                    class="student-delete-actions"
+                >
 
                     <button
                         type="button"
@@ -833,6 +943,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 </div>
 
             </div>
+
         `;
 
 
@@ -885,9 +996,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         setTimeout(
             () => {
-
                 cancelButton.focus();
-
             },
             50
         );
@@ -926,7 +1035,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function deleteStudent() {
 
-        let allStudents =
+        const allStudents =
             getStudents();
 
 
@@ -990,11 +1099,26 @@ document.addEventListener("DOMContentLoaded", () => {
     function escapeHtml(value) {
 
         return String(value)
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
+            .replace(
+                /&/g,
+                "&amp;"
+            )
+            .replace(
+                /</g,
+                "&lt;"
+            )
+            .replace(
+                />/g,
+                "&gt;"
+            )
+            .replace(
+                /"/g,
+                "&quot;"
+            )
+            .replace(
+                /'/g,
+                "&#039;"
+            );
 
     }
 
@@ -1022,7 +1146,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         const toast =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
 
 
         toast.className =
@@ -1036,58 +1162,44 @@ document.addEventListener("DOMContentLoaded", () => {
         toast.style.position =
             "fixed";
 
-
         toast.style.right =
             "20px";
-
 
         toast.style.bottom =
             "20px";
 
-
         toast.style.zIndex =
             "99999";
-
 
         toast.style.padding =
             "13px 18px";
 
-
         toast.style.borderRadius =
             "12px";
-
 
         toast.style.background =
             "#111827";
 
-
         toast.style.color =
             "#ffffff";
-
 
         toast.style.border =
             "1px solid rgba(255,255,255,.12)";
 
-
         toast.style.boxShadow =
             "0 15px 40px rgba(0,0,0,.35)";
-
 
         toast.style.fontWeight =
             "600";
 
-
         toast.style.fontSize =
             "14px";
-
 
         toast.style.opacity =
             "0";
 
-
         toast.style.transform =
             "translateY(15px)";
-
 
         toast.style.transition =
             "all .3s ease";
@@ -1138,7 +1250,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =========================================
-       NOT FOUND SCREEN
+       NOT FOUND
        ========================================= */
 
     function showNotFound() {
@@ -1165,7 +1277,9 @@ document.addEventListener("DOMContentLoaded", () => {
                         text-align:center;
                         background:#ffffff;
                         border-radius:20px;
-                        box-shadow:0 15px 50px rgba(0,0,0,.08);
+                        box-shadow:
+                            0 15px 50px
+                            rgba(0,0,0,.08);
                     "
                 >
 
@@ -1199,7 +1313,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     </p>
 
                     <button
-                        onclick="window.location.href='students.html'"
+                        onclick="
+                            window.location.href='students.html'
+                        "
                         style="
                             border:0;
                             padding:12px 20px;
@@ -1223,11 +1339,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =========================================
-       MODULE READY
+       MODULE LOADED
        ========================================= */
 
     console.log(
-        "SmartSchool360 Student Profile Module loaded:",
+        "SmartSchool360 Student Profile loaded:",
         student.id
     );
 
