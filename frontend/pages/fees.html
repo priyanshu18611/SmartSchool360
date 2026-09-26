@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="theme-color"
+        content="#4f46e5"
+    >
+
+    <title>
+        Fees Management | SmartSchool360
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="../assets/css/style.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../assets/css/fees.css"
+    >
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         HEADER
+         ===================================================== -->
+
+    <header class="fees-header">
+
+        <div class="fees-header-left">
+
+            <button
+                type="button"
+                class="back-btn"
+                id="backToDashboardBtn"
+                aria-label="Back"
+            >
+                ←
+            </button>
+
+
+            <div class="fees-title-area">
+
+                <div class="fees-icon">
+                    💰
+                </div>
+
+                <div>
+
+                    <h1>
+                        Fees Management
+                    </h1>
+
+                    <p>
+                        Manage student fees, payments and dues
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <button
+            type="button"
+            class="refresh-btn"
+            id="refreshFeesBtn"
+        >
+            🔄 Refresh
+        </button>
+
+    </header>
+
+
+
+    <!-- =====================================================
+         MAIN
+         ===================================================== -->
+
+    <main class="fees-container">
+
+
+        <!-- =================================================
+             KPI CARDS
+             ================================================= -->
+
+        <section class="fees-summary-grid">
+
+
+            <div class="fee-summary-card">
+
+                <div class="fee-summary-icon">
+                    💰
+                </div>
+
+                <div>
+
+                    <span>
+                        Total Fees
+                    </span>
+
+                    <strong id="totalFeesAmount">
+                        ₹0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="fee-summary-card">
+
+                <div class="fee-summary-icon collected">
+                    ✅
+                </div>
+
+                <div>
+
+                    <span>
+                        Collected
+                    </span>
+
+                    <strong id="collectedFeesAmount">
+                        ₹0
+                    </strong>
+
+                    <small id="collectedFeesCount">
+                        0 payments
+                    </small>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="fee-summary-card">
+
+                <div class="fee-summary-icon pending">
+                    ⏳
+                </div>
+
+                <div>
+
+                    <span>
+                        Pending
+                    </span>
+
+                    <strong id="pendingFeesAmount">
+                        ₹0
+                    </strong>
+
+                    <small id="pendingFeesCount">
+                        0 students
+                    </small>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="fee-summary-card">
+
+                <div class="fee-summary-icon overdue">
+                    ⚠️
+                </div>
+
+                <div>
+
+                    <span>
+                        Overdue
+                    </span>
+
+                    <strong id="overdueFeesAmount">
+                        ₹0
+                    </strong>
+
+                    <small id="overdueFeesCount">
+                        0 students
+                    </small>
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             FEE ACTIONS
+             ================================================= -->
+
+        <section class="fees-card fee-actions-card">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <span class="section-eyebrow">
+                        FEE MANAGEMENT
+                    </span>
+
+                    <h2>
+                        Quick Actions
+                    </h2>
+
+                    <p>
+                        Manage student fee payments and receipts.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="fee-action-grid">
+
+
+                <button
+                    type="button"
+                    class="fee-action-btn payment"
+                    id="recordPaymentBtn"
+                >
+
+                    <span class="action-icon">
+                        💳
+                    </span>
+
+                    <span>
+                        <strong>
+                            Record Payment
+                        </strong>
+
+                        <small>
+                            Add a new fee payment
+                        </small>
+                    </span>
+
+                </button>
+
+
+
+                <button
+                    type="button"
+                    class="fee-action-btn receipt"
+                    id="viewReceiptsBtn"
+                >
+
+                    <span class="action-icon">
+                        🧾
+                    </span>
+
+                    <span>
+                        <strong>
+                            Fee Receipts
+                        </strong>
+
+                        <small>
+                            View generated receipts
+                        </small>
+                    </span>
+
+                </button>
+
+
+
+                <button
+                    type="button"
+                    class="fee-action-btn dues"
+                    id="viewDuesBtn"
+                >
+
+                    <span class="action-icon">
+                        📋
+                    </span>
+
+                    <span>
+                        <strong>
+                            Pending Dues
+                        </strong>
+
+                        <small>
+                            View outstanding fees
+                        </small>
+
+                    </span>
+
+                </button>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             FILTERS
+             ================================================= -->
+
+        <section class="fees-card">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <span class="section-eyebrow">
+                        FEE FILTERS
+                    </span>
+
+                    <h2>
+                        Search Fee Records
+                    </h2>
+
+                    <p>
+                        Filter student fee records by class,
+                        section and payment status.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="fees-filters">
+
+
+                <div class="filter-field">
+
+                    <label for="feeSearch">
+                        Search Student
+                    </label>
+
+                    <div class="input-with-icon">
+
+                        <span>
+                            🔍
+                        </span>
+
+                        <input
+                            type="search"
+                            id="feeSearch"
+                            placeholder="Name or Student ID..."
+                            autocomplete="off"
+                        >
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="filter-field">
+
+                    <label for="feeClass">
+                        Class
+                    </label>
+
+                    <select id="feeClass">
+
+                        <option value="">
+                            All Classes
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <div class="filter-field">
+
+                    <label for="feeSection">
+                        Section
+                    </label>
+
+                    <select id="feeSection">
+
+                        <option value="">
+                            All Sections
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <div class="filter-field">
+
+                    <label for="feeStatus">
+                        Payment Status
+                    </label>
+
+                    <select id="feeStatus">
+
+                        <option value="">
+                            All Status
+                        </option>
+
+                        <option value="paid">
+                            Paid
+                        </option>
+
+                        <option value="partial">
+                            Partially Paid
+                        </option>
+
+                        <option value="pending">
+                            Pending
+                        </option>
+
+                        <option value="overdue">
+                            Overdue
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <div class="filter-actions">
+
+                <button
+                    type="button"
+                    class="primary-btn"
+                    id="applyFeeFilterBtn"
+                >
+                    🔎 Apply Filters
+                </button>
+
+                <button
+                    type="button"
+                    class="secondary-btn"
+                    id="clearFeeFilterBtn"
+                >
+                    ✕ Clear
+                </button>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             FEE RECORDS
+             ================================================= -->
+
+        <section class="fees-card fee-records-card">
+
+
+            <div class="table-header">
+
+                <div>
+
+                    <span class="section-eyebrow">
+                        STUDENT FEE RECORDS
+                    </span>
+
+                    <h2>
+                        Fee Records
+                    </h2>
+
+                    <p id="feeTableSubtitle">
+                        Student fee records will appear here.
+                    </p>
+
+                </div>
+
+
+                <div
+                    class="record-count"
+                    id="feeRecordCount"
+                >
+                    0 Records
+                </div>
+
+            </div>
+
+
+
+            <div class="fee-table-wrapper">
+
+                <table class="fees-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Student
+                            </th>
+
+                            <th>
+                                Class
+                            </th>
+
+                            <th>
+                                Section
+                            </th>
+
+                            <th>
+                                Total Fee
+                            </th>
+
+                            <th>
+                                Paid
+                            </th>
+
+                            <th>
+                                Due
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Action
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="feesTableBody">
+
+                        <tr>
+
+                            <td
+                                colspan="8"
+                                class="table-empty"
+                            >
+
+                                <div class="empty-icon">
+                                    💰
+                                </div>
+
+                                <h3>
+                                    No Fee Records
+                                </h3>
+
+                                <p>
+                                    Fee records will appear here
+                                    after the fee structure is configured.
+                                </p>
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             RECENT PAYMENTS
+             ================================================= -->
+
+        <section class="fees-card recent-payments-card">
+
+
+            <div class="table-header">
+
+                <div>
+
+                    <span class="section-eyebrow">
+                        PAYMENT HISTORY
+                    </span>
+
+                    <h2>
+                        Recent Payments
+                    </h2>
+
+                    <p>
+                        Latest fee transactions recorded in
+                        SmartSchool360.
+                    </p>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="small-outline-btn"
+                    id="viewAllPaymentsBtn"
+                >
+                    View All
+                </button>
+
+            </div>
+
+
+
+            <div class="fee-table-wrapper">
+
+                <table class="fees-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Receipt
+                            </th>
+
+                            <th>
+                                Student
+                            </th>
+
+                            <th>
+                                Date
+                            </th>
+
+                            <th>
+                                Amount
+                            </th>
+
+                            <th>
+                                Method
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="recentPaymentsBody">
+
+                        <tr>
+
+                            <td
+                                colspan="6"
+                                class="table-empty"
+                            >
+
+                                <div class="empty-icon">
+                                    🧾
+                                </div>
+
+                                <h3>
+                                    No Payments Yet
+                                </h3>
+
+                                <p>
+                                    Recorded payments will appear
+                                    here.
+                                </p>
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             INFORMATION
+             ================================================= -->
+
+        <section class="fees-info-card">
+
+            <div class="info-icon">
+                💡
+            </div>
+
+            <div>
+
+                <h3>
+                    Fees Management
+                </h3>
+
+                <p>
+                    SmartSchool360 will maintain student-wise
+                    fee structures, payment history, pending
+                    balances and receipts. Payment data will
+                    remain connected with the student record.
+                </p>
+
+                <p>
+                    Fee calculations shown on this dashboard
+                    will be based on actual stored fee data,
+                    not dummy values.
+                </p>
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+
+
+    <!-- =====================================================
+         TOAST
+         ===================================================== -->
+
+    <div
+        class="fees-toast"
+        id="feesToast"
+        role="status"
+        aria-live="polite"
+    ></div>
+
+
+
+    <!-- =====================================================
+         FOOTER
+         ===================================================== -->
+
+    <footer class="fees-footer">
+
+        <div>
+
+            <strong>
+                SmartSchool360
+            </strong>
+
+            <span>
+                School Management System
+            </span>
+
+        </div>
+
+        <p>
+            © 2026 SmartSchool360 · Built by Priyanshu Kumar
+        </p>
+
+    </footer>
+
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+         ===================================================== -->
+
+    <script
+        src="../assets/js/fees.js"
+    ></script>
+
+
+</body>
+
+</html>
