@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="theme-color"
+        content="#4f46e5"
+    >
+
+    <title>
+        Attendance Reports | SmartSchool360
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="../assets/css/style.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../assets/css/attendance-reports.css"
+    >
+</head>
+
+<body>
+
+    <!-- =====================================================
+         HEADER
+         ===================================================== -->
+
+    <header class="reports-header">
+
+        <div class="reports-header-left">
+
+            <button
+                type="button"
+                class="back-btn"
+                id="backToAnalyticsBtn"
+                aria-label="Back to attendance analytics"
+            >
+                ←
+            </button>
+
+            <div class="reports-title-area">
+
+                <div class="reports-icon">
+                    📑
+                </div>
+
+                <div>
+                    <h1>
+                        Attendance Reports
+                    </h1>
+
+                    <p>
+                        Generate and manage detailed attendance reports
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+        <button
+            type="button"
+            class="refresh-btn"
+            id="refreshReportsBtn"
+        >
+            🔄 Refresh
+        </button>
+
+    </header>
+
+
+    <!-- =====================================================
+         MAIN
+         ===================================================== -->
+
+    <main class="reports-container">
+
+
+        <!-- =================================================
+             REPORT FILTERS
+             ================================================= -->
+
+        <section class="reports-card filters-card">
+
+            <div class="section-heading">
+
+                <div>
+                    <span class="section-eyebrow">
+                        REPORT BUILDER
+                    </span>
+
+                    <h2>
+                        Generate Attendance Report
+                    </h2>
+
+                    <p>
+                        Select the required filters to prepare a
+                        detailed attendance report.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="report-filters">
+
+                <!-- Report Type -->
+
+                <div class="filter-field">
+
+                    <label for="reportType">
+                        Report Type
+                    </label>
+
+                    <select id="reportType">
+
+                        <option value="daily">
+                            Daily Report
+                        </option>
+
+                        <option value="date-range">
+                            Date Range Report
+                        </option>
+
+                        <option value="student">
+                            Student Report
+                        </option>
+
+                        <option value="class">
+                            Class Report
+                        </option>
+
+                        <option value="monthly">
+                            Monthly Report
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- Class -->
+
+                <div class="filter-field">
+
+                    <label for="reportClass">
+                        Class
+                    </label>
+
+                    <select id="reportClass">
+
+                        <option value="">
+                            All Classes
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- Section -->
+
+                <div class="filter-field">
+
+                    <label for="reportSection">
+                        Section
+                    </label>
+
+                    <select id="reportSection">
+
+                        <option value="">
+                            All Sections
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- Student -->
+
+                <div class="filter-field">
+
+                    <label for="reportStudent">
+                        Student
+                    </label>
+
+                    <select id="reportStudent">
+
+                        <option value="">
+                            All Students
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- From Date -->
+
+                <div class="filter-field">
+
+                    <label for="reportDateFrom">
+                        From Date
+                    </label>
+
+                    <input
+                        type="date"
+                        id="reportDateFrom"
+                    >
+
+                </div>
+
+
+                <!-- To Date -->
+
+                <div class="filter-field">
+
+                    <label for="reportDateTo">
+                        To Date
+                    </label>
+
+                    <input
+                        type="date"
+                        id="reportDateTo"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div class="filter-actions">
+
+                <button
+                    type="button"
+                    class="primary-btn"
+                    id="generateReportBtn"
+                >
+                    📊 Generate Report
+                </button>
+
+                <button
+                    type="button"
+                    class="secondary-btn"
+                    id="clearReportBtn"
+                >
+                    ✕ Clear
+                </button>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             REPORT SUMMARY
+             ================================================= -->
+
+        <section
+            class="report-summary-grid"
+            id="reportSummarySection"
+        >
+
+            <div class="summary-card">
+
+                <div class="summary-icon">
+                    📋
+                </div>
+
+                <div>
+
+                    <span>
+                        Total Records
+                    </span>
+
+                    <strong id="reportTotalRecords">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-icon present">
+                    ✅
+                </div>
+
+                <div>
+
+                    <span>
+                        Present
+                    </span>
+
+                    <strong id="reportPresent">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-icon absent">
+                    ❌
+                </div>
+
+                <div>
+
+                    <span>
+                        Absent
+                    </span>
+
+                    <strong id="reportAbsent">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-icon late">
+                    ⏰
+                </div>
+
+                <div>
+
+                    <span>
+                        Late
+                    </span>
+
+                    <strong id="reportLate">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-icon percentage">
+                    🎯
+                </div>
+
+                <div>
+
+                    <span>
+                        Attendance
+                    </span>
+
+                    <strong id="reportPercentage">
+                        0%
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-icon students">
+                    👨‍🎓
+                </div>
+
+                <div>
+
+                    <span>
+                        Students
+                    </span>
+
+                    <strong id="reportStudents">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             REPORT INFORMATION
+             ================================================= -->
+
+        <section class="reports-card report-meta-card">
+
+            <div class="report-meta">
+
+                <div>
+                    <span>
+                        Report Type
+                    </span>
+
+                    <strong id="generatedReportType">
+                        Daily Report
+                    </strong>
+                </div>
+
+
+                <div>
+                    <span>
+                        Period
+                    </span>
+
+                    <strong id="generatedReportPeriod">
+                        —
+                    </strong>
+                </div>
+
+
+                <div>
+                    <span>
+                        Generated
+                    </span>
+
+                    <strong id="generatedReportTime">
+                        —
+                    </strong>
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             REPORT ACTIONS
+             ================================================= -->
+
+        <section class="reports-card report-actions-card">
+
+            <div class="section-heading compact">
+
+                <div>
+
+                    <span class="section-eyebrow">
+                        REPORT ACTIONS
+                    </span>
+
+                    <h2>
+                        Export & Print
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <div class="report-action-buttons">
+
+                <button
+                    type="button"
+                    class="report-action-btn print"
+                    id="printReportBtn"
+                >
+                    🖨️ Print Report
+                </button>
+
+
+                <button
+                    type="button"
+                    class="report-action-btn csv"
+                    id="exportCSVBtn"
+                >
+                    📊 Export CSV
+                </button>
+
+
+                <button
+                    type="button"
+                    class="report-action-btn json"
+                    id="exportJSONBtn"
+                >
+                    💾 Export JSON
+                </button>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             DAILY REPORT TABLE
+             ================================================= -->
+
+        <section class="reports-card table-card">
+
+            <div class="table-header">
+
+                <div>
+
+                    <span class="section-eyebrow">
+                        ATTENDANCE RECORDS
+                    </span>
+
+                    <h2>
+                        Detailed Attendance Report
+                    </h2>
+
+                    <p id="reportTableSubtitle">
+                        Generate a report to view attendance records.
+                    </p>
+
+                </div>
+
+                <div
+                    class="record-count"
+                    id="reportRecordCount"
+                >
+                    0 Records
+                </div>
+
+            </div>
+
+
+            <div class="table-search-row">
+
+                <div class="search-box">
+
+                    <span>
+                        🔍
+                    </span>
+
+                    <input
+                        type="search"
+                        id="reportSearch"
+                        placeholder="Search student or student ID..."
+                        autocomplete="off"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div class="table-wrapper">
+
+                <table class="reports-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Date
+                            </th>
+
+                            <th>
+                                Student
+                            </th>
+
+                            <th>
+                                Student ID
+                            </th>
+
+                            <th>
+                                Class
+                            </th>
+
+                            <th>
+                                Section
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="reportTableBody">
+
+                        <tr>
+
+                            <td
+                                colspan="6"
+                                class="table-empty"
+                            >
+
+                                <div class="empty-icon">
+                                    📑
+                                </div>
+
+                                <h3>
+                                    No Report Generated
+                                </h3>
+
+                                <p>
+                                    Select your filters and generate
+                                    an attendance report.
+                                </p>
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             STUDENT ATTENDANCE SUMMARY
+             ================================================= -->
+
+        <section class="reports-card table-card">
+
+            <div class="table-header">
+
+                <div>
+
+                    <span class="section-eyebrow">
+                        STUDENT SUMMARY
+                    </span>
+
+                    <h2>
+                        Student Attendance Summary
+                    </h2>
+
+                    <p>
+                        Attendance percentage for each student
+                        in the selected report.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="table-wrapper">
+
+                <table class="reports-table student-summary-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Student
+                            </th>
+
+                            <th>
+                                Class
+                            </th>
+
+                            <th>
+                                Section
+                            </th>
+
+                            <th>
+                                Total
+                            </th>
+
+                            <th>
+                                Present
+                            </th>
+
+                            <th>
+                                Absent
+                            </th>
+
+                            <th>
+                                Late
+                            </th>
+
+                            <th>
+                                Attendance %
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="studentSummaryBody">
+
+                        <tr>
+
+                            <td
+                                colspan="8"
+                                class="table-empty"
+                            >
+
+                                <div class="empty-icon">
+                                    👨‍🎓
+                                </div>
+
+                                <h3>
+                                    No Student Summary
+                                </h3>
+
+                                <p>
+                                    Generate a report to calculate
+                                    student attendance percentages.
+                                </p>
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             REPORT INFO
+             ================================================= -->
+
+        <section class="reports-info-card">
+
+            <div class="info-icon">
+                💡
+            </div>
+
+            <div>
+
+                <h3>
+                    Attendance Report Information
+                </h3>
+
+                <p>
+                    Reports are generated from the attendance
+                    records stored in SmartSchool360. You can
+                    filter records by date, class, section or
+                    student and export the resulting data.
+                </p>
+
+                <p>
+                    Present and Late records are counted toward
+                    attendance percentage. Absent records are
+                    counted separately.
+                </p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+
+    <!-- =====================================================
+         TOAST
+         ===================================================== -->
+
+    <div
+        class="reports-toast"
+        id="reportsToast"
+        role="status"
+        aria-live="polite"
+    ></div>
+
+
+
+    <!-- =====================================================
+         FOOTER
+         ===================================================== -->
+
+    <footer class="reports-footer">
+
+        <div>
+            <strong>
+                SmartSchool360
+            </strong>
+
+            <span>
+                School Management System
+            </span>
+        </div>
+
+        <p>
+            © 2026 SmartSchool360 · Built by Priyanshu Kumar
+        </p>
+
+    </footer>
+
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+         ===================================================== -->
+
+    <script
+        src="../assets/js/attendance-reports.js"
+    ></script>
+
+</body>
+</html>
