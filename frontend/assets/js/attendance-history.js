@@ -1,9 +1,10 @@
+"use strict";
+
 /* =========================================================
    SmartSchool360
    Attendance History & Reports
+   FIXED VERSION
    ========================================================= */
-
-"use strict";
 
 const STUDENTS_KEY = "smartschool_students";
 const ATTENDANCE_KEY = "smartschool_attendance";
@@ -14,51 +15,41 @@ let filteredRecords = [];
 
 
 /* =========================================================
-   DOM READY
+   START
    ========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
-
     initializeAttendanceHistory();
-
 });
 
-
-/* =========================================================
-   INITIALIZE
-   ========================================================= */
 
 function initializeAttendanceHistory() {
 
     loadStudents();
-
     loadAttendanceRecords();
 
     populateClassFilter();
-
     populateSectionFilter();
 
     setupEventListeners();
 
     applyFilters();
-
 }
 
 
 /* =========================================================
-   LOAD STUDENTS
+   STUDENTS
    ========================================================= */
 
 function loadStudents() {
 
     try {
 
-        const storedStudents =
+        const data =
             localStorage.getItem(STUDENTS_KEY);
 
-        allStudents = storedStudents
-            ? JSON.parse(storedStudents)
-            : [];
+        allStudents =
+            data ? JSON.parse(data) : [];
 
         if (!Array.isArray(allStudents)) {
             allStudents = [];
@@ -67,104 +58,127 @@ function loadStudents() {
     } catch (error) {
 
         console.error(
-            "Unable to load students:",
+            "Student loading error:",
             error
         );
 
         allStudents = [];
-
-        showToast(
-            "Unable to load student data.",
-            "error"
-        );
     }
-
 }
 
 
 /* =========================================================
-   LOAD ATTENDANCE
+   ATTENDANCE LOADER
+   Supports:
+   1. Object format
+   2. Array format
+   3. String status format
+   4. Old/new attendance formats
    ========================================================= */
 
 function loadAttendanceRecords() {
 
+    allAttendanceRecords = [];
+
     try {
 
-        const storedAttendance =
-            localStorage.getItem(ATTENDANCE_KEY);
+        const raw =
+            localStorage.getItem(
+                ATTENDANCE_KEY
+            );
 
-        if (!storedAttendance) {
-
-            allAttendanceRecords = [];
-
+        if (!raw) {
             return;
         }
 
-        const parsedAttendance =
-            JSON.parse(storedAttendance);
+        const parsed =
+            JSON.parse(raw);
 
 
-        if (
-            parsedAttendance &&
-            typeof parsedAttendance === "object" &&
-            !Array.isArray(parsedAttendance)
+        /* -----------------------------------------
+           ARRAY FORMAT
+           ----------------------------------------- */
+
+        if (Array.isArray(parsed)) {
+
+            parsed.forEach(
+                (item, index) => {
+
+                    const record =
+                        normalizeRecord(
+                            item,
+                            String(index)
+                        );
+
+                    if (record) {
+                        allAttendanceRecords.push(
+                            record
+                        );
+                    }
+
+                }
+            );
+
+        }
+
+
+        /* -----------------------------------------
+           OBJECT FORMAT
+           ----------------------------------------- */
+
+        else if (
+            parsed &&
+            typeof parsed === "object"
         ) {
 
-            allAttendanceRecords =
-                Object.entries(parsedAttendance)
-                    .map(
-                        ([key, record]) => {
+            Object.entries(parsed)
+                .forEach(
+                    ([key, value]) => {
 
-                            if (
-                                !record ||
-                                typeof record !== "object"
-                            ) {
-                                return null;
-                            }
-
-                            return normalizeAttendanceRecord(
-                                record,
+                        const record =
+                            normalizeRecord(
+                                value,
                                 key
                             );
 
+                        if (record) {
+
+                            allAttendanceRecords.push(
+                                record
+                            );
+
                         }
-                    )
-                    .filter(Boolean);
 
-        } else if (
-            Array.isArray(parsedAttendance)
-        ) {
-
-            allAttendanceRecords =
-                parsedAttendance
-                    .map(
-                        (record, index) =>
-                            normalizeAttendanceRecord(
-                                record,
-                                String(index)
-                            )
-                    )
-                    .filter(Boolean);
-
-        } else {
-
-            allAttendanceRecords = [];
+                    }
+                );
 
         }
+
+
+        /* -----------------------------------------
+           REMOVE DUPLICATES
+           ----------------------------------------- */
+
+        allAttendanceRecords =
+            removeDuplicateRecords(
+                allAttendanceRecords
+            );
+
+
+        console.log(
+            "SmartSchool360 Attendance Records:",
+            allAttendanceRecords
+        );
 
     } catch (error) {
 
         console.error(
-            "Unable to load attendance:",
+            "Attendance loading error:",
             error
         );
 
         allAttendanceRecords = [];
 
-        showToast(
-            "Unable to load attendance records.",
-            "error"
-        );
     }
 
 }
@@ -174,57 +188,210 @@ function loadAttendanceRecords() {
    NORMALIZE RECORD
    ========================================================= */
 
-function normalizeAttendanceRecord(
-    record,
+function normalizeRecord(
+    value,
     key = ""
 ) {
 
-    const studentId =
-        record.studentId ||
-        extractStudentIdFromKey(key);
+    let record = {};
 
-    const date =
-        record.date ||
-        extractDateFromKey(key);
+    /* -----------------------------------------
+       STRING FORMAT
+       Example:
+       "Present"
+       ----------------------------------------- */
 
-    if (!studentId || !date) {
-        return null;
+    if (
+        typeof value === "string"
+    ) {
+
+        record.status = value;
+
     }
 
 
+    /* -----------------------------------------
+       OBJECT FORMAT
+       ----------------------------------------- */
+
+    else if (
+        value &&
+        typeof value === "object"
+    ) {
+
+        record = {
+            ...value
+        };
+
+    }
+
+
+    else {
+
+        return null;
+
+    }
+
+
+    /* -----------------------------------------
+       EXTRACT STUDENT ID
+       ----------------------------------------- */
+
+    let studentId =
+        record.studentId ||
+        record.studentID ||
+        record.student_id ||
+        record.id ||
+        "";
+
+
+    if (!studentId) {
+
+        studentId =
+            extractStudentIdFromKey(
+                key
+            );
+
+    }
+
+
+    /* -----------------------------------------
+       EXTRACT DATE
+       ----------------------------------------- */
+
+    let date =
+        record.date ||
+        record.attendanceDate ||
+        record.attendance_date ||
+        record.day ||
+        "";
+
+
+    if (!date) {
+
+        date =
+            extractDateFromKey(
+                key
+            );
+
+    }
+
+
+    /* -----------------------------------------
+       EXTRACT STATUS
+       ----------------------------------------- */
+
+    let status =
+        record.status ||
+        record.attendanceStatus ||
+        record.attendance_status ||
+        record.value ||
+        record.mark ||
+        "";
+
+
+    /* Nested status */
+    if (
+        status &&
+        typeof status === "object"
+    ) {
+
+        status =
+            status.status ||
+            status.value ||
+            "";
+
+    }
+
+
+    status =
+        normalizeStatus(status);
+
+
+    /* -----------------------------------------
+       STUDENT LOOKUP
+       ----------------------------------------- */
+
     const student =
         findStudent(studentId);
+
+
+    /* -----------------------------------------
+       FALLBACK CLASS
+       ----------------------------------------- */
+
+    const className =
+        record.className ||
+        record.class ||
+        record.class_name ||
+        student?.className ||
+        "";
+
+
+    /* -----------------------------------------
+       FALLBACK SECTION
+       ----------------------------------------- */
+
+    const section =
+        record.section ||
+        record.sectionName ||
+        record.section_name ||
+        student?.section ||
+        "";
+
+
+    /* -----------------------------------------
+       DATE REQUIRED
+       ----------------------------------------- */
+
+    if (!date) {
+
+        return null;
+
+    }
+
+
+    /* -----------------------------------------
+       STUDENT REQUIRED
+       ----------------------------------------- */
+
+    if (!studentId) {
+
+        return null;
+
+    }
 
 
     return {
 
         key,
 
-        studentId,
+        studentId:
+            String(studentId),
 
-        date,
+        date:
+            normalizeDate(date),
 
         className:
-            record.className ||
-            student?.className ||
-            "",
+            String(className || ""),
 
         section:
-            record.section ||
-            student?.section ||
-            "",
+            String(section || ""),
 
-        status:
-            normalizeStatus(record.status),
+        status,
 
         updatedAt:
             record.updatedAt ||
+            record.updated_at ||
             record.savedAt ||
+            record.saved_at ||
             "",
 
         savedAt:
             record.savedAt ||
+            record.saved_at ||
             record.updatedAt ||
+            record.updated_at ||
             ""
 
     };
@@ -233,7 +400,143 @@ function normalizeAttendanceRecord(
 
 
 /* =========================================================
-   EXTRACT DATA FROM OLD KEY
+   DATE NORMALIZATION
+   ========================================================= */
+
+function normalizeDate(value) {
+
+    if (!value) {
+        return "";
+    }
+
+
+    const stringValue =
+        String(value).trim();
+
+
+    /* YYYY-MM-DD */
+    if (
+        /^\d{4}-\d{2}-\d{2}$/
+            .test(stringValue)
+    ) {
+
+        return stringValue;
+
+    }
+
+
+    /* MM/DD/YYYY */
+    const slashMatch =
+        stringValue.match(
+            /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/
+        );
+
+
+    if (slashMatch) {
+
+        const month =
+            String(
+                slashMatch[1]
+            ).padStart(2, "0");
+
+        const day =
+            String(
+                slashMatch[2]
+            ).padStart(2, "0");
+
+        const year =
+            slashMatch[3];
+
+        return `${year}-${month}-${day}`;
+
+    }
+
+
+    /* Date object / ISO */
+    const parsed =
+        new Date(stringValue);
+
+
+    if (
+        !Number.isNaN(
+            parsed.getTime()
+        )
+    ) {
+
+        return [
+            parsed.getFullYear(),
+            String(
+                parsed.getMonth() + 1
+            ).padStart(2, "0"),
+            String(
+                parsed.getDate()
+            ).padStart(2, "0")
+        ].join("-");
+
+    }
+
+
+    return stringValue;
+
+}
+
+
+/* =========================================================
+   STATUS NORMALIZATION
+   ========================================================= */
+
+function normalizeStatus(value) {
+
+    if (!value) {
+        return "";
+    }
+
+
+    const status =
+        String(value)
+            .trim()
+            .toLowerCase();
+
+
+    if (
+        status === "present" ||
+        status === "p" ||
+        status === "1"
+    ) {
+
+        return "Present";
+
+    }
+
+
+    if (
+        status === "absent" ||
+        status === "a" ||
+        status === "0"
+    ) {
+
+        return "Absent";
+
+    }
+
+
+    if (
+        status === "late" ||
+        status === "l"
+    ) {
+
+        return "Late";
+
+    }
+
+
+    return "";
+
+}
+
+
+/* =========================================================
+   KEY PARSING
    ========================================================= */
 
 function extractStudentIdFromKey(key) {
@@ -242,14 +545,54 @@ function extractStudentIdFromKey(key) {
         return "";
     }
 
-    const parts =
-        String(key).split("__");
 
-    if (parts.length < 2) {
-        return "";
+    const value =
+        String(key);
+
+
+    const parts =
+        value.split("__");
+
+
+    if (
+        parts.length >= 2
+    ) {
+
+        return parts
+            .slice(1)
+            .join("__");
+
     }
 
-    return parts.slice(1).join("__");
+
+    /* Try common separators */
+
+    const underscoreParts =
+        value.split("_");
+
+
+    if (
+        underscoreParts.length >= 2
+    ) {
+
+        const possible =
+            underscoreParts[
+                underscoreParts.length - 1
+            ];
+
+        if (
+            possible.startsWith("SS")
+        ) {
+
+            return possible;
+
+        }
+
+    }
+
+
+    return "";
+
 }
 
 
@@ -259,39 +602,100 @@ function extractDateFromKey(key) {
         return "";
     }
 
-    const parts =
-        String(key).split("__");
 
-    return parts[0] || "";
+    const value =
+        String(key);
+
+
+    const doubleParts =
+        value.split("__");
+
+
+    if (
+        doubleParts.length >= 2
+    ) {
+
+        return normalizeDate(
+            doubleParts[0]
+        );
+
+    }
+
+
+    const match =
+        value.match(
+            /\d{4}-\d{2}-\d{2}/
+        );
+
+
+    if (match) {
+
+        return match[0];
+
+    }
+
+
+    return "";
+
 }
 
 
 /* =========================================================
-   NORMALIZE STATUS
+   REMOVE DUPLICATES
    ========================================================= */
 
-function normalizeStatus(status) {
+function removeDuplicateRecords(
+    records
+) {
 
-    if (!status) {
-        return "";
-    }
+    const map =
+        new Map();
 
-    const value =
-        String(status).trim().toLowerCase();
 
-    if (value === "present") {
-        return "Present";
-    }
+    records.forEach(record => {
 
-    if (value === "absent") {
-        return "Absent";
-    }
+        const uniqueKey =
+            `${record.date}__${record.studentId}`;
 
-    if (value === "late") {
-        return "Late";
-    }
 
-    return "";
+        /* Prefer record containing status */
+
+        if (
+            !map.has(uniqueKey)
+        ) {
+
+            map.set(
+                uniqueKey,
+                record
+            );
+
+        } else {
+
+            const existing =
+                map.get(uniqueKey);
+
+
+            if (
+                !existing.status &&
+                record.status
+            ) {
+
+                map.set(
+                    uniqueKey,
+                    record
+                );
+
+            }
+
+        }
+
+    });
+
+
+    return Array.from(
+        map.values()
+    );
+
 }
 
 
@@ -299,7 +703,9 @@ function normalizeStatus(status) {
    FIND STUDENT
    ========================================================= */
 
-function findStudent(studentId) {
+function findStudent(
+    studentId
+) {
 
     return allStudents.find(
         student =>
@@ -317,29 +723,49 @@ function findStudent(studentId) {
 function populateClassFilter() {
 
     const select =
-        document.getElementById("historyClass");
+        document.getElementById(
+            "historyClass"
+        );
+
 
     if (!select) {
         return;
     }
 
 
-    const currentValue =
+    const current =
         select.value;
 
 
-    const classes =
-        [
-            ...new Set(
-                allStudents
-                    .map(
-                        student =>
-                            String(
-                                student.className || ""
-                            ).trim()
-                    )
-                    .filter(Boolean)
+    let classes =
+        allStudents
+            .map(
+                student =>
+                    String(
+                        student.className || ""
+                    ).trim()
             )
+            .filter(Boolean);
+
+
+    /* Also include attendance classes */
+
+    classes =
+        classes.concat(
+            allAttendanceRecords
+                .map(
+                    record =>
+                        String(
+                            record.className || ""
+                        ).trim()
+                )
+                .filter(Boolean)
+        );
+
+
+    classes =
+        [
+            ...new Set(classes)
         ];
 
 
@@ -356,30 +782,41 @@ function populateClassFilter() {
 
 
     select.innerHTML =
-        '<option value="">All Classes</option>';
+        `
+        <option value="">
+            All Classes
+        </option>
+        `;
 
 
-    classes.forEach(className => {
+    classes.forEach(
+        className => {
 
-        const option =
-            document.createElement("option");
+            const option =
+                document.createElement(
+                    "option"
+                );
 
-        option.value = className;
+            option.value =
+                className;
 
-        option.textContent =
-            `Class ${className}`;
+            option.textContent =
+                `Class ${className}`;
 
-        select.appendChild(option);
+            select.appendChild(
+                option
+            );
 
-    });
+        }
+    );
 
 
     if (
-        classes.includes(currentValue)
+        classes.includes(current)
     ) {
 
         select.value =
-            currentValue;
+            current;
 
     }
 
@@ -397,40 +834,89 @@ function populateSectionFilter() {
             "historySection"
         );
 
+
     if (!select) {
         return;
     }
 
 
     const selectedClass =
-        getValue("historyClass");
+        getValue(
+            "historyClass"
+        );
 
 
     let sections =
-        allStudents
-            .filter(student => {
+        [];
 
-                if (!selectedClass) {
-                    return true;
-                }
 
-                return String(
-                    student.className || ""
-                ) === selectedClass;
+    allStudents.forEach(
+        student => {
 
-            })
-            .map(
-                student =>
+            if (
+                selectedClass &&
+                String(
+                    student.className
+                ) !== selectedClass
+            ) {
+
+                return;
+
+            }
+
+
+            if (
+                student.section
+            ) {
+
+                sections.push(
                     String(
-                        student.section || ""
+                        student.section
                     ).trim()
-            )
-            .filter(Boolean);
+                );
+
+            }
+
+        }
+    );
+
+
+    allAttendanceRecords.forEach(
+        record => {
+
+            if (
+                selectedClass &&
+                String(
+                    record.className
+                ) !== selectedClass
+            ) {
+
+                return;
+
+            }
+
+
+            if (
+                record.section
+            ) {
+
+                sections.push(
+                    String(
+                        record.section
+                    ).trim()
+                );
+
+            }
+
+        }
+    );
 
 
     sections =
         [
-            ...new Set(sections)
+            ...new Set(
+                sections.filter(Boolean)
+            )
         ];
 
 
@@ -446,35 +932,46 @@ function populateSectionFilter() {
     );
 
 
-    const currentValue =
+    const current =
         select.value;
 
 
     select.innerHTML =
-        '<option value="">All Sections</option>';
+        `
+        <option value="">
+            All Sections
+        </option>
+        `;
 
 
-    sections.forEach(section => {
+    sections.forEach(
+        section => {
 
-        const option =
-            document.createElement("option");
+            const option =
+                document.createElement(
+                    "option"
+                );
 
-        option.value = section;
+            option.value =
+                section;
 
-        option.textContent =
-            `Section ${section}`;
+            option.textContent =
+                `Section ${section}`;
 
-        select.appendChild(option);
+            select.appendChild(
+                option
+            );
 
-    });
+        }
+    );
 
 
     if (
-        sections.includes(currentValue)
+        sections.includes(current)
     ) {
 
         select.value =
-            currentValue;
+            current;
 
     }
 
@@ -482,25 +979,28 @@ function populateSectionFilter() {
 
 
 /* =========================================================
-   EVENT LISTENERS
+   EVENTS
    ========================================================= */
 
 function setupEventListeners() {
 
-    const applyButton =
+    const apply =
         document.getElementById(
             "applyHistoryFilterBtn"
         );
 
-    const clearButton =
+
+    const clear =
         document.getElementById(
             "clearHistoryFilterBtn"
         );
 
-    const refreshButton =
+
+    const refresh =
         document.getElementById(
             "refreshHistoryBtn"
         );
+
 
     const classSelect =
         document.getElementById(
@@ -508,9 +1008,39 @@ function setupEventListeners() {
         );
 
 
-    if (applyButton) {
+    const sectionSelect =
+        document.getElementById(
+            "historySection"
+        );
 
-        applyButton.addEventListener(
+
+    const statusSelect =
+        document.getElementById(
+            "historyStatus"
+        );
+
+
+    const search =
+        document.getElementById(
+            "historyStudentSearch"
+        );
+
+
+    const dateFrom =
+        document.getElementById(
+            "historyDateFrom"
+        );
+
+
+    const dateTo =
+        document.getElementById(
+            "historyDateTo"
+        );
+
+
+    if (apply) {
+
+        apply.addEventListener(
             "click",
             applyFilters
         );
@@ -518,9 +1048,9 @@ function setupEventListeners() {
     }
 
 
-    if (clearButton) {
+    if (clear) {
 
-        clearButton.addEventListener(
+        clear.addEventListener(
             "click",
             clearFilters
         );
@@ -528,9 +1058,9 @@ function setupEventListeners() {
     }
 
 
-    if (refreshButton) {
+    if (refresh) {
 
-        refreshButton.addEventListener(
+        refresh.addEventListener(
             "click",
             refreshHistory
         );
@@ -554,69 +1084,63 @@ function setupEventListeners() {
     }
 
 
-    const searchInput =
-        document.getElementById(
-            "historyStudentSearch"
-        );
+    if (sectionSelect) {
 
-
-    if (searchInput) {
-
-        searchInput.addEventListener(
-            "input",
-            debounce(
-                applyFilters,
-                180
-            )
+        sectionSelect.addEventListener(
+            "change",
+            applyFilters
         );
 
     }
 
 
-    const sectionSelect =
-        document.getElementById(
-            "historySection"
+    if (statusSelect) {
+
+        statusSelect.addEventListener(
+            "change",
+            applyFilters
         );
 
-    const statusSelect =
-        document.getElementById(
-            "historyStatus"
+    }
+
+
+    if (dateFrom) {
+
+        dateFrom.addEventListener(
+            "change",
+            applyFilters
         );
 
-    const dateFrom =
-        document.getElementById(
-            "historyDateFrom"
+    }
+
+
+    if (dateTo) {
+
+        dateTo.addEventListener(
+            "change",
+            applyFilters
         );
 
-    const dateTo =
-        document.getElementById(
-            "historyDateTo"
+    }
+
+
+    if (search) {
+
+        search.addEventListener(
+            "input",
+            debounce(
+                applyFilters,
+                150
+            )
         );
 
-
-    [
-        sectionSelect,
-        statusSelect,
-        dateFrom,
-        dateTo
-    ].forEach(element => {
-
-        if (element) {
-
-            element.addEventListener(
-                "change",
-                applyFilters
-            );
-
-        }
-
-    });
+    }
 
 }
 
 
 /* =========================================================
-   APPLY FILTERS
+   FILTER
    ========================================================= */
 
 function applyFilters() {
@@ -626,25 +1150,30 @@ function applyFilters() {
             "historyStudentSearch"
         ).toLowerCase();
 
+
     const className =
         getValue(
             "historyClass"
         );
+
 
     const section =
         getValue(
             "historySection"
         );
 
+
     const status =
         getValue(
             "historyStatus"
         );
 
+
     const dateFrom =
         getValue(
             "historyDateFrom"
         );
+
 
     const dateTo =
         getValue(
@@ -662,28 +1191,27 @@ function applyFilters() {
                     );
 
 
-                /* Student Search */
+                /* Search */
+
                 if (search) {
 
-                    const studentName =
+                    const name =
                         String(
                             student?.name ||
                             ""
                         ).toLowerCase();
 
-                    const studentId =
+
+                    const id =
                         String(
                             record.studentId ||
                             ""
                         ).toLowerCase();
 
+
                     if (
-                        !studentName.includes(
-                            search
-                        ) &&
-                        !studentId.includes(
-                            search
-                        )
+                        !name.includes(search) &&
+                        !id.includes(search)
                     ) {
 
                         return false;
@@ -694,6 +1222,7 @@ function applyFilters() {
 
 
                 /* Class */
+
                 if (
                     className &&
                     String(
@@ -707,6 +1236,7 @@ function applyFilters() {
 
 
                 /* Section */
+
                 if (
                     section &&
                     String(
@@ -720,6 +1250,7 @@ function applyFilters() {
 
 
                 /* Status */
+
                 if (
                     status &&
                     record.status !== status
@@ -731,6 +1262,7 @@ function applyFilters() {
 
 
                 /* Date From */
+
                 if (
                     dateFrom &&
                     record.date < dateFrom
@@ -742,6 +1274,7 @@ function applyFilters() {
 
 
                 /* Date To */
+
                 if (
                     dateTo &&
                     record.date > dateTo
@@ -761,19 +1294,29 @@ function applyFilters() {
     filteredRecords.sort(
         (a, b) => {
 
-            if (a.date !== b.date) {
-
-                return String(b.date)
+            const dateCompare =
+                String(b.date)
                     .localeCompare(
                         String(a.date)
                     );
 
+
+            if (
+                dateCompare !== 0
+            ) {
+
+                return dateCompare;
+
             }
 
-            return String(a.studentId)
-                .localeCompare(
-                    String(b.studentId)
-                );
+
+            return String(
+                a.studentId
+            ).localeCompare(
+                String(
+                    b.studentId
+                )
+            );
 
         }
     );
@@ -789,7 +1332,7 @@ function applyFilters() {
 
 
 /* =========================================================
-   RENDER HISTORY TABLE
+   HISTORY TABLE
    ========================================================= */
 
 function renderHistoryTable() {
@@ -798,6 +1341,7 @@ function renderHistoryTable() {
         document.getElementById(
             "attendanceHistoryBody"
         );
+
 
     const empty =
         document.getElementById(
@@ -839,7 +1383,9 @@ function renderHistoryTable() {
         record => {
 
             const row =
-                document.createElement("tr");
+                document.createElement(
+                    "tr"
+                );
 
 
             const student =
@@ -848,79 +1394,45 @@ function renderHistoryTable() {
                 );
 
 
-            const studentName =
+            const name =
                 student?.name ||
                 "Unknown Student";
 
 
-            const studentPhoto =
-                student?.photo ||
-                "";
-
-
-            const initials =
-                getInitials(
-                    studentName
-                );
-
-
-            const studentCell =
-                document.createElement("td");
-
-
-            studentCell.innerHTML = `
-                <div class="history-student-cell">
-
-                    ${
-                        studentPhoto
-                        ? `
-                            <img
-                                src="${escapeAttribute(studentPhoto)}"
-                                alt="${escapeAttribute(studentName)}"
-                                class="history-student-photo">
-                          `
-                        : `
-                            <div class="history-student-avatar">
-                                ${escapeHtml(initials)}
-                            </div>
-                          `
-                    }
-
-                    <div class="history-student-info">
-
-                        <div class="history-student-name">
-                            ${escapeHtml(studentName)}
-                        </div>
-
-                        ${
-                            student?.studentPhone
-                            ? `
-                                <div class="history-student-phone">
-                                    ${escapeHtml(
-                                        student.studentPhone
-                                    )}
-                                </div>
-                              `
-                            : ""
-                        }
-
-                    </div>
-
-                </div>
-            `;
-
+            /* Date */
 
             const dateCell =
                 createCell(
-                    formatDate(record.date)
+                    formatDate(
+                        record.date
+                    )
                 );
 
+
+            /* Student */
+
+            const studentCell =
+                document.createElement(
+                    "td"
+                );
+
+
+            studentCell.innerHTML =
+                createStudentHTML(
+                    student,
+                    name
+                );
+
+
+            /* ID */
 
             const idCell =
                 createCell(
                     record.studentId
                 );
 
+
+            /* Class */
 
             const classCell =
                 createCell(
@@ -930,6 +1442,8 @@ function renderHistoryTable() {
                 );
 
 
+            /* Section */
+
             const sectionCell =
                 createCell(
                     record.section
@@ -938,8 +1452,12 @@ function renderHistoryTable() {
                 );
 
 
+            /* Status */
+
             const statusCell =
-                document.createElement("td");
+                document.createElement(
+                    "td"
+                );
 
 
             statusCell.innerHTML =
@@ -947,6 +1465,8 @@ function renderHistoryTable() {
                     record.status
                 );
 
+
+            /* Updated */
 
             const updatedCell =
                 createCell(
@@ -957,22 +1477,38 @@ function renderHistoryTable() {
                 );
 
 
-            row.appendChild(dateCell);
+            row.appendChild(
+                dateCell
+            );
 
-            row.appendChild(studentCell);
+            row.appendChild(
+                studentCell
+            );
 
-            row.appendChild(idCell);
+            row.appendChild(
+                idCell
+            );
 
-            row.appendChild(classCell);
+            row.appendChild(
+                classCell
+            );
 
-            row.appendChild(sectionCell);
+            row.appendChild(
+                sectionCell
+            );
 
-            row.appendChild(statusCell);
+            row.appendChild(
+                statusCell
+            );
 
-            row.appendChild(updatedCell);
+            row.appendChild(
+                updatedCell
+            );
 
 
-            body.appendChild(row);
+            body.appendChild(
+                row
+            );
 
         }
     );
@@ -982,6 +1518,7 @@ function renderHistoryTable() {
         filteredRecords.length
     );
 
+
     updateResultText(
         filteredRecords.length
     );
@@ -990,7 +1527,7 @@ function renderHistoryTable() {
 
 
 /* =========================================================
-   SUMMARY
+   SUMMARY — FIXED
    ========================================================= */
 
 function renderSummary() {
@@ -1002,21 +1539,27 @@ function renderSummary() {
     const present =
         filteredRecords.filter(
             record =>
-                record.status === "Present"
+                normalizeStatus(
+                    record.status
+                ) === "Present"
         ).length;
 
 
     const absent =
         filteredRecords.filter(
             record =>
-                record.status === "Absent"
+                normalizeStatus(
+                    record.status
+                ) === "Absent"
         ).length;
 
 
     const late =
         filteredRecords.filter(
             record =>
-                record.status === "Late"
+                normalizeStatus(
+                    record.status
+                ) === "Late"
         ).length;
 
 
@@ -1025,15 +1568,18 @@ function renderSummary() {
         total
     );
 
+
     setText(
         "historyPresentRecords",
         present
     );
 
+
     setText(
         "historyAbsentRecords",
         absent
     );
+
 
     setText(
         "historyLateRecords",
@@ -1053,6 +1599,7 @@ function renderStudentOverview() {
         document.getElementById(
             "studentOverviewBody"
         );
+
 
     const empty =
         document.getElementById(
@@ -1086,7 +1633,7 @@ function renderStudentOverview() {
     }
 
 
-    const studentMap =
+    const students =
         new Map();
 
 
@@ -1094,12 +1641,12 @@ function renderStudentOverview() {
         record => {
 
             if (
-                !studentMap.has(
+                !students.has(
                     record.studentId
                 )
             ) {
 
-                studentMap.set(
+                students.set(
                     record.studentId,
                     {
                         studentId:
@@ -1107,9 +1654,6 @@ function renderStudentOverview() {
 
                         className:
                             record.className,
-
-                        section:
-                            record.section,
 
                         total: 0,
 
@@ -1125,7 +1669,7 @@ function renderStudentOverview() {
 
 
             const item =
-                studentMap.get(
+                students.get(
                     record.studentId
                 );
 
@@ -1133,20 +1677,26 @@ function renderStudentOverview() {
             item.total++;
 
 
+            const status =
+                normalizeStatus(
+                    record.status
+                );
+
+
             if (
-                record.status === "Present"
+                status === "Present"
             ) {
 
                 item.present++;
 
             } else if (
-                record.status === "Absent"
+                status === "Absent"
             ) {
 
                 item.absent++;
 
             } else if (
-                record.status === "Late"
+                status === "Late"
             ) {
 
                 item.late++;
@@ -1157,21 +1707,9 @@ function renderStudentOverview() {
     );
 
 
-    const overview =
-        Array.from(
-            studentMap.values()
-        );
-
-
-    overview.sort(
-        (a, b) =>
-            a.studentId.localeCompare(
-                b.studentId
-            )
-    );
-
-
-    overview.forEach(
+    Array.from(
+        students.values()
+    ).forEach(
         item => {
 
             const student =
@@ -1181,58 +1719,24 @@ function renderStudentOverview() {
 
 
             const row =
-                document.createElement("tr");
+                document.createElement(
+                    "tr"
+                );
 
 
             const nameCell =
-                document.createElement("td");
+                document.createElement(
+                    "td"
+                );
 
 
-            nameCell.innerHTML = `
-                <div class="history-student-cell">
-
-                    ${
-                        student?.photo
-                        ? `
-                            <img
-                                src="${escapeAttribute(student.photo)}"
-                                alt="${escapeAttribute(
-                                    student?.name ||
-                                    "Student"
-                                )}"
-                                class="history-student-photo">
-                          `
-                        : `
-                            <div class="history-student-avatar">
-                                ${escapeHtml(
-                                    getInitials(
-                                        student?.name ||
-                                        "Student"
-                                    )
-                                )}
-                            </div>
-                          `
-                    }
-
-                    <div class="history-student-info">
-
-                        <div class="history-student-name">
-                            ${escapeHtml(
-                                student?.name ||
-                                "Unknown Student"
-                            )}
-                        </div>
-
-                        <div class="history-student-phone">
-                            ${escapeHtml(
-                                item.studentId
-                            )}
-                        </div>
-
-                    </div>
-
-                </div>
-            `;
+            nameCell.innerHTML =
+                createStudentHTML(
+                    student,
+                    student?.name ||
+                    "Unknown Student",
+                    item.studentId
+                );
 
 
             const classCell =
@@ -1268,14 +1772,20 @@ function renderStudentOverview() {
 
 
             const percentage =
-                calculateAttendancePercentage(
-                    item.present,
-                    item.total
-                );
+                item.total > 0
+                    ? Math.round(
+                        (
+                            item.present /
+                            item.total
+                        ) * 100
+                    )
+                    : 0;
 
 
             const percentageCell =
-                document.createElement("td");
+                document.createElement(
+                    "td"
+                );
 
 
             percentageCell.innerHTML =
@@ -1284,24 +1794,38 @@ function renderStudentOverview() {
                 );
 
 
-            row.appendChild(nameCell);
+            row.appendChild(
+                nameCell
+            );
 
-            row.appendChild(classCell);
+            row.appendChild(
+                classCell
+            );
 
-            row.appendChild(totalCell);
+            row.appendChild(
+                totalCell
+            );
 
-            row.appendChild(presentCell);
+            row.appendChild(
+                presentCell
+            );
 
-            row.appendChild(absentCell);
+            row.appendChild(
+                absentCell
+            );
 
-            row.appendChild(lateCell);
+            row.appendChild(
+                lateCell
+            );
 
             row.appendChild(
                 percentageCell
             );
 
 
-            body.appendChild(row);
+            body.appendChild(
+                row
+            );
 
         }
     );
@@ -1310,21 +1834,62 @@ function renderStudentOverview() {
 
 
 /* =========================================================
-   ATTENDANCE PERCENTAGE
+   STUDENT HTML
    ========================================================= */
 
-function calculateAttendancePercentage(
-    present,
-    total
+function createStudentHTML(
+    student,
+    name,
+    secondaryText = ""
 ) {
 
-    if (!total) {
-        return 0;
-    }
+    const photo =
+        student?.photo ||
+        "";
 
-    return Math.round(
-        (present / total) * 100
-    );
+
+    const initials =
+        getInitials(
+            name
+        );
+
+
+    return `
+        <div class="history-student-cell">
+
+            ${
+                photo
+                ? `
+                    <img
+                        src="${escapeAttribute(photo)}"
+                        alt="${escapeAttribute(name)}"
+                        class="history-student-photo">
+                  `
+                : `
+                    <div class="history-student-avatar">
+                        ${escapeHtml(initials)}
+                    </div>
+                  `
+            }
+
+            <div class="history-student-info">
+
+                <div class="history-student-name">
+                    ${escapeHtml(name)}
+                </div>
+
+                <div class="history-student-phone">
+                    ${escapeHtml(
+                        secondaryText ||
+                        student?.studentPhone ||
+                        ""
+                    )}
+                </div>
+
+            </div>
+
+        </div>
+    `;
 
 }
 
@@ -1333,10 +1898,14 @@ function calculateAttendancePercentage(
    STATUS BADGE
    ========================================================= */
 
-function createStatusBadge(status) {
+function createStatusBadge(
+    status
+) {
 
     const normalized =
-        normalizeStatus(status);
+        normalizeStatus(
+            status
+        );
 
 
     if (
@@ -1388,7 +1957,7 @@ function createStatusBadge(status) {
 
 
 /* =========================================================
-   PERCENTAGE BADGE
+   PERCENTAGE
    ========================================================= */
 
 function createPercentageBadge(
@@ -1399,7 +1968,9 @@ function createPercentageBadge(
         "percentage-low";
 
 
-    if (percentage >= 75) {
+    if (
+        percentage >= 75
+    ) {
 
         className =
             "percentage-high";
@@ -1424,7 +1995,7 @@ function createPercentageBadge(
 
 
 /* =========================================================
-   CLEAR FILTERS
+   CLEAR
    ========================================================= */
 
 function clearFilters() {
@@ -1434,27 +2005,33 @@ function clearFilters() {
         ""
     );
 
+
     setValue(
         "historyClass",
         ""
     );
 
+
     populateSectionFilter();
+
 
     setValue(
         "historySection",
         ""
     );
 
+
     setValue(
         "historyStatus",
         ""
     );
 
+
     setValue(
         "historyDateFrom",
         ""
     );
+
 
     setValue(
         "historyDateTo",
@@ -1499,52 +2076,97 @@ function refreshHistory() {
 
 
 /* =========================================================
-   HELPERS
+   UI HELPERS
    ========================================================= */
+
+function updateRecordCount(
+    count
+) {
+
+    setText(
+        "historyRecordCount",
+        `${count} Record${count === 1 ? "" : "s"}`
+    );
+
+}
+
+
+function updateResultText(
+    count
+) {
+
+    setText(
+        "historyResultText",
+        count === 0
+            ? "No attendance records found"
+            : `Showing ${count} attendance record${count === 1 ? "" : "s"}`
+    );
+
+}
+
 
 function getValue(id) {
 
     const element =
         document.getElementById(id);
 
+
     return element
-        ? String(element.value || "").trim()
+        ? String(
+            element.value || ""
+        ).trim()
         : "";
 
 }
 
 
-function setValue(id, value) {
+function setValue(
+    id,
+    value
+) {
 
     const element =
         document.getElementById(id);
 
+
     if (element) {
-        element.value = value;
+        element.value =
+            value;
     }
 
 }
 
 
-function setText(id, value) {
+function setText(
+    id,
+    value
+) {
 
     const element =
         document.getElementById(id);
 
+
     if (element) {
-        element.textContent = value;
+        element.textContent =
+            value;
     }
 
 }
 
 
-function createCell(value) {
+function createCell(
+    value
+) {
 
     const cell =
-        document.createElement("td");
+        document.createElement(
+            "td"
+        );
+
 
     cell.textContent =
         value ?? "—";
+
 
     return cell;
 
@@ -1552,19 +2174,27 @@ function createCell(value) {
 
 
 /* =========================================================
-   DATE FORMAT
+   DATE
    ========================================================= */
 
-function formatDate(dateValue) {
+function formatDate(
+    value
+) {
 
-    if (!dateValue) {
+    if (!value) {
         return "—";
     }
 
 
+    const normalized =
+        normalizeDate(
+            value
+        );
+
+
     const date =
         new Date(
-            `${dateValue}T00:00:00`
+            `${normalized}T00:00:00`
         );
 
 
@@ -1574,7 +2204,7 @@ function formatDate(dateValue) {
         )
     ) {
 
-        return dateValue;
+        return value;
 
     }
 
@@ -1592,10 +2222,12 @@ function formatDate(dateValue) {
 
 
 /* =========================================================
-   DATE + TIME FORMAT
+   DATE TIME
    ========================================================= */
 
-function formatDateTime(value) {
+function formatDateTime(
+    value
+) {
 
     if (!value) {
         return "—";
@@ -1603,7 +2235,9 @@ function formatDateTime(value) {
 
 
     const date =
-        new Date(value);
+        new Date(
+            value
+        );
 
 
     if (
@@ -1635,10 +2269,14 @@ function formatDateTime(value) {
    INITIALS
    ========================================================= */
 
-function getInitials(name) {
+function getInitials(
+    name
+) {
 
     const words =
-        String(name || "")
+        String(
+            name || ""
+        )
             .trim()
             .split(/\s+/)
             .filter(Boolean);
@@ -1649,7 +2287,9 @@ function getInitials(name) {
     }
 
 
-    if (words.length === 1) {
+    if (
+        words.length === 1
+    ) {
 
         return words[0]
             .substring(0, 2)
@@ -1660,19 +2300,25 @@ function getInitials(name) {
 
     return (
         words[0][0] +
-        words[words.length - 1][0]
+        words[
+            words.length - 1
+        ][0]
     ).toUpperCase();
 
 }
 
 
 /* =========================================================
-   HTML ESCAPE
+   ESCAPE
    ========================================================= */
 
-function escapeHtml(value) {
+function escapeHtml(
+    value
+) {
 
-    return String(value ?? "")
+    return String(
+        value ?? ""
+    )
         .replace(
             /&/g,
             "&amp;"
@@ -1697,9 +2343,13 @@ function escapeHtml(value) {
 }
 
 
-function escapeAttribute(value) {
+function escapeAttribute(
+    value
+) {
 
-    return escapeHtml(value);
+    return escapeHtml(
+        value
+    );
 
 }
 
@@ -1713,21 +2363,25 @@ function debounce(
     delay
 ) {
 
-    let timeout;
+    let timer;
 
 
     return function (...args) {
 
-        clearTimeout(timeout);
+        clearTimeout(
+            timer
+        );
 
 
-        timeout =
+        timer =
             setTimeout(
                 () => {
+
                     callback.apply(
                         this,
                         args
                     );
+
                 },
                 delay
             );
@@ -1766,52 +2420,70 @@ function showToast(
 
 
     if (type) {
-        toast.classList.add(type);
+
+        toast.classList.add(
+            type
+        );
+
     }
 
 
-    requestAnimationFrame(() => {
+    requestAnimationFrame(
+        () => {
 
-        toast.classList.add(
-            "show"
-        );
-
-    });
-
-
-    clearTimeout(
-        showToast.timeout
-    );
-
-
-    showToast.timeout =
-        setTimeout(() => {
-
-            toast.classList.remove(
+            toast.classList.add(
                 "show"
             );
 
-        }, 2600);
+        }
+    );
+
+
+    clearTimeout(
+        showToast.timer
+    );
+
+
+    showToast.timer =
+        setTimeout(
+            () => {
+
+                toast.classList.remove(
+                    "show"
+                );
+
+            },
+            2600
+        );
 
 }
 
 
 /* =========================================================
-   GLOBAL DEBUG ACCESS
+   DEBUG
    ========================================================= */
 
 window.SmartSchoolAttendanceHistory = {
 
-    refresh: refreshHistory,
+    refresh:
+        refreshHistory,
 
-    applyFilters,
+    applyFilters:
+        applyFilters,
 
-    clearFilters,
+    clearFilters:
+        clearFilters,
 
-    getRecords: () =>
-        [...allAttendanceRecords],
+    getAllRecords:
+        () =>
+            [
+                ...allAttendanceRecords
+            ],
 
-    getFilteredRecords: () =>
-        [...filteredRecords]
+    getFilteredRecords:
+        () =>
+            [
+                ...filteredRecords
+            ]
 
 };
