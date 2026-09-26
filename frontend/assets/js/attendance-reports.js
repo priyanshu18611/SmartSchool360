@@ -1,6 +1,7 @@
 /* =========================================================
    SmartSchool360
    Attendance Reports
+   Robust Attendance Data Compatibility
    File: attendance-reports.js
    ========================================================= */
 
@@ -21,7 +22,7 @@
     const $ = (id) => document.getElementById(id);
 
     /* =========================================================
-       HELPERS
+       BASIC HELPERS
        ========================================================= */
 
     function safeJSON(value, fallback) {
@@ -55,6 +56,24 @@
 
         if (/^\d{4}-\d{2}-\d{2}$/.test(valueText)) {
             return valueText;
+        }
+
+        /*
+         * Handles:
+         * 2026/09/26
+         * 26/09/2026
+         * 26-09-2026
+         */
+        let match = valueText.match(
+            /^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})$/
+        );
+
+        if (match) {
+            const day = match[1].padStart(2, "0");
+            const month = match[2].padStart(2, "0");
+            const year = match[3];
+
+            return `${year}-${month}-${day}`;
         }
 
         const date = new Date(valueText);
@@ -109,12 +128,25 @@
     }
 
     function normalizeStatus(value) {
+        if (
+            value &&
+            typeof value === "object"
+        ) {
+            value =
+                value.status ||
+                value.attendanceStatus ||
+                value.attendance_status ||
+                value.value ||
+                "";
+        }
+
         const status = text(value).toLowerCase();
 
         if (
             status === "present" ||
             status === "p" ||
-            status === "1"
+            status === "1" ||
+            status === "true"
         ) {
             return "Present";
         }
@@ -122,7 +154,8 @@
         if (
             status === "absent" ||
             status === "a" ||
-            status === "0"
+            status === "0" ||
+            status === "false"
         ) {
             return "Absent";
         }
@@ -183,7 +216,7 @@
     }
 
     /* =========================================================
-       DATA
+       STUDENT DATA
        ========================================================= */
 
     function loadStudents() {
@@ -208,65 +241,23 @@
         }
     }
 
-    function normalizeAttendanceRecord(record) {
-        if (!record || typeof record !== "object") {
-            return null;
-        }
+    /* =========================================================
+       ATTENDANCE NORMALIZATION
+       ========================================================= */
 
-        let studentId =
-            record.studentId ||
-            record.studentID ||
-            record.student_id ||
-            record.id ||
-            "";
-
-        let date =
-            record.date ||
-            record.attendanceDate ||
-            record.attendance_date ||
-            "";
-
-        let className =
-            record.className ||
-            record.class ||
-            record.class_name ||
-            "";
-
-        let section =
-            record.section ||
-            record.sectionName ||
-            record.section_name ||
-            "";
-
-        let status =
-            record.status ||
-            record.attendanceStatus ||
-            record.attendance_status ||
-            "";
-
-        if ((!studentId || !date) && record._storageKey) {
-            const parts = String(
-                record._storageKey
-            ).split("__");
-
-            if (parts.length >= 2) {
-                if (!date) {
-                    date = parts[0];
-                }
-
-                if (!studentId) {
-                    studentId = parts
-                        .slice(1)
-                        .join("__");
-                }
-            }
-        }
-
+    function buildRecord(
+        studentId,
+        date,
+        status,
+        className = "",
+        section = "",
+        extra = {}
+    ) {
         studentId = text(studentId);
         date = normalizeDate(date);
+        status = normalizeStatus(status);
         className = cleanClass(className);
         section = cleanSection(section);
-        status = normalizeStatus(status);
 
         if (!studentId || !date || !status) {
             return null;
@@ -278,67 +269,524 @@
             className,
             section,
             status,
-            updatedAt: record.updatedAt || "",
-            savedAt: record.savedAt || ""
+            updatedAt:
+                extra.updatedAt || "",
+            savedAt:
+                extra.savedAt || ""
         };
     }
 
-    function loadAttendance() {
-        const raw = localStorage.getItem(
-            ATTENDANCE_KEY
-        );
+    function recordFromObject(
+        value,
+        fallbackKey = "",
+        context = {}
+    ) {
+        if (
+            !value ||
+            typeof value !== "object" ||
+            Array.isArray(value)
+        ) {
+            return null;
+        }
 
+        let studentId =
+            value.studentId ||
+            value.studentID ||
+            value.student_id ||
+            value.student ||
+            value.studentKey ||
+            "";
+
+        let date =
+            value.date ||
+            value.attendanceDate ||
+            value.attendance_date ||
+            value.day ||
+            context.date ||
+            "";
+
+        let status =
+            value.status ||
+            value.attendanceStatus ||
+            value.attendance_status ||
+            value.value ||
+            "";
+
+        let className =
+            value.className ||
+            value.class ||
+            value.class_name ||
+            context.className ||
+            "";
+
+        let section =
+            value.section ||
+            value.sectionName ||
+            value.section_name ||
+            context.section ||
+            "";
+
+        /*
+         * Storage key format used by SmartSchool360:
+         *
+         * YYYY-MM-DD__STUDENT_ID
+         */
+        if (
+            fallbackKey &&
+            (
+                !studentId ||
+                !date
+            )
+        ) {
+            const keyParts =
+                String(fallbackKey).split("__");
+
+            if (keyParts.length >= 2) {
+                if (!date) {
+                    date = keyParts[0];
+                }
+
+                if (!studentId) {
+                    studentId =
+                        keyParts
+                            .slice(1)
+                            .join("__");
+                }
+            }
+        }
+
+        /*
+         * Another possible key:
+         *
+         * STUDENT_ID__YYYY-MM-DD
+         */
+        if (
+            fallbackKey &&
+            (
+                !studentId ||
+                !date
+            )
+        ) {
+            const keyParts =
+                String(fallbackKey).split("__");
+
+            if (keyParts.length >= 2) {
+                const firstDate =
+                    normalizeDate(
+                        keyParts[0]
+                    );
+
+                const secondDate =
+                    normalizeDate(
+                        keyParts[
+                            keyParts.length - 1
+                        ]
+                    );
+
+                if (firstDate) {
+                    date = date || firstDate;
+
+                    if (!studentId) {
+                        studentId =
+                            keyParts
+                                .slice(1)
+                                .join("__");
+                    }
+                }
+
+                if (secondDate) {
+                    date = date || secondDate;
+
+                    if (!studentId) {
+                        studentId =
+                            keyParts
+                                .slice(
+                                    0,
+                                    -1
+                                )
+                                .join("__");
+                    }
+                }
+            }
+        }
+
+        return buildRecord(
+            studentId,
+            date,
+            status,
+            className,
+            section,
+            value
+        );
+    }
+
+    function collectAttendance(
+        source,
+        context = {},
+        output = [],
+        visited = new WeakSet()
+    ) {
+        if (
+            source === null ||
+            source === undefined
+        ) {
+            return output;
+        }
+
+        /*
+         * String can be:
+         * - JSON
+         * - Present / Absent / Late
+         */
+        if (
+            typeof source === "string"
+        ) {
+            const parsed =
+                safeJSON(
+                    source,
+                    null
+                );
+
+            if (
+                parsed !== null &&
+                typeof parsed === "object"
+            ) {
+                collectAttendance(
+                    parsed,
+                    context,
+                    output,
+                    visited
+                );
+
+                return output;
+            }
+
+            const status =
+                normalizeStatus(source);
+
+            if (
+                status &&
+                context.studentId &&
+                context.date
+            ) {
+                const record =
+                    buildRecord(
+                        context.studentId,
+                        context.date,
+                        status,
+                        context.className,
+                        context.section
+                    );
+
+                if (record) {
+                    output.push(record);
+                }
+            }
+
+            return output;
+        }
+
+        /*
+         * Primitive status values.
+         */
+        if (
+            typeof source === "number" ||
+            typeof source === "boolean"
+        ) {
+            const status =
+                normalizeStatus(source);
+
+            if (
+                status &&
+                context.studentId &&
+                context.date
+            ) {
+                const record =
+                    buildRecord(
+                        context.studentId,
+                        context.date,
+                        status,
+                        context.className,
+                        context.section
+                    );
+
+                if (record) {
+                    output.push(record);
+                }
+            }
+
+            return output;
+        }
+
+        /*
+         * Array.
+         */
+        if (Array.isArray(source)) {
+            source.forEach((item) => {
+                collectAttendance(
+                    item,
+                    context,
+                    output,
+                    visited
+                );
+            });
+
+            return output;
+        }
+
+        /*
+         * Object.
+         */
+        if (
+            typeof source === "object"
+        ) {
+            if (visited.has(source)) {
+                return output;
+            }
+
+            visited.add(source);
+
+            /*
+             * First, try treating this object
+             * as an actual attendance record.
+             */
+            const directRecord =
+                recordFromObject(
+                    source,
+                    "",
+                    context
+                );
+
+            if (directRecord) {
+                output.push(
+                    directRecord
+                );
+
+                return output;
+            }
+
+            /*
+             * Otherwise inspect its keys.
+             */
+            Object.entries(source)
+                .forEach(
+                    ([key, value]) => {
+
+                        const keyText =
+                            text(key);
+
+                        /*
+                         * Detect:
+                         * YYYY-MM-DD__STUDENT_ID
+                         */
+                        const keyParts =
+                            keyText.split("__");
+
+                        let nextContext = {
+                            ...context
+                        };
+
+                        if (
+                            keyParts.length >= 2
+                        ) {
+                            const firstDate =
+                                normalizeDate(
+                                    keyParts[0]
+                                );
+
+                            const lastDate =
+                                normalizeDate(
+                                    keyParts[
+                                        keyParts.length - 1
+                                    ]
+                                );
+
+                            if (firstDate) {
+                                nextContext.date =
+                                    firstDate;
+
+                                nextContext.studentId =
+                                    keyParts
+                                        .slice(1)
+                                        .join("__");
+                            } else if (
+                                lastDate
+                            ) {
+                                nextContext.date =
+                                    lastDate;
+
+                                nextContext.studentId =
+                                    keyParts
+                                        .slice(
+                                            0,
+                                            -1
+                                        )
+                                        .join("__");
+                            }
+                        }
+
+                        /*
+                         * Detect direct date keys.
+                         */
+                        const keyDate =
+                            normalizeDate(
+                                keyText
+                            );
+
+                        if (keyDate) {
+                            nextContext.date =
+                                keyDate;
+                        }
+
+                        /*
+                         * Detect student object keys
+                         * using known student IDs.
+                         */
+                        const knownStudent =
+                            state.students.find(
+                                (student) =>
+                                    text(
+                                        student.id
+                                    ) === keyText
+                            );
+
+                        if (
+                            knownStudent
+                        ) {
+                            nextContext.studentId =
+                                keyText;
+
+                            nextContext.className =
+                                cleanClass(
+                                    knownStudent.className
+                                );
+
+                            nextContext.section =
+                                cleanSection(
+                                    knownStudent.section
+                                );
+                        }
+
+                        /*
+                         * Direct primitive status:
+                         *
+                         * {
+                         *   "2026-09-26__SS20261011":
+                         *   "Present"
+                         * }
+                         */
+                        const directStatus =
+                            normalizeStatus(
+                                value
+                            );
+
+                        if (
+                            directStatus &&
+                            nextContext.studentId &&
+                            nextContext.date
+                        ) {
+                            const record =
+                                buildRecord(
+                                    nextContext.studentId,
+                                    nextContext.date,
+                                    directStatus,
+                                    nextContext.className,
+                                    nextContext.section
+                                );
+
+                            if (record) {
+                                output.push(
+                                    record
+                                );
+                            }
+
+                            return;
+                        }
+
+                        /*
+                         * Nested object/array.
+                         */
+                        collectAttendance(
+                            value,
+                            nextContext,
+                            output,
+                            visited
+                        );
+                    }
+                );
+        }
+
+        return output;
+    }
+
+    function deduplicateAttendance(
+        records
+    ) {
+        const map = new Map();
+
+        records.forEach((record) => {
+            const key =
+                [
+                    record.date,
+                    record.studentId
+                ].join("__");
+
+            /*
+             * Latest record wins.
+             */
+            map.set(
+                key,
+                record
+            );
+        });
+
+        return [...map.values()];
+    }
+
+    function loadAttendance() {
         state.attendance = [];
+
+        const raw =
+            localStorage.getItem(
+                ATTENDANCE_KEY
+            );
 
         if (!raw) {
             return;
         }
 
-        const parsed = safeJSON(raw, {});
+        /*
+         * Parse JSON first.
+         */
+        const parsed =
+            safeJSON(
+                raw,
+                null
+            );
 
-        if (Array.isArray(parsed)) {
-            parsed.forEach((item) => {
-                const record =
-                    normalizeAttendanceRecord(item);
-
-                if (record) {
-                    state.attendance.push(record);
-                }
-            });
-
+        if (
+            parsed === null
+        ) {
+            /*
+             * In case storage itself is
+             * a primitive/string status.
+             */
             return;
         }
 
-        if (
-            parsed &&
-            typeof parsed === "object"
-        ) {
-            Object.entries(parsed).forEach(
-                ([key, value]) => {
-                    if (
-                        value &&
-                        typeof value === "object" &&
-                        !Array.isArray(value)
-                    ) {
-                        const record =
-                            normalizeAttendanceRecord({
-                                ...value,
-                                _storageKey: key
-                            });
-
-                        if (record) {
-                            state.attendance.push(
-                                record
-                            );
-                        }
-                    }
-                }
+        const records =
+            collectAttendance(
+                parsed
             );
-        }
+
+        state.attendance =
+            deduplicateAttendance(
+                records
+            );
     }
 
     /* =========================================================
-       STUDENT HELPERS
+       STUDENT LOOKUP
        ========================================================= */
 
     function findStudent(studentId) {
@@ -362,22 +810,34 @@
 
     function getClass(record) {
         const student =
-            findStudent(record.studentId);
+            findStudent(
+                record.studentId
+            );
 
         return (
-            cleanClass(student?.className) ||
-            cleanClass(record.className) ||
+            cleanClass(
+                student?.className
+            ) ||
+            cleanClass(
+                record.className
+            ) ||
             "—"
         );
     }
 
     function getSection(record) {
         const student =
-            findStudent(record.studentId);
+            findStudent(
+                record.studentId
+            );
 
         return (
-            cleanSection(student?.section) ||
-            cleanSection(record.section) ||
+            cleanSection(
+                student?.section
+            ) ||
+            cleanSection(
+                record.section
+            ) ||
             "—"
         );
     }
@@ -387,92 +847,127 @@
        ========================================================= */
 
     function populateClassOptions() {
-        const select = $("reportClass");
+        const select =
+            $("reportClass");
 
         if (!select) return;
 
-        const previous = select.value;
+        const previous =
+            select.value;
 
-        const values = new Set();
+        const values =
+            new Set();
 
-        state.students.forEach((student) => {
-            const value =
-                cleanClass(student.className);
+        state.students.forEach(
+            (student) => {
+                const value =
+                    cleanClass(
+                        student.className
+                    );
 
-            if (value) {
-                values.add(value);
+                if (value) {
+                    values.add(value);
+                }
             }
-        });
+        );
 
-        state.attendance.forEach((record) => {
-            const value =
-                cleanClass(record.className);
+        state.attendance.forEach(
+            (record) => {
+                const value =
+                    getClass(record);
 
-            if (value) {
-                values.add(value);
+                if (
+                    value &&
+                    value !== "—"
+                ) {
+                    values.add(value);
+                }
             }
-        });
+        );
 
         select.innerHTML =
             `<option value="">All Classes</option>`;
 
         [...values]
-            .sort((a, b) =>
-                a.localeCompare(
-                    b,
-                    undefined,
-                    {
-                        numeric: true
-                    }
-                )
+            .sort(
+                (a, b) =>
+                    a.localeCompare(
+                        b,
+                        undefined,
+                        {
+                            numeric: true
+                        }
+                    )
             )
-            .forEach((value) => {
-                const option =
-                    document.createElement("option");
+            .forEach(
+                (value) => {
+                    const option =
+                        document.createElement(
+                            "option"
+                        );
 
-                option.value = value;
-                option.textContent =
-                    `Class ${value}`;
+                    option.value =
+                        value;
 
-                select.appendChild(option);
-            });
+                    option.textContent =
+                        `Class ${value}`;
+
+                    select.appendChild(
+                        option
+                    );
+                }
+            );
 
         if (
             [...select.options].some(
                 (option) =>
-                    option.value === previous
+                    option.value ===
+                    previous
             )
         ) {
-            select.value = previous;
+            select.value =
+                previous;
         }
     }
 
     function populateSectionOptions() {
-        const select = $("reportSection");
+        const select =
+            $("reportSection");
 
         if (!select) return;
 
-        const previous = select.value;
+        const previous =
+            select.value;
 
-        const values = new Set();
+        const values =
+            new Set();
 
-        state.students.forEach((student) => {
-            const value =
-                cleanSection(student.section);
+        state.students.forEach(
+            (student) => {
+                const value =
+                    cleanSection(
+                        student.section
+                    );
 
-            if (value) {
-                values.add(value);
+                if (value) {
+                    values.add(value);
+                }
             }
-        });
+        );
 
-        state.attendance.forEach((record) => {
-            const value =
-                cleanSection(record.section);
+        state.attendance.forEach(
+            (record) => {
+                const value =
+                    getSection(record);
 
-            if (value) {
-                values.add(value);
+                if (
+                    value &&
+                    value !== "—"
+                ) {
+                    values.add(value);
+                }
             }
-        });
+        );
 
         select.innerHTML =
             `<option value="">All Sections</option>`;
@@ -481,66 +976,89 @@
             .sort((a, b) =>
                 a.localeCompare(b)
             )
-            .forEach((value) => {
-                const option =
-                    document.createElement("option");
+            .forEach(
+                (value) => {
+                    const option =
+                        document.createElement(
+                            "option"
+                        );
 
-                option.value = value;
-                option.textContent =
-                    `Section ${value}`;
+                    option.value =
+                        value;
 
-                select.appendChild(option);
-            });
+                    option.textContent =
+                        `Section ${value}`;
+
+                    select.appendChild(
+                        option
+                    );
+                }
+            );
 
         if (
             [...select.options].some(
                 (option) =>
-                    option.value === previous
+                    option.value ===
+                    previous
             )
         ) {
-            select.value = previous;
+            select.value =
+                previous;
         }
     }
 
     function populateStudentOptions() {
-        const select = $("reportStudent");
+        const select =
+            $("reportStudent");
 
         if (!select) return;
 
-        const previous = select.value;
+        const previous =
+            select.value;
 
         select.innerHTML =
             `<option value="">All Students</option>`;
 
-        const students = state.students
+        state.students
             .slice()
-            .sort((a, b) =>
-                text(a.name).localeCompare(
-                    text(b.name)
-                )
+            .sort(
+                (a, b) =>
+                    text(a.name).localeCompare(
+                        text(b.name)
+                    )
+            )
+            .forEach(
+                (student) => {
+                    if (!student.id) {
+                        return;
+                    }
+
+                    const option =
+                        document.createElement(
+                            "option"
+                        );
+
+                    option.value =
+                        student.id;
+
+                    option.textContent =
+                        `${student.name || "Unnamed"} — ${student.id}`;
+
+                    select.appendChild(
+                        option
+                    );
+                }
             );
-
-        students.forEach((student) => {
-            if (!student.id) return;
-
-            const option =
-                document.createElement("option");
-
-            option.value = student.id;
-
-            option.textContent =
-                `${student.name || "Unnamed"} — ${student.id}`;
-
-            select.appendChild(option);
-        });
 
         if (
             [...select.options].some(
                 (option) =>
-                    option.value === previous
+                    option.value ===
+                    previous
             )
         ) {
-            select.value = previous;
+            select.value =
+                previous;
         }
     }
 
@@ -551,13 +1069,20 @@
     function getReportTypeLabel(type) {
         const labels = {
             daily: "Daily Report",
-            "date-range": "Date Range Report",
-            student: "Student Report",
-            class: "Class Report",
-            monthly: "Monthly Report"
+            "date-range":
+                "Date Range Report",
+            student:
+                "Student Report",
+            class:
+                "Class Report",
+            monthly:
+                "Monthly Report"
         };
 
-        return labels[type] || "Attendance Report";
+        return (
+            labels[type] ||
+            "Attendance Report"
+        );
     }
 
     function updateDateDefaults() {
@@ -571,22 +1096,23 @@
         const to =
             $("reportDateTo");
 
-        if (!from || !to) return;
-
-        /*
-         * Do not overwrite dates if the user
-         * has already selected them.
-         */
+        if (!from || !to) {
+            return;
+        }
 
         if (
             type === "daily" &&
             !from.value &&
             !to.value
         ) {
-            const today = todayISO();
+            const today =
+                todayISO();
 
-            from.value = today;
-            to.value = today;
+            from.value =
+                today;
+
+            to.value =
+                today;
         }
 
         if (
@@ -594,15 +1120,22 @@
             !from.value &&
             !to.value
         ) {
-            const now = new Date();
+            const now =
+                new Date();
 
             const year =
                 now.getFullYear();
 
+            const monthIndex =
+                now.getMonth();
+
             const month =
                 String(
-                    now.getMonth() + 1
-                ).padStart(2, "0");
+                    monthIndex + 1
+                ).padStart(
+                    2,
+                    "0"
+                );
 
             from.value =
                 `${year}-${month}-01`;
@@ -610,19 +1143,22 @@
             const lastDay =
                 new Date(
                     year,
-                    now.getMonth() + 1,
+                    monthIndex + 1,
                     0
                 ).getDate();
 
             to.value =
                 `${year}-${month}-${String(
                     lastDay
-                ).padStart(2, "0")}`;
+                ).padStart(
+                    2,
+                    "0"
+                )}`;
         }
     }
 
     /* =========================================================
-       FILTERING
+       FILTERS
        ========================================================= */
 
     function getFilters() {
@@ -659,68 +1195,84 @@
     }
 
     function filterRecords() {
-        const filters = getFilters();
+        const filters =
+            getFilters();
 
         let records =
             state.attendance.slice();
 
         if (filters.className) {
-            records = records.filter(
-                (record) =>
-                    getClass(record) ===
-                    filters.className
-            );
+            records =
+                records.filter(
+                    (record) =>
+                        getClass(
+                            record
+                        ) ===
+                        filters.className
+                );
         }
 
         if (filters.section) {
-            records = records.filter(
-                (record) =>
-                    getSection(record) ===
-                    filters.section
-            );
+            records =
+                records.filter(
+                    (record) =>
+                        getSection(
+                            record
+                        ) ===
+                        filters.section
+                );
         }
 
         if (filters.studentId) {
-            records = records.filter(
-                (record) =>
-                    record.studentId ===
-                    filters.studentId
-            );
+            records =
+                records.filter(
+                    (record) =>
+                        record.studentId ===
+                        filters.studentId
+                );
         }
 
         if (filters.dateFrom) {
-            records = records.filter(
-                (record) =>
-                    record.date >=
-                    filters.dateFrom
-            );
+            records =
+                records.filter(
+                    (record) =>
+                        record.date >=
+                        filters.dateFrom
+                );
         }
 
         if (filters.dateTo) {
-            records = records.filter(
-                (record) =>
-                    record.date <=
-                    filters.dateTo
-            );
+            records =
+                records.filter(
+                    (record) =>
+                        record.date <=
+                        filters.dateTo
+                );
         }
 
-        records.sort((a, b) => {
-            if (a.date !== b.date) {
-                return b.date.localeCompare(
-                    a.date
+        records.sort(
+            (a, b) => {
+                if (
+                    a.date !==
+                    b.date
+                ) {
+                    return b.date.localeCompare(
+                        a.date
+                    );
+                }
+
+                return getStudentName(
+                    a.studentId
+                ).localeCompare(
+                    getStudentName(
+                        b.studentId
+                    )
                 );
             }
+        );
 
-            return getStudentName(
-                a.studentId
-            ).localeCompare(
-                getStudentName(
-                    b.studentId
-                )
-            );
-        });
-
-        state.filteredRecords = records;
+        state.filteredRecords =
+            records;
 
         return records;
     }
@@ -729,8 +1281,11 @@
        SUMMARY
        ========================================================= */
 
-    function calculateSummary(records) {
-        const total = records.length;
+    function calculateSummary(
+        records
+    ) {
+        const total =
+            records.length;
 
         const present =
             records.filter(
@@ -755,9 +1310,10 @@
 
         const attendance =
             total > 0
-                ? ((present + late) /
-                    total) *
-                  100
+                ? (
+                    (present + late) /
+                    total
+                ) * 100
                 : 0;
 
         const students =
@@ -778,9 +1334,13 @@
         };
     }
 
-    function renderSummary(records) {
+    function renderSummary(
+        records
+    ) {
         const summary =
-            calculateSummary(records);
+            calculateSummary(
+                records
+            );
 
         if ($("reportTotalRecords")) {
             $("reportTotalRecords")
@@ -820,24 +1380,25 @@
     }
 
     /* =========================================================
-       REPORT META
+       META
        ========================================================= */
 
-    function renderMeta(records) {
-        const filters = getFilters();
-
-        const typeLabel =
-            getReportTypeLabel(
-                filters.type
-            );
+    function renderMeta(
+        records
+    ) {
+        const filters =
+            getFilters();
 
         if ($("generatedReportType")) {
             $("generatedReportType")
                 .textContent =
-                typeLabel;
+                getReportTypeLabel(
+                    filters.type
+                );
         }
 
-        let period = "All available dates";
+        let period =
+            "All available dates";
 
         if (
             filters.dateFrom &&
@@ -859,19 +1420,24 @@
                         filters.dateTo
                     )}`;
             }
-        } else if (records.length) {
-            const dates = records
-                .map(
-                    (record) =>
-                        record.date
-                )
-                .sort();
+        } else if (
+            records.length
+        ) {
+            const dates =
+                records
+                    .map(
+                        (record) =>
+                            record.date
+                    )
+                    .sort();
 
             period =
                 `${formatDateLong(
                     dates[0]
                 )} → ${formatDateLong(
-                    dates[dates.length - 1]
+                    dates[
+                        dates.length - 1
+                    ]
                 )}`;
         }
 
@@ -887,8 +1453,10 @@
                 new Date().toLocaleString(
                     "en-IN",
                     {
-                        dateStyle: "medium",
-                        timeStyle: "short"
+                        dateStyle:
+                            "medium",
+                        timeStyle:
+                            "short"
                     }
                 );
         }
@@ -898,7 +1466,9 @@
        DETAIL TABLE
        ========================================================= */
 
-    function renderDetailTable(records) {
+    function renderDetailTable(
+        records
+    ) {
         const body =
             $("reportTableBody");
 
@@ -934,94 +1504,100 @@
             return;
         }
 
-        records.forEach((record) => {
-            const name =
-                getStudentName(
-                    record.studentId
-                );
-
-            const className =
-                getClass(record);
-
-            const section =
-                getSection(record);
-
-            const row =
-                document.createElement("tr");
-
-            row.innerHTML = `
-                <td>
-                    ${escapeHTML(
-                        formatDate(
-                            record.date
-                        )
-                    )}
-                </td>
-
-                <td>
-                    <div class="analytics-student-name">
-
-                        <div class="analytics-student-avatar">
-                            ${escapeHTML(
-                                getInitials(
-                                    name
-                                )
-                            )}
-                        </div>
-
-                        <div>
-                            <strong>
-                                ${escapeHTML(
-                                    name
-                                )}
-                            </strong>
-
-                            <small>
-                                ${escapeHTML(
-                                    record.studentId
-                                )}
-                            </small>
-                        </div>
-
-                    </div>
-                </td>
-
-                <td>
-                    ${escapeHTML(
+        records.forEach(
+            (record) => {
+                const name =
+                    getStudentName(
                         record.studentId
-                    )}
-                </td>
+                    );
 
-                <td>
-                    Class ${escapeHTML(
-                        className
-                    )}
-                </td>
+                const row =
+                    document.createElement(
+                        "tr"
+                    );
 
-                <td>
-                    Section ${escapeHTML(
-                        section
-                    )}
-                </td>
-
-                <td>
-                    <span class="report-status ${record.status.toLowerCase()}">
+                row.innerHTML = `
+                    <td>
                         ${escapeHTML(
-                            record.status
+                            formatDate(
+                                record.date
+                            )
                         )}
-                    </span>
-                </td>
-            `;
+                    </td>
 
-            body.appendChild(row);
-        });
+                    <td>
+                        <div class="analytics-student-name">
+
+                            <div class="analytics-student-avatar">
+                                ${escapeHTML(
+                                    getInitials(
+                                        name
+                                    )
+                                )}
+                            </div>
+
+                            <div>
+                                <strong>
+                                    ${escapeHTML(
+                                        name
+                                    )}
+                                </strong>
+
+                                <small>
+                                    ${escapeHTML(
+                                        record.studentId
+                                    )}
+                                </small>
+                            </div>
+
+                        </div>
+                    </td>
+
+                    <td>
+                        ${escapeHTML(
+                            record.studentId
+                        )}
+                    </td>
+
+                    <td>
+                        Class ${escapeHTML(
+                            getClass(
+                                record
+                            )
+                        )}
+                    </td>
+
+                    <td>
+                        Section ${escapeHTML(
+                            getSection(
+                                record
+                            )
+                        )}
+                    </td>
+
+                    <td>
+                        <span class="report-status ${record.status.toLowerCase()}">
+                            ${escapeHTML(
+                                record.status
+                            )}
+                        </span>
+                    </td>
+                `;
+
+                body.appendChild(
+                    row
+                );
+            }
+        );
 
         updateRecordCount(
             records.length
         );
     }
 
-    function updateRecordCount(count) {
+    function updateRecordCount(
+        count
+    ) {
         if (!$("reportRecordCount")) {
             return;
         }
@@ -1039,7 +1615,9 @@
        STUDENT SUMMARY
        ========================================================= */
 
-    function renderStudentSummary(records) {
+    function renderStudentSummary(
+        records
+    ) {
         const body =
             $("studentSummaryBody");
 
@@ -1075,46 +1653,52 @@
 
         const grouped = {};
 
-        records.forEach((record) => {
-            const id =
-                record.studentId;
+        records.forEach(
+            (record) => {
+                const id =
+                    record.studentId;
 
-            if (!grouped[id]) {
-                grouped[id] = {
-                    studentId: id,
-                    total: 0,
-                    present: 0,
-                    absent: 0,
-                    late: 0
-                };
+                if (!grouped[id]) {
+                    grouped[id] = {
+                        studentId:
+                            id,
+                        total: 0,
+                        present: 0,
+                        absent: 0,
+                        late: 0
+                    };
+                }
+
+                grouped[id].total++;
+
+                if (
+                    record.status ===
+                    "Present"
+                ) {
+                    grouped[id]
+                        .present++;
+                }
+
+                if (
+                    record.status ===
+                    "Absent"
+                ) {
+                    grouped[id]
+                        .absent++;
+                }
+
+                if (
+                    record.status ===
+                    "Late"
+                ) {
+                    grouped[id]
+                        .late++;
+                }
             }
+        );
 
-            grouped[id].total++;
-
-            if (
-                record.status ===
-                "Present"
-            ) {
-                grouped[id].present++;
-            }
-
-            if (
-                record.status ===
-                "Absent"
-            ) {
-                grouped[id].absent++;
-            }
-
-            if (
-                record.status ===
-                "Late"
-            ) {
-                grouped[id].late++;
-            }
-        });
-
-        const students =
-            Object.values(grouped).sort(
+        Object.values(grouped)
+            .sort(
                 (a, b) =>
                     getStudentName(
                         a.studentId
@@ -1123,109 +1707,117 @@
                             b.studentId
                         )
                     )
-            );
+            )
+            .forEach(
+                (item) => {
+                    const name =
+                        getStudentName(
+                            item.studentId
+                        );
 
-        students.forEach((item) => {
-            const name =
-                getStudentName(
-                    item.studentId
-                );
+                    const fakeRecord = {
+                        studentId:
+                            item.studentId
+                    };
 
-            const fakeRecord = {
-                studentId:
-                    item.studentId
-            };
+                    const percentage =
+                        item.total > 0
+                            ? (
+                                (
+                                    item.present +
+                                    item.late
+                                ) /
+                                item.total
+                            ) * 100
+                            : 0;
 
-            const className =
-                getClass(fakeRecord);
+                    const row =
+                        document.createElement(
+                            "tr"
+                        );
 
-            const section =
-                getSection(fakeRecord);
+                    row.innerHTML = `
+                        <td>
+                            <div class="analytics-student-name">
 
-            const percentage =
-                item.total > 0
-                    ? ((item.present +
-                        item.late) /
-                        item.total) *
-                      100
-                    : 0;
+                                <div class="analytics-student-avatar">
+                                    ${escapeHTML(
+                                        getInitials(
+                                            name
+                                        )
+                                    )}
+                                </div>
 
-            const row =
-                document.createElement("tr");
+                                <div>
+                                    <strong>
+                                        ${escapeHTML(
+                                            name
+                                        )}
+                                    </strong>
 
-            row.innerHTML = `
-                <td>
-                    <div class="analytics-student-name">
+                                    <small>
+                                        ${escapeHTML(
+                                            item.studentId
+                                        )}
+                                    </small>
+                                </div>
 
-                        <div class="analytics-student-avatar">
-                            ${escapeHTML(
-                                getInitials(
-                                    name
+                            </div>
+                        </td>
+
+                        <td>
+                            Class ${escapeHTML(
+                                getClass(
+                                    fakeRecord
                                 )
                             )}
-                        </div>
+                        </td>
 
-                        <div>
-                            <strong>
-                                ${escapeHTML(
-                                    name
-                                )}
-                            </strong>
+                        <td>
+                            Section ${escapeHTML(
+                                getSection(
+                                    fakeRecord
+                                )
+                            )}
+                        </td>
 
-                            <small>
-                                ${escapeHTML(
-                                    item.studentId
-                                )}
-                            </small>
-                        </div>
+                        <td>
+                            ${item.total}
+                        </td>
 
-                    </div>
-                </td>
+                        <td>
+                            ${item.present}
+                        </td>
 
-                <td>
-                    Class ${escapeHTML(
-                        className
-                    )}
-                </td>
+                        <td>
+                            ${item.absent}
+                        </td>
 
-                <td>
-                    Section ${escapeHTML(
-                        section
-                    )}
-                </td>
+                        <td>
+                            ${item.late}
+                        </td>
 
-                <td>
-                    ${item.total}
-                </td>
+                        <td>
+                            <span class="percentage-badge ${getPercentageClass(
+                                percentage
+                            )}">
+                                ${percentage.toFixed(
+                                    1
+                                )}%
+                            </span>
+                        </td>
+                    `;
 
-                <td>
-                    ${item.present}
-                </td>
-
-                <td>
-                    ${item.absent}
-                </td>
-
-                <td>
-                    ${item.late}
-                </td>
-
-                <td>
-                    <span class="percentage-badge ${getPercentageClass(
-                        percentage
-                    )}">
-                        ${percentage.toFixed(
-                            1
-                        )}%
-                    </span>
-                </td>
-            `;
-
-            body.appendChild(row);
-        });
+                    body.appendChild(
+                        row
+                    );
+                }
+            );
     }
 
-    function getPercentageClass(value) {
+    function getPercentageClass(
+        value
+    ) {
         if (value >= 90) {
             return "percentage-excellent";
         }
@@ -1248,7 +1840,8 @@
     function applySearch() {
         const query =
             text(
-                $("reportSearch")?.value
+                $("reportSearch")
+                    ?.value
             ).toLowerCase();
 
         if (!query) {
@@ -1277,18 +1870,28 @@
                         ).toLowerCase();
 
                     const className =
-                        getClass(record)
-                            .toLowerCase();
+                        getClass(
+                            record
+                        ).toLowerCase();
 
                     const section =
-                        getSection(record)
-                            .toLowerCase();
+                        getSection(
+                            record
+                        ).toLowerCase();
 
                     return (
-                        name.includes(query) ||
-                        id.includes(query) ||
-                        className.includes(query) ||
-                        section.includes(query)
+                        name.includes(
+                            query
+                        ) ||
+                        id.includes(
+                            query
+                        ) ||
+                        className.includes(
+                            query
+                        ) ||
+                        section.includes(
+                            query
+                        )
                     );
                 }
             );
@@ -1302,10 +1905,21 @@
     }
 
     /* =========================================================
-       GENERATE REPORT
+       GENERATE
        ========================================================= */
 
     function generateReport() {
+        /*
+         * Reload data every time so the report
+         * always uses the latest localStorage.
+         */
+        loadStudents();
+        loadAttendance();
+
+        populateClassOptions();
+        populateSectionOptions();
+        populateStudentOptions();
+
         const records =
             filterRecords();
 
@@ -1314,27 +1928,36 @@
 
         state.generated = true;
 
-        renderSummary(records);
-        renderMeta(records);
-        renderDetailTable(records);
-        renderStudentSummary(records);
+        renderSummary(
+            records
+        );
+
+        renderMeta(
+            records
+        );
+
+        renderDetailTable(
+            records
+        );
+
+        renderStudentSummary(
+            records
+        );
 
         const type =
             $("reportType")?.value ||
             "daily";
 
-        let subtitle =
-            `${getReportTypeLabel(type)} — ${records.length} attendance records`;
-
-        if (!records.length) {
-            subtitle =
-                `${getReportTypeLabel(type)} — no matching records`;
-        }
-
         if ($("reportTableSubtitle")) {
             $("reportTableSubtitle")
                 .textContent =
-                subtitle;
+                records.length
+                    ? `${getReportTypeLabel(
+                        type
+                    )} — ${records.length} attendance records`
+                    : `${getReportTypeLabel(
+                        type
+                    )} — no matching records`;
         }
 
         showToast(
@@ -1405,7 +2028,7 @@
     }
 
     /* =========================================================
-       CSV EXPORT
+       CSV
        ========================================================= */
 
     function csvEscape(value) {
@@ -1436,27 +2059,31 @@
             "Status"
         ];
 
-        const rows = records.map(
-            (record) => [
-                record.date,
-                getStudentName(
-                    record.studentId
-                ),
-                record.studentId,
-                getClass(record),
-                getSection(record),
-                record.status
-            ]
-        );
+        const rows =
+            records.map(
+                (record) => [
+                    record.date,
+                    getStudentName(
+                        record.studentId
+                    ),
+                    record.studentId,
+                    getClass(record),
+                    getSection(record),
+                    record.status
+                ]
+            );
 
         const csv = [
             headers,
             ...rows
         ]
-            .map((row) =>
-                row
-                    .map(csvEscape)
-                    .join(",")
+            .map(
+                (row) =>
+                    row
+                        .map(
+                            csvEscape
+                        )
+                        .join(",")
             )
             .join("\n");
 
@@ -1472,7 +2099,7 @@
     }
 
     /* =========================================================
-       JSON EXPORT
+       JSON
        ========================================================= */
 
     function exportJSON() {
@@ -1489,9 +2116,6 @@
             return;
         }
 
-        const summary =
-            calculateSummary(records);
-
         const report = {
             application:
                 "SmartSchool360",
@@ -1504,30 +2128,39 @@
             generatedAt:
                 new Date().toISOString(),
 
-            summary,
+            summary:
+                calculateSummary(
+                    records
+                ),
 
-            records: records.map(
-                (record) => ({
-                    date: record.date,
+            records:
+                records.map(
+                    (record) => ({
+                        date:
+                            record.date,
 
-                    studentName:
-                        getStudentName(
-                            record.studentId
-                        ),
+                        studentName:
+                            getStudentName(
+                                record.studentId
+                            ),
 
-                    studentId:
-                        record.studentId,
+                        studentId:
+                            record.studentId,
 
-                    class:
-                        getClass(record),
+                        class:
+                            getClass(
+                                record
+                            ),
 
-                    section:
-                        getSection(record),
+                        section:
+                            getSection(
+                                record
+                            ),
 
-                    status:
-                        record.status
-                })
-            )
+                        status:
+                            record.status
+                    })
+                )
         };
 
         downloadFile(
@@ -1564,10 +2197,13 @@
             );
 
         const link =
-            document.createElement("a");
+            document.createElement(
+                "a"
+            );
 
         link.href = url;
-        link.download = filename;
+        link.download =
+            filename;
 
         document.body.appendChild(
             link
@@ -1577,11 +2213,14 @@
 
         link.remove();
 
-        setTimeout(() => {
-            URL.revokeObjectURL(
-                url
-            );
-        }, 1000);
+        setTimeout(
+            () => {
+                URL.revokeObjectURL(
+                    url
+                );
+            },
+            1000
+        );
     }
 
     /* =========================================================
@@ -1618,10 +2257,6 @@
         populateStudentOptions();
 
         generateReport();
-
-        showToast(
-            "Attendance reports refreshed."
-        );
     }
 
     /* =========================================================
@@ -1634,14 +2269,15 @@
     }
 
     /* =========================================================
-       EVENT BINDING
+       BUTTON EVENTS
        ========================================================= */
 
     function bindButton(
         id,
         handler
     ) {
-        const element = $(id);
+        const element =
+            $(id);
 
         if (!element) return;
 
@@ -1664,7 +2300,6 @@
     }
 
     function setupEvents() {
-
         bindButton(
             "backToAnalyticsBtn",
             goBackToAnalytics
@@ -1700,6 +2335,16 @@
             exportJSON
         );
 
+        const search =
+            $("reportSearch");
+
+        if (search) {
+            search.addEventListener(
+                "input",
+                applySearch
+            );
+        }
+
         const reportType =
             $("reportType");
 
@@ -1707,30 +2352,27 @@
             reportType.addEventListener(
                 "change",
                 function () {
+                    const type =
+                        this.value;
 
                     if (
-                        this.value ===
+                        type ===
                         "daily"
                     ) {
-                        if (
-                            $("reportDateFrom")
-                        ) {
-                            $("reportDateFrom")
-                                .value =
-                                todayISO();
-                        }
+                        const today =
+                            todayISO();
 
-                        if (
-                            $("reportDateTo")
-                        ) {
-                            $("reportDateTo")
-                                .value =
-                                todayISO();
-                        }
+                        $("reportDateFrom")
+                            .value =
+                            today;
+
+                        $("reportDateTo")
+                            .value =
+                            today;
                     }
 
                     if (
-                        this.value ===
+                        type ===
                         "monthly"
                     ) {
                         const now =
@@ -1739,55 +2381,49 @@
                         const year =
                             now.getFullYear();
 
+                        const monthIndex =
+                            now.getMonth();
+
                         const month =
                             String(
-                                now.getMonth() +
+                                monthIndex +
                                 1
                             ).padStart(
                                 2,
                                 "0"
                             );
 
-                        if (
-                            $("reportDateFrom")
-                        ) {
-                            $("reportDateFrom")
-                                .value =
-                                `${year}-${month}-01`;
-                        }
+                        $("reportDateFrom")
+                            .value =
+                            `${year}-${month}-01`;
 
                         const lastDay =
                             new Date(
                                 year,
-                                now.getMonth() +
+                                monthIndex +
                                 1,
                                 0
                             ).getDate();
 
-                        if (
-                            $("reportDateTo")
-                        ) {
-                            $("reportDateTo")
-                                .value =
-                                `${year}-${month}-${String(
-                                    lastDay
-                                ).padStart(
-                                    2,
-                                    "0"
-                                )}`;
-                        }
+                        $("reportDateTo")
+                            .value =
+                            `${year}-${month}-${String(
+                                lastDay
+                            ).padStart(
+                                2,
+                                "0"
+                            )}`;
+                    }
+
+                    if (
+                        type ===
+                        "date-range"
+                    ) {
+                        /*
+                         * User chooses both dates.
+                         */
                     }
                 }
-            );
-        }
-
-        const search =
-            $("reportSearch");
-
-        if (search) {
-            search.addEventListener(
-                "input",
-                applySearch
             );
         }
 
@@ -1809,21 +2445,6 @@
                 }
             );
         }
-
-        const classSelect =
-            $("reportClass");
-
-        if (classSelect) {
-            classSelect.addEventListener(
-                "change",
-                function () {
-                    /*
-                     * Class and section remain
-                     * independently selectable.
-                     */
-                }
-            );
-        }
     }
 
     /* =========================================================
@@ -1842,11 +2463,6 @@
 
         updateDateDefaults();
 
-        /*
-         * Initial report uses today's date.
-         * If there is no attendance for today,
-         * the page will clearly show no records.
-         */
         generateReport();
     }
 
