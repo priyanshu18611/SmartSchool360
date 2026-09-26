@@ -2,8 +2,8 @@
 
 /* =========================================================
    SmartSchool360
-   Attendance History & Reports
-   FIXED VERSION
+   Attendance History
+   FINAL MOBILE FIX
    ========================================================= */
 
 const STUDENTS_KEY = "smartschool_students";
@@ -15,65 +15,70 @@ let filteredRecords = [];
 
 
 /* =========================================================
-   START
+   INITIALIZE
    ========================================================= */
 
-document.addEventListener("DOMContentLoaded", () => {
-    initializeAttendanceHistory();
-});
-
-
-function initializeAttendanceHistory() {
+document.addEventListener("DOMContentLoaded", function () {
 
     loadStudents();
+
     loadAttendanceRecords();
 
     populateClassFilter();
+
     populateSectionFilter();
 
-    setupEventListeners();
+    setupEvents();
 
     applyFilters();
-}
+
+});
 
 
 /* =========================================================
-   STUDENTS
+   LOAD STUDENTS
    ========================================================= */
 
 function loadStudents() {
 
     try {
 
-        const data =
-            localStorage.getItem(STUDENTS_KEY);
+        const raw =
+            localStorage.getItem(
+                STUDENTS_KEY
+            );
+
+        if (!raw) {
+
+            allStudents = [];
+
+            return;
+        }
+
+        const parsed =
+            JSON.parse(raw);
 
         allStudents =
-            data ? JSON.parse(data) : [];
-
-        if (!Array.isArray(allStudents)) {
-            allStudents = [];
-        }
+            Array.isArray(parsed)
+                ? parsed
+                : [];
 
     } catch (error) {
 
         console.error(
-            "Student loading error:",
+            "Students loading error:",
             error
         );
 
         allStudents = [];
+
     }
+
 }
 
 
 /* =========================================================
-   ATTENDANCE LOADER
-   Supports:
-   1. Object format
-   2. Array format
-   3. String status format
-   4. Old/new attendance formats
+   LOAD ATTENDANCE
    ========================================================= */
 
 function loadAttendanceRecords() {
@@ -88,21 +93,21 @@ function loadAttendanceRecords() {
             );
 
         if (!raw) {
+
             return;
         }
+
 
         const parsed =
             JSON.parse(raw);
 
 
-        /* -----------------------------------------
-           ARRAY FORMAT
-           ----------------------------------------- */
-
-        if (Array.isArray(parsed)) {
+        if (
+            Array.isArray(parsed)
+        ) {
 
             parsed.forEach(
-                (item, index) => {
+                function (item, index) {
 
                     const record =
                         normalizeRecord(
@@ -111,29 +116,24 @@ function loadAttendanceRecords() {
                         );
 
                     if (record) {
+
                         allAttendanceRecords.push(
                             record
                         );
+
                     }
 
                 }
             );
 
-        }
-
-
-        /* -----------------------------------------
-           OBJECT FORMAT
-           ----------------------------------------- */
-
-        else if (
+        } else if (
             parsed &&
             typeof parsed === "object"
         ) {
 
             Object.entries(parsed)
                 .forEach(
-                    ([key, value]) => {
+                    function ([key, value]) {
 
                         const record =
                             normalizeRecord(
@@ -155,18 +155,14 @@ function loadAttendanceRecords() {
         }
 
 
-        /* -----------------------------------------
-           REMOVE DUPLICATES
-           ----------------------------------------- */
-
         allAttendanceRecords =
-            removeDuplicateRecords(
+            removeDuplicates(
                 allAttendanceRecords
             );
 
 
         console.log(
-            "SmartSchool360 Attendance Records:",
+            "Attendance history loaded:",
             allAttendanceRecords
         );
 
@@ -190,181 +186,115 @@ function loadAttendanceRecords() {
 
 function normalizeRecord(
     value,
-    key = ""
+    key
 ) {
 
-    let record = {};
+    let data = {};
 
-    /* -----------------------------------------
-       STRING FORMAT
-       Example:
-       "Present"
-       ----------------------------------------- */
 
     if (
         typeof value === "string"
     ) {
 
-        record.status = value;
+        data.status = value;
 
-    }
-
-
-    /* -----------------------------------------
-       OBJECT FORMAT
-       ----------------------------------------- */
-
-    else if (
+    } else if (
         value &&
         typeof value === "object"
     ) {
 
-        record = {
+        data = {
             ...value
         };
 
-    }
-
-
-    else {
+    } else {
 
         return null;
 
     }
 
 
-    /* -----------------------------------------
-       EXTRACT STUDENT ID
-       ----------------------------------------- */
-
     let studentId =
-        record.studentId ||
-        record.studentID ||
-        record.student_id ||
-        record.id ||
+        data.studentId ||
+        data.studentID ||
+        data.student_id ||
         "";
 
 
     if (!studentId) {
 
         studentId =
-            extractStudentIdFromKey(
+            extractStudentId(
                 key
             );
 
     }
 
 
-    /* -----------------------------------------
-       EXTRACT DATE
-       ----------------------------------------- */
-
     let date =
-        record.date ||
-        record.attendanceDate ||
-        record.attendance_date ||
-        record.day ||
+        data.date ||
+        data.attendanceDate ||
+        data.attendance_date ||
         "";
 
 
     if (!date) {
 
         date =
-            extractDateFromKey(
+            extractDate(
                 key
             );
 
     }
 
 
-    /* -----------------------------------------
-       EXTRACT STATUS
-       ----------------------------------------- */
-
     let status =
-        record.status ||
-        record.attendanceStatus ||
-        record.attendance_status ||
-        record.value ||
-        record.mark ||
+        data.status ||
+        data.attendanceStatus ||
+        data.attendance_status ||
+        data.value ||
+        data.mark ||
         "";
 
 
-    /* Nested status */
-    if (
-        status &&
-        typeof status === "object"
-    ) {
+    status =
+        normalizeStatus(
+            status
+        );
 
-        status =
-            status.status ||
-            status.value ||
-            "";
+
+    if (!studentId || !date) {
+
+        return null;
 
     }
 
 
-    status =
-        normalizeStatus(status);
-
-
-    /* -----------------------------------------
-       STUDENT LOOKUP
-       ----------------------------------------- */
-
     const student =
-        findStudent(studentId);
+        findStudent(
+            studentId
+        );
 
 
-    /* -----------------------------------------
-       FALLBACK CLASS
-       ----------------------------------------- */
-
-    const className =
-        record.className ||
-        record.class ||
-        record.class_name ||
+    let className =
+        data.className ||
+        data.class ||
+        data.class_name ||
         student?.className ||
         "";
 
 
-    /* -----------------------------------------
-       FALLBACK SECTION
-       ----------------------------------------- */
-
-    const section =
-        record.section ||
-        record.sectionName ||
-        record.section_name ||
+    let section =
+        data.section ||
+        data.sectionName ||
+        data.section_name ||
         student?.section ||
         "";
 
 
-    /* -----------------------------------------
-       DATE REQUIRED
-       ----------------------------------------- */
-
-    if (!date) {
-
-        return null;
-
-    }
-
-
-    /* -----------------------------------------
-       STUDENT REQUIRED
-       ----------------------------------------- */
-
-    if (!studentId) {
-
-        return null;
-
-    }
-
-
     return {
 
-        key,
+        key: key,
 
         studentId:
             String(studentId),
@@ -373,25 +303,29 @@ function normalizeRecord(
             normalizeDate(date),
 
         className:
-            String(className || ""),
+            cleanClass(
+                className
+            ),
 
         section:
-            String(section || ""),
+            cleanSection(
+                section
+            ),
 
-        status,
+        status: status,
 
         updatedAt:
-            record.updatedAt ||
-            record.updated_at ||
-            record.savedAt ||
-            record.saved_at ||
+            data.updatedAt ||
+            data.updated_at ||
+            data.savedAt ||
+            data.saved_at ||
             "",
 
         savedAt:
-            record.savedAt ||
-            record.saved_at ||
-            record.updatedAt ||
-            record.updated_at ||
+            data.savedAt ||
+            data.saved_at ||
+            data.updatedAt ||
+            data.updated_at ||
             ""
 
     };
@@ -400,108 +334,77 @@ function normalizeRecord(
 
 
 /* =========================================================
-   DATE NORMALIZATION
+   CLEAN CLASS
    ========================================================= */
 
-function normalizeDate(value) {
+function cleanClass(value) {
 
-    if (!value) {
-        return "";
-    }
-
-
-    const stringValue =
-        String(value).trim();
+    let result =
+        String(
+            value || ""
+        ).trim();
 
 
-    /* YYYY-MM-DD */
-    if (
-        /^\d{4}-\d{2}-\d{2}$/
-            .test(stringValue)
-    ) {
-
-        return stringValue;
-
-    }
-
-
-    /* MM/DD/YYYY */
-    const slashMatch =
-        stringValue.match(
-            /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/
+    result =
+        result.replace(
+            /^class\s+/i,
+            ""
         );
 
 
-    if (slashMatch) {
-
-        const month =
-            String(
-                slashMatch[1]
-            ).padStart(2, "0");
-
-        const day =
-            String(
-                slashMatch[2]
-            ).padStart(2, "0");
-
-        const year =
-            slashMatch[3];
-
-        return `${year}-${month}-${day}`;
-
-    }
-
-
-    /* Date object / ISO */
-    const parsed =
-        new Date(stringValue);
-
-
-    if (
-        !Number.isNaN(
-            parsed.getTime()
-        )
-    ) {
-
-        return [
-            parsed.getFullYear(),
-            String(
-                parsed.getMonth() + 1
-            ).padStart(2, "0"),
-            String(
-                parsed.getDate()
-            ).padStart(2, "0")
-        ].join("-");
-
-    }
-
-
-    return stringValue;
+    return result.trim();
 
 }
 
 
 /* =========================================================
-   STATUS NORMALIZATION
+   CLEAN SECTION
+   ========================================================= */
+
+function cleanSection(value) {
+
+    let result =
+        String(
+            value || ""
+        ).trim();
+
+
+    result =
+        result.replace(
+            /^section\s+/i,
+            ""
+        );
+
+
+    return result.trim();
+
+}
+
+
+/* =========================================================
+   STATUS
    ========================================================= */
 
 function normalizeStatus(value) {
 
     if (!value) {
+
         return "";
+
     }
 
 
     const status =
-        String(value)
+        String(
+            value
+        )
             .trim()
             .toLowerCase();
 
 
     if (
         status === "present" ||
-        status === "p" ||
-        status === "1"
+        status === "p"
     ) {
 
         return "Present";
@@ -511,8 +414,7 @@ function normalizeStatus(value) {
 
     if (
         status === "absent" ||
-        status === "a" ||
-        status === "0"
+        status === "a"
     ) {
 
         return "Absent";
@@ -536,27 +438,137 @@ function normalizeStatus(value) {
 
 
 /* =========================================================
-   KEY PARSING
+   DATE
    ========================================================= */
 
-function extractStudentIdFromKey(key) {
+function normalizeDate(value) {
 
-    if (!key) {
+    if (!value) {
+
         return "";
+
     }
 
 
-    const value =
-        String(key);
-
-
-    const parts =
-        value.split("__");
+    const text =
+        String(
+            value
+        ).trim();
 
 
     if (
-        parts.length >= 2
+        /^\d{4}-\d{2}-\d{2}$/
+            .test(text)
     ) {
+
+        return text;
+
+    }
+
+
+    const slash =
+        text.match(
+            /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/
+        );
+
+
+    if (slash) {
+
+        const month =
+            String(
+                slash[1]
+            ).padStart(
+                2,
+                "0"
+            );
+
+        const day =
+            String(
+                slash[2]
+            ).padStart(
+                2,
+                "0"
+            );
+
+        const year =
+            slash[3];
+
+
+        return (
+            year +
+            "-" +
+            month +
+            "-" +
+            day
+        );
+
+    }
+
+
+    const date =
+        new Date(
+            text
+        );
+
+
+    if (
+        !Number.isNaN(
+            date.getTime()
+        )
+    ) {
+
+        return (
+            date.getFullYear() +
+            "-" +
+            String(
+                date.getMonth() + 1
+            ).padStart(
+                2,
+                "0"
+            ) +
+            "-" +
+            String(
+                date.getDate()
+            ).padStart(
+                2,
+                "0"
+            )
+        );
+
+    }
+
+
+    return text;
+
+}
+
+
+/* =========================================================
+   EXTRACT KEY DATA
+   ========================================================= */
+
+function extractStudentId(key) {
+
+    if (!key) {
+
+        return "";
+
+    }
+
+
+    const text =
+        String(
+            key
+        );
+
+
+    if (
+        text.includes("__")
+    ) {
+
+        const parts =
+            text.split("__");
+
 
         return parts
             .slice(1)
@@ -565,72 +577,43 @@ function extractStudentIdFromKey(key) {
     }
 
 
-    /* Try common separators */
-
-    const underscoreParts =
-        value.split("_");
-
-
-    if (
-        underscoreParts.length >= 2
-    ) {
-
-        const possible =
-            underscoreParts[
-                underscoreParts.length - 1
-            ];
-
-        if (
-            possible.startsWith("SS")
-        ) {
-
-            return possible;
-
-        }
-
-    }
+    const match =
+        text.match(
+            /(SS\d+)/
+        );
 
 
-    return "";
+    return match
+        ? match[1]
+        : "";
 
 }
 
 
-function extractDateFromKey(key) {
+function extractDate(key) {
 
     if (!key) {
+
         return "";
+
     }
 
 
-    const value =
-        String(key);
-
-
-    const doubleParts =
-        value.split("__");
-
-
-    if (
-        doubleParts.length >= 2
-    ) {
-
-        return normalizeDate(
-            doubleParts[0]
+    const text =
+        String(
+            key
         );
 
-    }
 
-
-    const match =
-        value.match(
+    const dateMatch =
+        text.match(
             /\d{4}-\d{2}-\d{2}/
         );
 
 
-    if (match) {
+    if (dateMatch) {
 
-        return match[0];
+        return dateMatch[0];
 
     }
 
@@ -644,7 +627,7 @@ function extractDateFromKey(key) {
    REMOVE DUPLICATES
    ========================================================= */
 
-function removeDuplicateRecords(
+function removeDuplicates(
     records
 ) {
 
@@ -652,44 +635,46 @@ function removeDuplicateRecords(
         new Map();
 
 
-    records.forEach(record => {
+    records.forEach(
+        function (record) {
 
-        const uniqueKey =
-            `${record.date}__${record.studentId}`;
-
-
-        /* Prefer record containing status */
-
-        if (
-            !map.has(uniqueKey)
-        ) {
-
-            map.set(
-                uniqueKey,
-                record
-            );
-
-        } else {
-
-            const existing =
-                map.get(uniqueKey);
+            const key =
+                record.date +
+                "__" +
+                record.studentId;
 
 
             if (
-                !existing.status &&
-                record.status
+                !map.has(key)
             ) {
 
                 map.set(
-                    uniqueKey,
+                    key,
                     record
                 );
+
+            } else {
+
+                const old =
+                    map.get(key);
+
+
+                if (
+                    !old.status &&
+                    record.status
+                ) {
+
+                    map.set(
+                        key,
+                        record
+                    );
+
+                }
 
             }
 
         }
-
-    });
+    );
 
 
     return Array.from(
@@ -708,298 +693,120 @@ function findStudent(
 ) {
 
     return allStudents.find(
-        student =>
-            String(student.id) ===
-            String(studentId)
+        function (student) {
+
+            return (
+                String(
+                    student.id
+                ) ===
+                String(
+                    studentId
+                )
+            );
+
+        }
     ) || null;
 
 }
 
 
 /* =========================================================
-   CLASS FILTER
+   SETUP EVENTS
    ========================================================= */
 
-function populateClassFilter() {
+function setupEvents() {
 
-    const select =
-        document.getElementById(
-            "historyClass"
-        );
+    /*
+       Event delegation is used here so
+       mobile taps work reliably.
+    */
 
+    document.addEventListener(
+        "click",
+        function (event) {
 
-    if (!select) {
-        return;
-    }
-
-
-    const current =
-        select.value;
-
-
-    let classes =
-        allStudents
-            .map(
-                student =>
-                    String(
-                        student.className || ""
-                    ).trim()
-            )
-            .filter(Boolean);
-
-
-    /* Also include attendance classes */
-
-    classes =
-        classes.concat(
-            allAttendanceRecords
-                .map(
-                    record =>
-                        String(
-                            record.className || ""
-                        ).trim()
-                )
-                .filter(Boolean)
-        );
-
-
-    classes =
-        [
-            ...new Set(classes)
-        ];
-
-
-    classes.sort(
-        (a, b) =>
-            a.localeCompare(
-                b,
-                undefined,
-                {
-                    numeric: true
-                }
-            )
-    );
-
-
-    select.innerHTML =
-        `
-        <option value="">
-            All Classes
-        </option>
-        `;
-
-
-    classes.forEach(
-        className => {
-
-            const option =
-                document.createElement(
-                    "option"
+            const applyButton =
+                event.target.closest(
+                    "#applyHistoryFilterBtn"
                 );
 
-            option.value =
-                className;
 
-            option.textContent =
-                `Class ${className}`;
+            if (applyButton) {
 
-            select.appendChild(
-                option
-            );
+                event.preventDefault();
 
-        }
-    );
-
-
-    if (
-        classes.includes(current)
-    ) {
-
-        select.value =
-            current;
-
-    }
-
-}
-
-
-/* =========================================================
-   SECTION FILTER
-   ========================================================= */
-
-function populateSectionFilter() {
-
-    const select =
-        document.getElementById(
-            "historySection"
-        );
-
-
-    if (!select) {
-        return;
-    }
-
-
-    const selectedClass =
-        getValue(
-            "historyClass"
-        );
-
-
-    let sections =
-        [];
-
-
-    allStudents.forEach(
-        student => {
-
-            if (
-                selectedClass &&
-                String(
-                    student.className
-                ) !== selectedClass
-            ) {
+                applyFilters();
 
                 return;
 
             }
 
 
-            if (
-                student.section
-            ) {
-
-                sections.push(
-                    String(
-                        student.section
-                    ).trim()
+            const clearButton =
+                event.target.closest(
+                    "#clearHistoryFilterBtn"
                 );
 
-            }
 
-        }
-    );
+            if (clearButton) {
 
+                event.preventDefault();
 
-    allAttendanceRecords.forEach(
-        record => {
-
-            if (
-                selectedClass &&
-                String(
-                    record.className
-                ) !== selectedClass
-            ) {
+                clearFilters();
 
                 return;
 
             }
 
 
-            if (
-                record.section
-            ) {
-
-                sections.push(
-                    String(
-                        record.section
-                    ).trim()
+            const refreshButton =
+                event.target.closest(
+                    "#refreshHistoryBtn"
                 );
+
+
+            if (refreshButton) {
+
+                event.preventDefault();
+
+                refreshHistory();
+
+                return;
 
             }
 
-        }
+        },
+        false
     );
 
 
-    sections =
-        [
-            ...new Set(
-                sections.filter(Boolean)
-            )
-        ];
+    /*
+       Extra touch support for Android.
+    */
 
+    document.addEventListener(
+        "touchend",
+        function (event) {
 
-    sections.sort(
-        (a, b) =>
-            a.localeCompare(
-                b,
-                undefined,
-                {
-                    numeric: true
-                }
-            )
-    );
-
-
-    const current =
-        select.value;
-
-
-    select.innerHTML =
-        `
-        <option value="">
-            All Sections
-        </option>
-        `;
-
-
-    sections.forEach(
-        section => {
-
-            const option =
-                document.createElement(
-                    "option"
+            const button =
+                event.target.closest(
+                    "#applyHistoryFilterBtn"
                 );
 
-            option.value =
-                section;
 
-            option.textContent =
-                `Section ${section}`;
+            if (button) {
 
-            select.appendChild(
-                option
-            );
+                event.preventDefault();
 
+                applyFilters();
+
+            }
+
+        },
+        {
+            passive: false
         }
     );
-
-
-    if (
-        sections.includes(current)
-    ) {
-
-        select.value =
-            current;
-
-    }
-
-}
-
-
-/* =========================================================
-   EVENTS
-   ========================================================= */
-
-function setupEventListeners() {
-
-    const apply =
-        document.getElementById(
-            "applyHistoryFilterBtn"
-        );
-
-
-    const clear =
-        document.getElementById(
-            "clearHistoryFilterBtn"
-        );
-
-
-    const refresh =
-        document.getElementById(
-            "refreshHistoryBtn"
-        );
 
 
     const classSelect =
@@ -1008,71 +815,11 @@ function setupEventListeners() {
         );
 
 
-    const sectionSelect =
-        document.getElementById(
-            "historySection"
-        );
-
-
-    const statusSelect =
-        document.getElementById(
-            "historyStatus"
-        );
-
-
-    const search =
-        document.getElementById(
-            "historyStudentSearch"
-        );
-
-
-    const dateFrom =
-        document.getElementById(
-            "historyDateFrom"
-        );
-
-
-    const dateTo =
-        document.getElementById(
-            "historyDateTo"
-        );
-
-
-    if (apply) {
-
-        apply.addEventListener(
-            "click",
-            applyFilters
-        );
-
-    }
-
-
-    if (clear) {
-
-        clear.addEventListener(
-            "click",
-            clearFilters
-        );
-
-    }
-
-
-    if (refresh) {
-
-        refresh.addEventListener(
-            "click",
-            refreshHistory
-        );
-
-    }
-
-
     if (classSelect) {
 
         classSelect.addEventListener(
             "change",
-            () => {
+            function () {
 
                 populateSectionFilter();
 
@@ -1082,6 +829,12 @@ function setupEventListeners() {
         );
 
     }
+
+
+    const sectionSelect =
+        document.getElementById(
+            "historySection"
+        );
 
 
     if (sectionSelect) {
@@ -1094,6 +847,12 @@ function setupEventListeners() {
     }
 
 
+    const statusSelect =
+        document.getElementById(
+            "historyStatus"
+        );
+
+
     if (statusSelect) {
 
         statusSelect.addEventListener(
@@ -1102,6 +861,12 @@ function setupEventListeners() {
         );
 
     }
+
+
+    const dateFrom =
+        document.getElementById(
+            "historyDateFrom"
+        );
 
 
     if (dateFrom) {
@@ -1114,6 +879,12 @@ function setupEventListeners() {
     }
 
 
+    const dateTo =
+        document.getElementById(
+            "historyDateTo"
+        );
+
+
     if (dateTo) {
 
         dateTo.addEventListener(
@@ -1124,14 +895,21 @@ function setupEventListeners() {
     }
 
 
+    const search =
+        document.getElementById(
+            "historyStudentSearch"
+        );
+
+
     if (search) {
 
         search.addEventListener(
             "input",
-            debounce(
-                applyFilters,
-                150
-            )
+            function () {
+
+                applyFilters();
+
+            }
         );
 
     }
@@ -1140,50 +918,382 @@ function setupEventListeners() {
 
 
 /* =========================================================
-   FILTER
+   POPULATE CLASS
    ========================================================= */
 
-function applyFilters() {
+function populateClassFilter() {
 
-    const search =
-        getValue(
-            "historyStudentSearch"
-        ).toLowerCase();
-
-
-    const className =
-        getValue(
+    const select =
+        document.getElementById(
             "historyClass"
         );
 
 
-    const section =
-        getValue(
+    if (!select) {
+
+        return;
+
+    }
+
+
+    const current =
+        cleanClass(
+            select.value
+        );
+
+
+    let classes = [];
+
+
+    allStudents.forEach(
+        function (student) {
+
+            const value =
+                cleanClass(
+                    student.className
+                );
+
+
+            if (value) {
+
+                classes.push(
+                    value
+                );
+
+            }
+
+        }
+    );
+
+
+    allAttendanceRecords.forEach(
+        function (record) {
+
+            const value =
+                cleanClass(
+                    record.className
+                );
+
+
+            if (value) {
+
+                classes.push(
+                    value
+                );
+
+            }
+
+        }
+    );
+
+
+    classes =
+        [
+            ...new Set(
+                classes
+            )
+        ];
+
+
+    classes.sort(
+        function (a, b) {
+
+            return a.localeCompare(
+                b,
+                undefined,
+                {
+                    numeric: true
+                }
+            );
+
+        }
+    );
+
+
+    select.innerHTML =
+        `
+        <option value="">
+            All Classes
+        </option>
+        `;
+
+
+    classes.forEach(
+        function (className) {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+
+            option.value =
+                className;
+
+
+            option.textContent =
+                "Class " +
+                className;
+
+
+            select.appendChild(
+                option
+            );
+
+        }
+    );
+
+
+    if (current) {
+
+        select.value =
+            current;
+
+    }
+
+}
+
+
+/* =========================================================
+   POPULATE SECTION
+   ========================================================= */
+
+function populateSectionFilter() {
+
+    const select =
+        document.getElementById(
             "historySection"
         );
 
 
-    const status =
-        getValue(
-            "historyStatus"
+    if (!select) {
+
+        return;
+
+    }
+
+
+    const selectedClass =
+        cleanClass(
+            getValue(
+                "historyClass"
+            )
         );
 
 
-    const dateFrom =
-        getValue(
-            "historyDateFrom"
+    let sections = [];
+
+
+    allStudents.forEach(
+        function (student) {
+
+            const studentClass =
+                cleanClass(
+                    student.className
+                );
+
+
+            if (
+                selectedClass &&
+                studentClass !==
+                    selectedClass
+            ) {
+
+                return;
+
+            }
+
+
+            const section =
+                cleanSection(
+                    student.section
+                );
+
+
+            if (section) {
+
+                sections.push(
+                    section
+                );
+
+            }
+
+        }
+    );
+
+
+    allAttendanceRecords.forEach(
+        function (record) {
+
+            const recordClass =
+                cleanClass(
+                    record.className
+                );
+
+
+            if (
+                selectedClass &&
+                recordClass !==
+                    selectedClass
+            ) {
+
+                return;
+
+            }
+
+
+            const section =
+                cleanSection(
+                    record.section
+                );
+
+
+            if (section) {
+
+                sections.push(
+                    section
+                );
+
+            }
+
+        }
+    );
+
+
+    sections =
+        [
+            ...new Set(
+                sections
+            )
+        ];
+
+
+    sections.sort(
+        function (a, b) {
+
+            return a.localeCompare(
+                b,
+                undefined,
+                {
+                    numeric: true
+                }
+            );
+
+        }
+    );
+
+
+    const current =
+        cleanSection(
+            select.value
         );
 
 
-    const dateTo =
+    select.innerHTML =
+        `
+        <option value="">
+            All Sections
+        </option>
+        `;
+
+
+    sections.forEach(
+        function (section) {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+
+            option.value =
+                section;
+
+
+            option.textContent =
+                "Section " +
+                section;
+
+
+            select.appendChild(
+                option
+            );
+
+        }
+    );
+
+
+    if (current) {
+
+        select.value =
+            current;
+
+    }
+
+}
+
+
+/* =========================================================
+   APPLY FILTERS
+   ========================================================= */
+
+function applyFilters() {
+
+    console.log(
+        "SmartSchool360: Apply Filters clicked"
+    );
+
+
+    const search =
         getValue(
-            "historyDateTo"
+            "historyStudentSearch"
+        )
+            .toLowerCase();
+
+
+    const selectedClass =
+        cleanClass(
+            getValue(
+                "historyClass"
+            )
+        );
+
+
+    const selectedSection =
+        cleanSection(
+            getValue(
+                "historySection"
+            )
+        );
+
+
+    const selectedStatus =
+        normalizeStatus(
+            getValue(
+                "historyStatus"
+            )
+        );
+
+
+    const fromDate =
+        normalizeDate(
+            getValue(
+                "historyDateFrom"
+            )
+        );
+
+
+    const toDate =
+        normalizeDate(
+            getValue(
+                "historyDateTo"
+            )
         );
 
 
     filteredRecords =
         allAttendanceRecords.filter(
-            record => {
+            function (record) {
 
                 const student =
                     findStudent(
@@ -1191,7 +1301,9 @@ function applyFilters() {
                     );
 
 
-                /* Search */
+                /* -------------------------
+                   SEARCH
+                   ------------------------- */
 
                 if (search) {
 
@@ -1210,8 +1322,12 @@ function applyFilters() {
 
 
                     if (
-                        !name.includes(search) &&
-                        !id.includes(search)
+                        !name.includes(
+                            search
+                        ) &&
+                        !id.includes(
+                            search
+                        )
                     ) {
 
                         return false;
@@ -1221,13 +1337,92 @@ function applyFilters() {
                 }
 
 
-                /* Class */
+                /* -------------------------
+                   CLASS
+                   ------------------------- */
 
                 if (
-                    className &&
-                    String(
-                        record.className
-                    ) !== className
+                    selectedClass
+                ) {
+
+                    const recordClass =
+                        cleanClass(
+                            record.className
+                        );
+
+
+                    if (
+                        recordClass !==
+                        selectedClass
+                    ) {
+
+                        return false;
+
+                    }
+
+                }
+
+
+                /* -------------------------
+                   SECTION
+                   ------------------------- */
+
+                if (
+                    selectedSection
+                ) {
+
+                    const recordSection =
+                        cleanSection(
+                            record.section
+                        );
+
+
+                    if (
+                        recordSection !==
+                        selectedSection
+                    ) {
+
+                        return false;
+
+                    }
+
+                }
+
+
+                /* -------------------------
+                   STATUS
+                   ------------------------- */
+
+                if (
+                    selectedStatus
+                ) {
+
+                    const recordStatus =
+                        normalizeStatus(
+                            record.status
+                        );
+
+
+                    if (
+                        recordStatus !==
+                        selectedStatus
+                    ) {
+
+                        return false;
+
+                    }
+
+                }
+
+
+                /* -------------------------
+                   FROM DATE
+                   ------------------------- */
+
+                if (
+                    fromDate &&
+                    record.date <
+                        fromDate
                 ) {
 
                     return false;
@@ -1235,49 +1430,14 @@ function applyFilters() {
                 }
 
 
-                /* Section */
+                /* -------------------------
+                   TO DATE
+                   ------------------------- */
 
                 if (
-                    section &&
-                    String(
-                        record.section
-                    ) !== section
-                ) {
-
-                    return false;
-
-                }
-
-
-                /* Status */
-
-                if (
-                    status &&
-                    record.status !== status
-                ) {
-
-                    return false;
-
-                }
-
-
-                /* Date From */
-
-                if (
-                    dateFrom &&
-                    record.date < dateFrom
-                ) {
-
-                    return false;
-
-                }
-
-
-                /* Date To */
-
-                if (
-                    dateTo &&
-                    record.date > dateTo
+                    toDate &&
+                    record.date >
+                        toDate
                 ) {
 
                     return false;
@@ -1292,20 +1452,20 @@ function applyFilters() {
 
 
     filteredRecords.sort(
-        (a, b) => {
-
-            const dateCompare =
-                String(b.date)
-                    .localeCompare(
-                        String(a.date)
-                    );
-
+        function (a, b) {
 
             if (
-                dateCompare !== 0
+                a.date !==
+                b.date
             ) {
 
-                return dateCompare;
+                return String(
+                    b.date
+                ).localeCompare(
+                    String(
+                        a.date
+                    )
+                );
 
             }
 
@@ -1332,7 +1492,7 @@ function applyFilters() {
 
 
 /* =========================================================
-   HISTORY TABLE
+   RENDER HISTORY
    ========================================================= */
 
 function renderHistoryTable() {
@@ -1350,7 +1510,9 @@ function renderHistoryTable() {
 
 
     if (!body) {
+
         return;
+
     }
 
 
@@ -1362,12 +1524,16 @@ function renderHistoryTable() {
     ) {
 
         if (empty) {
-            empty.hidden = false;
+
+            empty.hidden =
+                false;
+
         }
 
-        updateRecordCount(0);
 
-        updateResultText(0);
+        updateCount(0);
+
+        updateText(0);
 
         return;
 
@@ -1375,12 +1541,15 @@ function renderHistoryTable() {
 
 
     if (empty) {
-        empty.hidden = true;
+
+        empty.hidden =
+            true;
+
     }
 
 
     filteredRecords.forEach(
-        record => {
+        function (record) {
 
             const row =
                 document.createElement(
@@ -1394,12 +1563,10 @@ function renderHistoryTable() {
                 );
 
 
-            const name =
+            const studentName =
                 student?.name ||
                 "Unknown Student";
 
-
-            /* Date */
 
             const dateCell =
                 createCell(
@@ -1408,8 +1575,6 @@ function renderHistoryTable() {
                     )
                 );
 
-
-            /* Student */
 
             const studentCell =
                 document.createElement(
@@ -1420,11 +1585,9 @@ function renderHistoryTable() {
             studentCell.innerHTML =
                 createStudentHTML(
                     student,
-                    name
+                    studentName
                 );
 
-
-            /* ID */
 
             const idCell =
                 createCell(
@@ -1432,27 +1595,23 @@ function renderHistoryTable() {
                 );
 
 
-            /* Class */
-
             const classCell =
                 createCell(
                     record.className
-                        ? `Class ${record.className}`
+                        ? "Class " +
+                          record.className
                         : "—"
                 );
 
-
-            /* Section */
 
             const sectionCell =
                 createCell(
                     record.section
-                        ? `Section ${record.section}`
+                        ? "Section " +
+                          record.section
                         : "—"
                 );
 
-
-            /* Status */
 
             const statusCell =
                 document.createElement(
@@ -1465,8 +1624,6 @@ function renderHistoryTable() {
                     record.status
                 );
 
-
-            /* Updated */
 
             const updatedCell =
                 createCell(
@@ -1514,12 +1671,12 @@ function renderHistoryTable() {
     );
 
 
-    updateRecordCount(
+    updateCount(
         filteredRecords.length
     );
 
 
-    updateResultText(
+    updateText(
         filteredRecords.length
     );
 
@@ -1527,7 +1684,7 @@ function renderHistoryTable() {
 
 
 /* =========================================================
-   SUMMARY — FIXED
+   SUMMARY
    ========================================================= */
 
 function renderSummary() {
@@ -1536,31 +1693,44 @@ function renderSummary() {
         filteredRecords.length;
 
 
-    const present =
-        filteredRecords.filter(
-            record =>
+    let present = 0;
+
+    let absent = 0;
+
+    let late = 0;
+
+
+    filteredRecords.forEach(
+        function (record) {
+
+            const status =
                 normalizeStatus(
                     record.status
-                ) === "Present"
-        ).length;
+                );
 
 
-    const absent =
-        filteredRecords.filter(
-            record =>
-                normalizeStatus(
-                    record.status
-                ) === "Absent"
-        ).length;
+            if (
+                status === "Present"
+            ) {
 
+                present++;
 
-    const late =
-        filteredRecords.filter(
-            record =>
-                normalizeStatus(
-                    record.status
-                ) === "Late"
-        ).length;
+            } else if (
+                status === "Absent"
+            ) {
+
+                absent++;
+
+            } else if (
+                status === "Late"
+            ) {
+
+                late++;
+
+            }
+
+        }
+    );
 
 
     setText(
@@ -1608,7 +1778,9 @@ function renderStudentOverview() {
 
 
     if (!body) {
+
         return;
+
     }
 
 
@@ -1620,7 +1792,10 @@ function renderStudentOverview() {
     ) {
 
         if (empty) {
-            empty.hidden = false;
+
+            empty.hidden =
+                false;
+
         }
 
         return;
@@ -1629,24 +1804,27 @@ function renderStudentOverview() {
 
 
     if (empty) {
-        empty.hidden = true;
+
+        empty.hidden =
+            true;
+
     }
 
 
-    const students =
+    const map =
         new Map();
 
 
     filteredRecords.forEach(
-        record => {
+        function (record) {
 
             if (
-                !students.has(
+                !map.has(
                     record.studentId
                 )
             ) {
 
-                students.set(
+                map.set(
                     record.studentId,
                     {
                         studentId:
@@ -1669,7 +1847,7 @@ function renderStudentOverview() {
 
 
             const item =
-                students.get(
+                map.get(
                     record.studentId
                 );
 
@@ -1689,13 +1867,19 @@ function renderStudentOverview() {
 
                 item.present++;
 
-            } else if (
+            }
+
+
+            if (
                 status === "Absent"
             ) {
 
                 item.absent++;
 
-            } else if (
+            }
+
+
+            if (
                 status === "Late"
             ) {
 
@@ -1708,9 +1892,9 @@ function renderStudentOverview() {
 
 
     Array.from(
-        students.values()
+        map.values()
     ).forEach(
-        item => {
+        function (item) {
 
             const student =
                 findStudent(
@@ -1742,7 +1926,8 @@ function renderStudentOverview() {
             const classCell =
                 createCell(
                     item.className
-                        ? `Class ${item.className}`
+                        ? "Class " +
+                          item.className
                         : "—"
                 );
 
@@ -1772,7 +1957,7 @@ function renderStudentOverview() {
 
 
             const percentage =
-                item.total > 0
+                item.total
                     ? Math.round(
                         (
                             item.present /
@@ -1834,13 +2019,176 @@ function renderStudentOverview() {
 
 
 /* =========================================================
+   CLEAR FILTERS
+   ========================================================= */
+
+function clearFilters() {
+
+    setValue(
+        "historyStudentSearch",
+        ""
+    );
+
+
+    setValue(
+        "historyClass",
+        ""
+    );
+
+
+    setValue(
+        "historySection",
+        ""
+    );
+
+
+    setValue(
+        "historyStatus",
+        ""
+    );
+
+
+    setValue(
+        "historyDateFrom",
+        ""
+    );
+
+
+    setValue(
+        "historyDateTo",
+        ""
+    );
+
+
+    populateSectionFilter();
+
+    applyFilters();
+
+
+    showToast(
+        "Filters cleared.",
+        "success"
+    );
+
+}
+
+
+/* =========================================================
+   REFRESH
+   ========================================================= */
+
+function refreshHistory() {
+
+    loadStudents();
+
+    loadAttendanceRecords();
+
+    populateClassFilter();
+
+    populateSectionFilter();
+
+    applyFilters();
+
+
+    showToast(
+        "Attendance history refreshed.",
+        "success"
+    );
+
+}
+
+
+/* =========================================================
+   UI HELPERS
+   ========================================================= */
+
+function getValue(id) {
+
+    const element =
+        document.getElementById(
+            id
+        );
+
+
+    return element
+        ? String(
+            element.value ||
+            ""
+        ).trim()
+        : "";
+
+}
+
+
+function setValue(
+    id,
+    value
+) {
+
+    const element =
+        document.getElementById(
+            id
+        );
+
+
+    if (element) {
+
+        element.value =
+            value;
+
+    }
+
+}
+
+
+function setText(
+    id,
+    value
+) {
+
+    const element =
+        document.getElementById(
+            id
+        );
+
+
+    if (element) {
+
+        element.textContent =
+            value;
+
+    }
+
+}
+
+
+function createCell(
+    value
+) {
+
+    const cell =
+        document.createElement(
+            "td"
+        );
+
+
+    cell.textContent =
+        value ?? "—";
+
+
+    return cell;
+
+}
+
+
+/* =========================================================
    STUDENT HTML
    ========================================================= */
 
 function createStudentHTML(
     student,
     name,
-    secondaryText = ""
+    secondary
 ) {
 
     const photo =
@@ -1859,17 +2207,17 @@ function createStudentHTML(
 
             ${
                 photo
-                ? `
-                    <img
-                        src="${escapeAttribute(photo)}"
-                        alt="${escapeAttribute(name)}"
-                        class="history-student-photo">
-                  `
-                : `
-                    <div class="history-student-avatar">
-                        ${escapeHtml(initials)}
-                    </div>
-                  `
+                    ? `
+                        <img
+                            src="${escapeAttribute(photo)}"
+                            alt="${escapeAttribute(name)}"
+                            class="history-student-photo">
+                      `
+                    : `
+                        <div class="history-student-avatar">
+                            ${escapeHtml(initials)}
+                        </div>
+                      `
             }
 
             <div class="history-student-info">
@@ -1880,7 +2228,7 @@ function createStudentHTML(
 
                 <div class="history-student-phone">
                     ${escapeHtml(
-                        secondaryText ||
+                        secondary ||
                         student?.studentPhone ||
                         ""
                     )}
@@ -1995,186 +2343,7 @@ function createPercentageBadge(
 
 
 /* =========================================================
-   CLEAR
-   ========================================================= */
-
-function clearFilters() {
-
-    setValue(
-        "historyStudentSearch",
-        ""
-    );
-
-
-    setValue(
-        "historyClass",
-        ""
-    );
-
-
-    populateSectionFilter();
-
-
-    setValue(
-        "historySection",
-        ""
-    );
-
-
-    setValue(
-        "historyStatus",
-        ""
-    );
-
-
-    setValue(
-        "historyDateFrom",
-        ""
-    );
-
-
-    setValue(
-        "historyDateTo",
-        ""
-    );
-
-
-    applyFilters();
-
-
-    showToast(
-        "Filters cleared.",
-        "success"
-    );
-
-}
-
-
-/* =========================================================
-   REFRESH
-   ========================================================= */
-
-function refreshHistory() {
-
-    loadStudents();
-
-    loadAttendanceRecords();
-
-    populateClassFilter();
-
-    populateSectionFilter();
-
-    applyFilters();
-
-
-    showToast(
-        "Attendance history refreshed.",
-        "success"
-    );
-
-}
-
-
-/* =========================================================
-   UI HELPERS
-   ========================================================= */
-
-function updateRecordCount(
-    count
-) {
-
-    setText(
-        "historyRecordCount",
-        `${count} Record${count === 1 ? "" : "s"}`
-    );
-
-}
-
-
-function updateResultText(
-    count
-) {
-
-    setText(
-        "historyResultText",
-        count === 0
-            ? "No attendance records found"
-            : `Showing ${count} attendance record${count === 1 ? "" : "s"}`
-    );
-
-}
-
-
-function getValue(id) {
-
-    const element =
-        document.getElementById(id);
-
-
-    return element
-        ? String(
-            element.value || ""
-        ).trim()
-        : "";
-
-}
-
-
-function setValue(
-    id,
-    value
-) {
-
-    const element =
-        document.getElementById(id);
-
-
-    if (element) {
-        element.value =
-            value;
-    }
-
-}
-
-
-function setText(
-    id,
-    value
-) {
-
-    const element =
-        document.getElementById(id);
-
-
-    if (element) {
-        element.textContent =
-            value;
-    }
-
-}
-
-
-function createCell(
-    value
-) {
-
-    const cell =
-        document.createElement(
-            "td"
-        );
-
-
-    cell.textContent =
-        value ?? "—";
-
-
-    return cell;
-
-}
-
-
-/* =========================================================
-   DATE
+   DATE DISPLAY
    ========================================================= */
 
 function formatDate(
@@ -2182,7 +2351,9 @@ function formatDate(
 ) {
 
     if (!value) {
+
         return "—";
+
     }
 
 
@@ -2194,7 +2365,8 @@ function formatDate(
 
     const date =
         new Date(
-            `${normalized}T00:00:00`
+            normalized +
+            "T00:00:00"
         );
 
 
@@ -2230,7 +2402,9 @@ function formatDateTime(
 ) {
 
     if (!value) {
+
         return "—";
+
     }
 
 
@@ -2273,35 +2447,44 @@ function getInitials(
     name
 ) {
 
-    const words =
+    const parts =
         String(
             name || ""
         )
             .trim()
-            .split(/\s+/)
-            .filter(Boolean);
+            .split(
+                /\s+/
+            )
+            .filter(
+                Boolean
+            );
 
 
-    if (!words.length) {
+    if (!parts.length) {
+
         return "S";
+
     }
 
 
     if (
-        words.length === 1
+        parts.length === 1
     ) {
 
-        return words[0]
-            .substring(0, 2)
+        return parts[0]
+            .substring(
+                0,
+                2
+            )
             .toUpperCase();
 
     }
 
 
     return (
-        words[0][0] +
-        words[
-            words.length - 1
+        parts[0][0] +
+        parts[
+            parts.length - 1
         ][0]
     ).toUpperCase();
 
@@ -2355,38 +2538,44 @@ function escapeAttribute(
 
 
 /* =========================================================
-   DEBOUNCE
+   COUNT / TEXT
    ========================================================= */
 
-function debounce(
-    callback,
-    delay
+function updateCount(
+    count
 ) {
 
-    let timer;
+    setText(
+        "historyRecordCount",
+        count +
+        " Record" +
+        (
+            count === 1
+                ? ""
+                : "s"
+        )
+    );
+
+}
 
 
-    return function (...args) {
+function updateText(
+    count
+) {
 
-        clearTimeout(
-            timer
-        );
-
-
-        timer =
-            setTimeout(
-                () => {
-
-                    callback.apply(
-                        this,
-                        args
-                    );
-
-                },
-                delay
-            );
-
-    };
+    setText(
+        "historyResultText",
+        count === 0
+            ? "No attendance records found"
+            : "Showing " +
+              count +
+              " attendance record" +
+              (
+                  count === 1
+                      ? ""
+                      : "s"
+              )
+    );
 
 }
 
@@ -2397,7 +2586,7 @@ function debounce(
 
 function showToast(
     message,
-    type = ""
+    type
 ) {
 
     const toast =
@@ -2407,7 +2596,9 @@ function showToast(
 
 
     if (!toast) {
+
         return;
+
     }
 
 
@@ -2429,7 +2620,7 @@ function showToast(
 
 
     requestAnimationFrame(
-        () => {
+        function () {
 
             toast.classList.add(
                 "show"
@@ -2446,21 +2637,21 @@ function showToast(
 
     showToast.timer =
         setTimeout(
-            () => {
+            function () {
 
                 toast.classList.remove(
                     "show"
                 );
 
             },
-            2600
+            2500
         );
 
 }
 
 
 /* =========================================================
-   DEBUG
+   GLOBAL
    ========================================================= */
 
 window.SmartSchoolAttendanceHistory = {
@@ -2475,15 +2666,17 @@ window.SmartSchoolAttendanceHistory = {
         clearFilters,
 
     getAllRecords:
-        () =>
-            [
+        function () {
+            return [
                 ...allAttendanceRecords
-            ],
+            ];
+        },
 
     getFilteredRecords:
-        () =>
-            [
+        function () {
+            return [
                 ...filteredRecords
-            ]
+            ];
+        }
 
 };
