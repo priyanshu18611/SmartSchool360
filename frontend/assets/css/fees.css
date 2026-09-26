@@ -1976,3 +1976,768 @@ select:focus-visible {
     }
 
 }
+/* =========================================================
+   FEES MODALS
+   Step 8D
+   ========================================================= */
+
+.fee-modal-overlay {
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 5000;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 18px;
+
+    background:
+        rgba(15, 23, 42, 0.58);
+
+    backdrop-filter:
+        blur(7px);
+
+    -webkit-backdrop-filter:
+        blur(7px);
+
+    animation:
+        feeModalFadeIn 0.2s ease;
+}
+
+
+@keyframes feeModalFadeIn {
+
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+
+}
+
+
+.fee-modal {
+    width:
+        min(680px, 100%);
+
+    max-height:
+        min(90vh, 850px);
+
+    overflow-y:
+        auto;
+
+    background:
+        #ffffff;
+
+    border:
+        1px solid #e5e7eb;
+
+    border-radius:
+        20px;
+
+    box-shadow:
+        0 25px 70px
+        rgba(15, 23, 42, 0.25);
+
+    animation:
+        feeModalSlideUp 0.25s ease;
+}
+
+
+@keyframes feeModalSlideUp {
+
+    from {
+        opacity: 0;
+
+        transform:
+            translateY(15px)
+            scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateY(0)
+            scale(1);
+    }
+
+}
+
+
+/* =========================================================
+   MODAL HEADER
+   ========================================================= */
+
+.fee-modal-header {
+    display:
+        flex;
+
+    align-items:
+        flex-start;
+
+    justify-content:
+        space-between;
+
+    gap:
+        20px;
+
+    padding:
+        23px 24px 18px;
+
+    border-bottom:
+        1px solid #e5e7eb;
+}
+
+
+.fee-modal-header h2 {
+    margin:
+        0;
+
+    color:
+        #111827;
+
+    font-size:
+        20px;
+
+    line-height:
+        1.3;
+
+    font-weight:
+        800;
+}
+
+
+.fee-modal-header p {
+    margin:
+        6px 0 0;
+
+    color:
+        #6b7280;
+
+    font-size:
+        12px;
+
+    line-height:
+        1.5;
+}
+
+
+.fee-modal-close {
+    width:
+        38px;
+
+    height:
+        38px;
+
+    display:
+        grid;
+
+    place-items:
+        center;
+
+    flex:
+        0 0 38px;
+
+    border:
+        1px solid #e5e7eb;
+
+    border-radius:
+        10px;
+
+    background:
+        #ffffff;
+
+    color:
+        #6b7280;
+
+    font-size:
+        15px;
+
+    font-weight:
+        700;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.fee-modal-close:hover {
+    background:
+        #fef2f2;
+
+    color:
+        #dc2626;
+
+    transform:
+        rotate(3deg);
+}
+
+
+/* =========================================================
+   MODAL FORM
+   ========================================================= */
+
+.fee-modal-form {
+    padding:
+        22px 24px 24px;
+}
+
+
+.fee-modal-field {
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    gap:
+        7px;
+
+    margin-bottom:
+        15px;
+}
+
+
+.fee-modal-field label {
+    color:
+        #374151;
+
+    font-size:
+        12px;
+
+    font-weight:
+        700;
+}
+
+
+.fee-modal-field input,
+.fee-modal-field select,
+.fee-modal-field textarea {
+    width:
+        100%;
+
+    border:
+        1px solid #e5e7eb;
+
+    border-radius:
+        11px;
+
+    background:
+        #ffffff;
+
+    color:
+        #111827;
+
+    font-size:
+        13px;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.fee-modal-field input,
+.fee-modal-field select {
+    min-height:
+        45px;
+
+    padding:
+        0 12px;
+}
+
+
+.fee-modal-field textarea {
+    min-height:
+        85px;
+
+    padding:
+        11px 12px;
+
+    resize:
+        vertical;
+}
+
+
+.fee-modal-field input:focus,
+.fee-modal-field select:focus,
+.fee-modal-field textarea:focus {
+    outline:
+        none;
+
+    border-color:
+        #4f46e5;
+
+    box-shadow:
+        0 0 0 4px
+        rgba(79, 70, 229, 0.09);
+}
+
+
+.fee-modal-grid {
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap:
+        14px;
+}
+
+
+/* =========================================================
+   PAYMENT SUMMARY
+   ========================================================= */
+
+.fee-modal-summary {
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap:
+        8px;
+
+    margin:
+        5px 0 18px;
+
+    padding:
+        13px;
+
+    border:
+        1px solid #c7d2fe;
+
+    border-radius:
+        13px;
+
+    background:
+        #eef2ff;
+}
+
+
+.fee-modal-summary > div {
+    min-width:
+        0;
+}
+
+
+.fee-modal-summary span {
+    display:
+        block;
+
+    margin-bottom:
+        4px;
+
+    color:
+        #6b7280;
+
+    font-size:
+        9px;
+
+    font-weight:
+        700;
+}
+
+
+.fee-modal-summary strong {
+    display:
+        block;
+
+    color:
+        #111827;
+
+    font-size:
+        13px;
+
+    font-weight:
+        800;
+}
+
+
+.fee-modal-status {
+    grid-column:
+        1 / -1;
+
+    padding-top:
+        8px;
+
+    border-top:
+        1px solid #c7d2fe;
+
+    color:
+        #475569;
+
+    font-size:
+        11px;
+}
+
+
+.fee-modal-status b {
+    color:
+        #4f46e5;
+}
+
+
+/* =========================================================
+   MODAL ACTIONS
+   ========================================================= */
+
+.fee-modal-actions {
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        flex-end;
+
+    gap:
+        10px;
+
+    padding-top:
+        3px;
+}
+
+
+.fee-modal-actions .primary-btn,
+.fee-modal-actions .secondary-btn {
+    min-width:
+        130px;
+}
+
+
+/* =========================================================
+   RECEIPTS / DUES LIST
+   ========================================================= */
+
+.fee-receipts-list {
+    padding:
+        10px 24px 24px;
+}
+
+
+.fee-receipt-item {
+    display:
+        grid;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        auto
+        auto;
+
+    align-items:
+        center;
+
+    gap:
+        14px;
+
+    padding:
+        14px 0;
+
+    border-bottom:
+        1px solid #eef2f7;
+}
+
+
+.fee-receipt-item:last-child {
+    border-bottom:
+        0;
+}
+
+
+.fee-receipt-item > div {
+    min-width:
+        0;
+}
+
+
+.fee-receipt-item > div:nth-child(2) {
+    text-align:
+        right;
+}
+
+
+.fee-receipt-item strong {
+    display:
+        block;
+
+    color:
+        #111827;
+
+    font-size:
+        12px;
+
+    font-weight:
+        800;
+}
+
+
+.fee-receipt-item small {
+    display:
+        block;
+
+    margin-top:
+        4px;
+
+    color:
+        #6b7280;
+
+    font-size:
+        10px;
+
+    line-height:
+        1.4;
+}
+
+
+.fee-receipt-item .table-action {
+    white-space:
+        nowrap;
+}
+
+
+/* =========================================================
+   MODAL SCROLLBAR
+   ========================================================= */
+
+.fee-modal::-webkit-scrollbar {
+    width:
+        7px;
+}
+
+
+.fee-modal::-webkit-scrollbar-track {
+    background:
+        #f8fafc;
+}
+
+
+.fee-modal::-webkit-scrollbar-thumb {
+    background:
+        #cbd5e1;
+
+    border-radius:
+        999px;
+}
+
+
+.fee-modal::-webkit-scrollbar-thumb:hover {
+    background:
+        #94a3b8;
+}
+
+
+/* =========================================================
+   MOBILE MODAL
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+    .fee-modal-overlay {
+        align-items:
+            flex-end;
+
+        padding:
+            0;
+    }
+
+
+    .fee-modal {
+        width:
+            100%;
+
+        max-height:
+            94vh;
+
+        border-radius:
+            20px 20px 0 0;
+
+        border-bottom:
+            0;
+
+        animation:
+            feeModalMobileUp 0.25s ease;
+    }
+
+
+    @keyframes feeModalMobileUp {
+
+        from {
+            opacity: 0;
+
+            transform:
+                translateY(100%);
+        }
+
+        to {
+            opacity: 1;
+
+            transform:
+                translateY(0);
+        }
+
+    }
+
+
+    .fee-modal-header {
+        padding:
+            18px 16px 15px;
+    }
+
+
+    .fee-modal-header h2 {
+        font-size:
+            17px;
+    }
+
+
+    .fee-modal-header p {
+        font-size:
+            10px;
+    }
+
+
+    .fee-modal-form {
+        padding:
+            17px 16px 22px;
+    }
+
+
+    .fee-modal-grid {
+        grid-template-columns:
+            1fr;
+
+        gap:
+            0;
+    }
+
+
+    .fee-modal-summary {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        gap:
+            10px;
+    }
+
+
+    .fee-modal-actions {
+        flex-direction:
+            column-reverse;
+
+        align-items:
+            stretch;
+    }
+
+
+    .fee-modal-actions
+    .primary-btn,
+    .fee-modal-actions
+    .secondary-btn {
+        width:
+            100%;
+    }
+
+
+    .fee-receipts-list {
+        padding:
+            5px 16px 20px;
+    }
+
+
+    .fee-receipt-item {
+        grid-template-columns:
+            minmax(0, 1fr)
+            auto;
+
+        gap:
+            10px;
+
+        padding:
+            13px 0;
+    }
+
+
+    .fee-receipt-item
+    > div:nth-child(2) {
+        text-align:
+            right;
+    }
+
+
+    .fee-receipt-item
+    .table-action {
+        grid-column:
+            1 / -1;
+
+        width:
+            100%;
+    }
+
+}
+
+
+/* =========================================================
+   VERY SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 400px) {
+
+    .fee-modal-summary {
+        padding:
+            10px;
+    }
+
+
+    .fee-modal-summary span {
+        font-size:
+            8px;
+    }
+
+
+    .fee-modal-summary strong {
+        font-size:
+            12px;
+    }
+
+
+    .fee-modal-close {
+        width:
+            34px;
+
+        height:
+            34px;
+
+        flex-basis:
+            34px;
+    }
+
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .fee-modal-overlay,
+    .fee-modal {
+        animation:
+            none;
+    }
+
+}
