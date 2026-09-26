@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Attendance History | SmartSchool360</title>
+
+    <link rel="stylesheet" href="../assets/css/attendance-history.css">
+</head>
+
+<body>
+
+    <!-- =========================
+         PAGE HEADER
+    ========================== -->
+    <header class="history-header">
+
+        <div class="header-left">
+
+            <a href="attendance.html" class="back-btn">
+                ←
+            </a>
+
+            <div class="header-title">
+                <span class="header-icon">📊</span>
+
+                <div>
+                    <h1>Attendance History</h1>
+                    <p>View and manage attendance records</p>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="header-actions">
+
+            <button
+                type="button"
+                class="refresh-btn"
+                id="refreshHistoryBtn">
+                🔄 Refresh
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <!-- =========================
+         MAIN CONTENT
+    ========================== -->
+    <main class="history-container">
+
+        <!-- =========================
+             FILTER CARD
+        ========================== -->
+        <section class="filter-card">
+
+            <div class="section-heading">
+                <div>
+                    <h2>🔎 Attendance Filters</h2>
+                    <p>Filter attendance records by student, class or date.</p>
+                </div>
+            </div>
+
+
+            <div class="filters-grid">
+
+                <!-- Student Search -->
+                <div class="filter-group">
+
+                    <label for="historyStudentSearch">
+                        Student
+                    </label>
+
+                    <input
+                        type="text"
+                        id="historyStudentSearch"
+                        placeholder="Search student name or ID..."
+                        autocomplete="off">
+
+                </div>
+
+
+                <!-- Class -->
+                <div class="filter-group">
+
+                    <label for="historyClass">
+                        Class
+                    </label>
+
+                    <select id="historyClass">
+
+                        <option value="">
+                            All Classes
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- Section -->
+                <div class="filter-group">
+
+                    <label for="historySection">
+                        Section
+                    </label>
+
+                    <select id="historySection">
+
+                        <option value="">
+                            All Sections
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- Status -->
+                <div class="filter-group">
+
+                    <label for="historyStatus">
+                        Status
+                    </label>
+
+                    <select id="historyStatus">
+
+                        <option value="">
+                            All Status
+                        </option>
+
+                        <option value="Present">
+                            Present
+                        </option>
+
+                        <option value="Absent">
+                            Absent
+                        </option>
+
+                        <option value="Late">
+                            Late
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- Date From -->
+                <div class="filter-group">
+
+                    <label for="historyDateFrom">
+                        From Date
+                    </label>
+
+                    <input
+                        type="date"
+                        id="historyDateFrom">
+
+                </div>
+
+
+                <!-- Date To -->
+                <div class="filter-group">
+
+                    <label for="historyDateTo">
+                        To Date
+                    </label>
+
+                    <input
+                        type="date"
+                        id="historyDateTo">
+
+                </div>
+
+            </div>
+
+
+            <div class="filter-actions">
+
+                <button
+                    type="button"
+                    class="apply-filter-btn"
+                    id="applyHistoryFilterBtn">
+                    🔍 Apply Filters
+                </button>
+
+                <button
+                    type="button"
+                    class="clear-filter-btn"
+                    id="clearHistoryFilterBtn">
+                    ✕ Clear Filters
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             SUMMARY CARDS
+        ========================== -->
+        <section class="summary-grid">
+
+            <div class="summary-card total-card">
+
+                <div class="summary-icon">
+                    📋
+                </div>
+
+                <div class="summary-content">
+
+                    <span>Total Records</span>
+
+                    <strong id="historyTotalRecords">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="summary-card present-card">
+
+                <div class="summary-icon">
+                    ✅
+                </div>
+
+                <div class="summary-content">
+
+                    <span>Present</span>
+
+                    <strong id="historyPresentRecords">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="summary-card absent-card">
+
+                <div class="summary-icon">
+                    ❌
+                </div>
+
+                <div class="summary-content">
+
+                    <span>Absent</span>
+
+                    <strong id="historyAbsentRecords">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="summary-card late-card">
+
+                <div class="summary-icon">
+                    ⏰
+                </div>
+
+                <div class="summary-content">
+
+                    <span>Late</span>
+
+                    <strong id="historyLateRecords">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             ATTENDANCE TABLE
+        ========================== -->
+        <section class="history-table-card">
+
+            <div class="table-header">
+
+                <div>
+
+                    <h2>📅 Attendance Records</h2>
+
+                    <p id="historyResultText">
+                        Showing attendance records
+                    </p>
+
+                </div>
+
+                <div class="record-count" id="historyRecordCount">
+                    0 Records
+                </div>
+
+            </div>
+
+
+            <!-- Responsive table wrapper -->
+            <div class="table-wrapper">
+
+                <table class="history-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                DATE
+                            </th>
+
+                            <th>
+                                STUDENT
+                            </th>
+
+                            <th>
+                                STUDENT ID
+                            </th>
+
+                            <th>
+                                CLASS
+                            </th>
+
+                            <th>
+                                SECTION
+                            </th>
+
+                            <th>
+                                STATUS
+                            </th>
+
+                            <th>
+                                UPDATED
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="attendanceHistoryBody">
+
+                        <!-- Records will be inserted by JavaScript -->
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <!-- Empty State -->
+            <div
+                class="empty-state"
+                id="attendanceHistoryEmpty"
+                hidden>
+
+                <div class="empty-icon">
+                    📭
+                </div>
+
+                <h3>No Attendance Records</h3>
+
+                <p>
+                    No attendance records match the selected filters.
+                </p>
+
+                <a
+                    href="attendance.html"
+                    class="go-attendance-btn">
+                    ➕ Mark Attendance
+                </a>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             STUDENT ATTENDANCE
+             OVERVIEW
+        ========================== -->
+        <section class="student-overview-card">
+
+            <div class="overview-header">
+
+                <div>
+
+                    <h2>👨‍🎓 Student Attendance Overview</h2>
+
+                    <p>
+                        Attendance percentage calculated from saved records.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="overview-table-wrapper">
+
+                <table class="overview-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                STUDENT
+                            </th>
+
+                            <th>
+                                CLASS
+                            </th>
+
+                            <th>
+                                TOTAL
+                            </th>
+
+                            <th>
+                                PRESENT
+                            </th>
+
+                            <th>
+                                ABSENT
+                            </th>
+
+                            <th>
+                                LATE
+                            </th>
+
+                            <th>
+                                ATTENDANCE %
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="studentOverviewBody">
+
+                        <!-- Student overview generated by JS -->
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <div
+                class="overview-empty"
+                id="studentOverviewEmpty"
+                hidden>
+
+                <span>📊</span>
+
+                <p>
+                    Student attendance overview will appear here
+                    when attendance records are available.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             INFORMATION CARD
+        ========================== -->
+        <section class="info-card">
+
+            <div class="info-icon">
+                🔐
+            </div>
+
+            <div class="info-content">
+
+                <h3>Attendance Data</h3>
+
+                <p>
+                    This page reads attendance records saved from
+                    the SmartSchool360 Attendance module.
+                    Records are currently stored locally in the
+                    browser and will later be connected to the
+                    school database.
+                </p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =========================
+         FOOTER
+    ========================== -->
+    <footer class="site-footer">
+
+        <div class="footer-brand">
+            <strong>SmartSchool360</strong>
+
+            <span>
+                School Management System
+            </span>
+        </div>
+
+        <div class="footer-copy">
+            © 2026 SmartSchool360 · Built by Priyanshu Kumar
+        </div>
+
+    </footer>
+
+
+    <!-- =========================
+         TOAST
+    ========================== -->
+    <div
+        class="toast"
+        id="historyToast"
+        aria-live="polite">
+    </div>
+
+
+    <!-- =========================
+         JAVASCRIPT
+    ========================== -->
+    <script src="../assets/js/attendance-history.js"></script>
+
+</body>
+</html>
