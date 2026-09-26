@@ -1,14 +1,14 @@
 /* =========================================================
    SMARTSCHOOL360
    ATTENDANCE MANAGEMENT
-   STEP 7A
-   Attendance Dashboard + LocalStorage
+   STEP 7B
+   Attendance Save + Date/Class/Section Management
    ========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
 
     /* =====================================================
-       STORAGE KEYS
+       STORAGE
        ===================================================== */
 
     const STUDENT_STORAGE_KEY =
@@ -92,6 +92,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let selectedSection = "";
 
+    let currentLoaded = false;
+
 
     /* =====================================================
        INITIALIZE
@@ -112,6 +114,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         updateSummary([]);
 
+        createSaveControls();
+
+        attachEvents();
+
     }
 
 
@@ -123,13 +129,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
         try {
 
-            const rawData =
+            const raw =
                 localStorage.getItem(
                     STUDENT_STORAGE_KEY
                 );
 
 
-            if (!rawData) {
+            if (!raw) {
 
                 allStudents = [];
 
@@ -139,7 +145,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
             const parsed =
-                JSON.parse(rawData);
+                JSON.parse(raw);
 
 
             allStudents =
@@ -151,7 +157,7 @@ document.addEventListener("DOMContentLoaded", () => {
         } catch (error) {
 
             console.error(
-                "Unable to load students:",
+                "Student data error:",
                 error
             );
 
@@ -163,7 +169,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================================
-       SET TODAY
+       TODAY
        ===================================================== */
 
     function setToday() {
@@ -206,250 +212,78 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================================
-       NORMALIZE CLASS
+       EVENTS
        ===================================================== */
 
-    function normalizeClass(value) {
+    function attachEvents() {
 
-        if (
-            value === undefined ||
-            value === null
-        ) {
+        if (loadButton) {
 
-            return "";
-
-        }
-
-
-        return String(value)
-            .trim()
-            .toLowerCase()
-            .replace(
-                /^class\s*/i,
-                ""
-            )
-            .replace(
-                /\s+/g,
-                ""
+            loadButton.addEventListener(
+                "click",
+                loadAttendance
             );
 
-    }
-
-
-    /* =====================================================
-       NORMALIZE SECTION
-       ===================================================== */
-
-    function normalizeSection(value) {
-
-        if (
-            value === undefined ||
-            value === null
-        ) {
-
-            return "";
-
         }
 
 
-        return String(value)
-            .trim()
-            .toLowerCase()
-            .replace(
-                /^section\s*/i,
-                ""
+        if (searchInput) {
+
+            searchInput.addEventListener(
+                "input",
+                handleSearch
             );
 
-    }
-
-
-    /* =====================================================
-       DYNAMIC CLASS OPTIONS
-       ===================================================== */
-
-    function buildDynamicClassOptions() {
-
-        if (!classSelect) {
-            return;
         }
 
 
-        const existingValues =
-            new Set();
+        if (dateInput) {
+
+            dateInput.addEventListener(
+                "change",
+                handleFilterChange
+            );
+
+        }
 
 
-        Array.from(
-            classSelect.options
-        ).forEach(
-            option => {
+        if (classSelect) {
 
-                existingValues.add(
-                    normalizeClass(
-                        option.value
-                    )
-                );
+            classSelect.addEventListener(
+                "change",
+                handleFilterChange
+            );
 
-            }
-        );
+        }
 
 
-        allStudents.forEach(
-            student => {
+        if (sectionSelect) {
 
-                const classValue =
-                    student.className;
+            sectionSelect.addEventListener(
+                "change",
+                handleFilterChange
+            );
 
-
-                const normalized =
-                    normalizeClass(
-                        classValue
-                    );
-
-
-                if (
-                    !normalized ||
-                    existingValues.has(
-                        normalized
-                    )
-                ) {
-
-                    return;
-
-                }
-
-
-                const option =
-                    document.createElement(
-                        "option"
-                    );
-
-
-                option.value =
-                    String(
-                        classValue
-                    );
-
-
-                option.textContent =
-                    String(
-                        classValue
-                    )
-                        .toLowerCase()
-                        .startsWith(
-                            "class"
-                        )
-                        ? String(
-                            classValue
-                        )
-                        : `Class ${classValue}`;
-
-
-                classSelect.appendChild(
-                    option
-                );
-
-
-                existingValues.add(
-                    normalized
-                );
-
-            }
-        );
+        }
 
     }
 
 
     /* =====================================================
-       DYNAMIC SECTION OPTIONS
+       FILTER CHANGE
        ===================================================== */
 
-    function buildDynamicSectionOptions() {
+    function handleFilterChange() {
 
-        if (!sectionSelect) {
-            return;
-        }
+        currentLoaded = false;
 
+        displayedStudents = [];
 
-        const existingValues =
-            new Set();
+        updateSummary([]);
 
-
-        Array.from(
-            sectionSelect.options
-        ).forEach(
-            option => {
-
-                existingValues.add(
-                    normalizeSection(
-                        option.value
-                    )
-                );
-
-            }
-        );
-
-
-        allStudents.forEach(
-            student => {
-
-                const sectionValue =
-                    student.section;
-
-
-                const normalized =
-                    normalizeSection(
-                        sectionValue
-                    );
-
-
-                if (
-                    !normalized ||
-                    existingValues.has(
-                        normalized
-                    )
-                ) {
-
-                    return;
-
-                }
-
-
-                const option =
-                    document.createElement(
-                        "option"
-                    );
-
-
-                option.value =
-                    String(
-                        sectionValue
-                    );
-
-
-                option.textContent =
-                    String(
-                        sectionValue
-                    )
-                        .toLowerCase()
-                        .startsWith(
-                            "section"
-                        )
-                        ? String(
-                            sectionValue
-                        )
-                        : `Section ${sectionValue}`;
-
-
-                sectionSelect.appendChild(
-                    option
-                );
-
-
-                existingValues.add(
-                    normalized
-                );
-
-            }
+        updateTableMessage(
+            "Filters changed",
+            "Click \"Load Students\" to load the selected attendance."
         );
 
     }
@@ -458,16 +292,6 @@ document.addEventListener("DOMContentLoaded", () => {
     /* =====================================================
        LOAD ATTENDANCE
        ===================================================== */
-
-    if (loadButton) {
-
-        loadButton.addEventListener(
-            "click",
-            loadAttendance
-        );
-
-    }
-
 
     function loadAttendance() {
 
@@ -516,7 +340,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!selectedDate) {
 
             showToast(
-                "Please select an attendance date.",
+                "Please select a date.",
                 "error"
             );
 
@@ -525,40 +349,251 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
-        const classStudents =
+        const students =
             allStudents.filter(
-                student =>
-                    normalizeClass(
-                        student.className
-                    ) ===
-                    normalizeClass(
-                        selectedClass
-                    ) &&
-                    normalizeSection(
-                        student.section
-                    ) ===
-                    normalizeSection(
-                        selectedSection
-                    )
+                student => {
+
+                    return (
+                        normalizeClass(
+                            student.className
+                        ) ===
+                        normalizeClass(
+                            selectedClass
+                        ) &&
+
+                        normalizeSection(
+                            student.section
+                        ) ===
+                        normalizeSection(
+                            selectedSection
+                        )
+                    );
+
+                }
             );
 
 
         displayedStudents =
-            classStudents;
+            students;
+
+
+        currentLoaded = true;
+
+
+        if (searchInput) {
+
+            searchInput.value = "";
+
+        }
 
 
         renderStudents(
-            classStudents
+            students
         );
 
 
         updateSummary(
-            classStudents
+            students
         );
 
 
         updateTableSubtitle(
-            classStudents.length
+            students.length
+        );
+
+
+        updateSaveControls();
+
+
+        if (students.length) {
+
+            showToast(
+                `${students.length} student${
+                    students.length === 1
+                        ? ""
+                        : "s"
+                } loaded successfully.`
+            );
+
+        } else {
+
+            showToast(
+                "No students found for this class and section.",
+                "error"
+            );
+
+        }
+
+    }
+
+
+    /* =====================================================
+       CLASS OPTIONS
+       ===================================================== */
+
+    function buildDynamicClassOptions() {
+
+        if (!classSelect) {
+            return;
+        }
+
+
+        const existing =
+            new Set();
+
+
+        Array.from(
+            classSelect.options
+        ).forEach(
+            option => {
+
+                existing.add(
+                    normalizeClass(
+                        option.value
+                    )
+                );
+
+            }
+        );
+
+
+        allStudents.forEach(
+            student => {
+
+                const value =
+                    student.className;
+
+
+                const normalized =
+                    normalizeClass(
+                        value
+                    );
+
+
+                if (
+                    !normalized ||
+                    existing.has(
+                        normalized
+                    )
+                ) {
+
+                    return;
+
+                }
+
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+
+                option.value =
+                    String(value);
+
+
+                option.textContent =
+                    formatClass(
+                        value
+                    );
+
+
+                classSelect.appendChild(
+                    option
+                );
+
+
+                existing.add(
+                    normalized
+                );
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       SECTION OPTIONS
+       ===================================================== */
+
+    function buildDynamicSectionOptions() {
+
+        if (!sectionSelect) {
+            return;
+        }
+
+
+        const existing =
+            new Set();
+
+
+        Array.from(
+            sectionSelect.options
+        ).forEach(
+            option => {
+
+                existing.add(
+                    normalizeSection(
+                        option.value
+                    )
+                );
+
+            }
+        );
+
+
+        allStudents.forEach(
+            student => {
+
+                const value =
+                    student.section;
+
+
+                const normalized =
+                    normalizeSection(
+                        value
+                    );
+
+
+                if (
+                    !normalized ||
+                    existing.has(
+                        normalized
+                    )
+                ) {
+
+                    return;
+
+                }
+
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+
+                option.value =
+                    String(value);
+
+
+                option.textContent =
+                    formatSection(
+                        value
+                    );
+
+
+                sectionSelect.appendChild(
+                    option
+                );
+
+
+                existing.add(
+                    normalized
+                );
+
+            }
         );
 
     }
@@ -579,39 +614,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (!students.length) {
 
-            tableBody.innerHTML = `
-
-                <tr>
-
-                    <td colspan="6">
-
-                        <div
-                            class="attendance-empty"
-                        >
-
-                            <div
-                                class="attendance-empty-icon"
-                            >
-                                🔍
-                            </div>
-
-                            <h3>
-                                No Students Found
-                            </h3>
-
-                            <p>
-                                No students match
-                                the selected class
-                                and section.
-                            </p>
-
-                        </div>
-
-                    </td>
-
-                </tr>
-
-            `;
+            updateTableMessage(
+                "No Students Found",
+                "No students match the selected class and section."
+            );
 
             return;
 
@@ -629,7 +635,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 .join("");
 
 
-        attachAttendanceEvents();
+        attachAttendanceButtons();
 
     }
 
@@ -661,36 +667,52 @@ document.addEventListener("DOMContentLoaded", () => {
             "";
 
 
-        const avatarContent =
-            photo
-                ? `
-                    <img
-                        src="${escapeAttribute(
-                            photo
-                        )}"
-                        alt="${escapeAttribute(
-                            student.name ||
-                            "Student"
-                        )}"
-                        onerror="
-                            this.style.display='none';
-                            this.nextElementSibling.style.display='flex';
-                        "
-                    >
+        let avatar = "";
 
-                    <span
-                        style="display:none;"
-                    >
-                        ${escapeHtml(
-                            initials
-                        )}
-                    </span>
-                `
-                : `
+
+        if (photo) {
+
+            avatar = `
+
+                <img
+                    src="${escapeAttribute(
+                        photo
+                    )}"
+                    alt="${escapeAttribute(
+                        student.name ||
+                        "Student"
+                    )}"
+                    onerror="
+                        this.style.display='none';
+                        this.nextElementSibling.style.display='flex';
+                    "
+                >
+
+                <span
+                    style="
+                        display:none;
+                        width:100%;
+                        height:100%;
+                        align-items:center;
+                        justify-content:center;
+                    "
+                >
                     ${escapeHtml(
                         initials
                     )}
-                `;
+                </span>
+
+            `;
+
+        } else {
+
+            avatar = `
+                ${escapeHtml(
+                    initials
+                )}
+            `;
+
+        }
 
 
         return `
@@ -710,7 +732,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         <div
                             class="attendance-avatar"
                         >
-                            ${avatarContent}
+                            ${avatar}
                         </div>
 
 
@@ -796,9 +818,11 @@ document.addEventListener("DOMContentLoaded", () => {
                             class="
                                 attendance-mark-btn
                                 present
-                                ${status === "present"
-                                    ? "active"
-                                    : ""}
+                                ${
+                                    status === "present"
+                                        ? "active"
+                                        : ""
+                                }
                             "
                             data-action="present"
                             data-student-id="${escapeAttribute(
@@ -814,9 +838,11 @@ document.addEventListener("DOMContentLoaded", () => {
                             class="
                                 attendance-mark-btn
                                 absent
-                                ${status === "absent"
-                                    ? "active"
-                                    : ""}
+                                ${
+                                    status === "absent"
+                                        ? "active"
+                                        : ""
+                                }
                             "
                             data-action="absent"
                             data-student-id="${escapeAttribute(
@@ -832,9 +858,11 @@ document.addEventListener("DOMContentLoaded", () => {
                             class="
                                 attendance-mark-btn
                                 late
-                                ${status === "late"
-                                    ? "active"
-                                    : ""}
+                                ${
+                                    status === "late"
+                                        ? "active"
+                                        : ""
+                                }
                             "
                             data-action="late"
                             data-student-id="${escapeAttribute(
@@ -856,10 +884,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================================
-       ATTENDANCE EVENTS
+       ATTENDANCE BUTTONS
        ===================================================== */
 
-    function attachAttendanceEvents() {
+    function attachAttendanceButtons() {
 
         const buttons =
             document.querySelectorAll(
@@ -874,17 +902,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     "click",
                     () => {
 
-                        const studentId =
-                            button.dataset.studentId;
-
-
-                        const action =
-                            button.dataset.action;
-
-
                         markAttendance(
-                            studentId,
-                            action
+                            button.dataset.studentId,
+                            button.dataset.action
                         );
 
                     }
@@ -905,10 +925,14 @@ document.addEventListener("DOMContentLoaded", () => {
         status
     ) {
 
-        if (!selectedDate) {
+        if (
+            !selectedDate ||
+            !selectedClass ||
+            !selectedSection
+        ) {
 
             showToast(
-                "Please select a date first.",
+                "Please load attendance first.",
                 "error"
             );
 
@@ -938,6 +962,12 @@ document.addEventListener("DOMContentLoaded", () => {
             date:
                 selectedDate,
 
+            className:
+                selectedClass,
+
+            section:
+                selectedSection,
+
             status:
                 status,
 
@@ -963,6 +993,9 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
 
+        updateSaveControls();
+
+
         showToast(
             `Attendance marked ${getStatusLabel(
                 status
@@ -973,7 +1006,490 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================================
-       UPDATE ROW STATUS
+       SAVE CONTROLS
+       ===================================================== */
+
+    function createSaveControls() {
+
+        if (!tableBody) {
+            return;
+        }
+
+
+        const tableCard =
+            document.querySelector(
+                ".attendance-table-card"
+            );
+
+
+        if (!tableCard) {
+            return;
+        }
+
+
+        if (
+            document.getElementById(
+                "attendanceSaveBar"
+            )
+        ) {
+
+            return;
+
+        }
+
+
+        const bar =
+            document.createElement(
+                "div"
+            );
+
+
+        bar.id =
+            "attendanceSaveBar";
+
+
+        bar.innerHTML = `
+
+            <div
+                id="attendanceSaveInfo"
+            >
+                Select class, section and date.
+            </div>
+
+
+            <div
+                style="
+                    display:flex;
+                    gap:8px;
+                    flex-wrap:wrap;
+                    align-items:center;
+                "
+            >
+
+                <button
+                    type="button"
+                    id="saveAttendanceBtn"
+                >
+                    💾 Save Attendance
+                </button>
+
+
+                <button
+                    type="button"
+                    id="resetAttendanceBtn"
+                >
+                    ↺ Reset
+                </button>
+
+            </div>
+
+        `;
+
+
+        bar.style.display =
+            "flex";
+
+        bar.style.alignItems =
+            "center";
+
+        bar.style.justifyContent =
+            "space-between";
+
+        bar.style.gap =
+            "12px";
+
+        bar.style.flexWrap =
+            "wrap";
+
+        bar.style.padding =
+            "14px 18px";
+
+        bar.style.background =
+            "#f8fafc";
+
+        bar.style.borderBottom =
+            "1px solid #e2e8f0";
+
+
+        const info =
+            bar.querySelector(
+                "#attendanceSaveInfo"
+            );
+
+
+        info.style.fontSize =
+            "12px";
+
+        info.style.fontWeight =
+            "700";
+
+        info.style.color =
+            "#64748b";
+
+
+        const saveButton =
+            bar.querySelector(
+                "#saveAttendanceBtn"
+            );
+
+
+        saveButton.style.border =
+            "none";
+
+        saveButton.style.background =
+            "#16a34a";
+
+        saveButton.style.color =
+            "#ffffff";
+
+        saveButton.style.padding =
+            "10px 14px";
+
+        saveButton.style.borderRadius =
+            "10px";
+
+        saveButton.style.fontWeight =
+            "800";
+
+        saveButton.style.cursor =
+            "pointer";
+
+
+        const resetButton =
+            bar.querySelector(
+                "#resetAttendanceBtn"
+            );
+
+
+        resetButton.style.border =
+            "1px solid #fecaca";
+
+        resetButton.style.background =
+            "#fff1f2";
+
+        resetButton.style.color =
+            "#dc2626";
+
+        resetButton.style.padding =
+            "10px 14px";
+
+        resetButton.style.borderRadius =
+            "10px";
+
+        resetButton.style.fontWeight =
+            "800";
+
+        resetButton.style.cursor =
+            "pointer";
+
+
+        tableCard.insertBefore(
+            bar,
+            tableCard.querySelector(
+                ".attendance-table-wrapper"
+            )
+        );
+
+
+        saveButton.addEventListener(
+            "click",
+            saveCurrentAttendance
+        );
+
+
+        resetButton.addEventListener(
+            "click",
+            resetCurrentAttendance
+        );
+
+    }
+
+
+    /* =====================================================
+       UPDATE SAVE CONTROLS
+       ===================================================== */
+
+    function updateSaveControls() {
+
+        const info =
+            document.getElementById(
+                "attendanceSaveInfo"
+            );
+
+
+        if (!info) {
+            return;
+        }
+
+
+        if (
+            !currentLoaded ||
+            !selectedDate
+        ) {
+
+            info.textContent =
+                "Select class, section and date.";
+
+            return;
+
+        }
+
+
+        const stats =
+            getCurrentAttendanceStats();
+
+
+        const marked =
+            stats.present +
+            stats.absent +
+            stats.late;
+
+
+        if (!displayedStudents.length) {
+
+            info.textContent =
+                "No students available.";
+
+            return;
+
+        }
+
+
+        if (
+            marked ===
+            displayedStudents.length
+        ) {
+
+            info.textContent =
+                `✓ All ${marked} student${
+                    marked === 1
+                        ? ""
+                        : "s"
+                } marked for ${formatDisplayDate(
+                    selectedDate
+                )}.`;
+
+        } else {
+
+            info.textContent =
+                `${marked} of ${
+                    displayedStudents.length
+                } attendance records marked.`;
+
+        }
+
+    }
+
+
+    /* =====================================================
+       SAVE CURRENT ATTENDANCE
+       ===================================================== */
+
+    function saveCurrentAttendance() {
+
+        if (!currentLoaded) {
+
+            showToast(
+                "Please load attendance first.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        if (!displayedStudents.length) {
+
+            showToast(
+                "No students available to save.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        const attendance =
+            getAttendanceData();
+
+
+        let markedCount = 0;
+
+
+        displayedStudents.forEach(
+            student => {
+
+                const status =
+                    getAttendanceStatus(
+                        student.id,
+                        selectedDate
+                    );
+
+
+                if (
+                    status === "pending"
+                ) {
+
+                    return;
+
+                }
+
+
+                const key =
+                    createAttendanceKey(
+                        student.id,
+                        selectedDate
+                    );
+
+
+                attendance[key] = {
+
+                    studentId:
+                        String(
+                            student.id
+                        ),
+
+                    date:
+                        selectedDate,
+
+                    className:
+                        selectedClass,
+
+                    section:
+                        selectedSection,
+
+                    status:
+                        status,
+
+                    updatedAt:
+                        new Date().toISOString(),
+
+                    savedAt:
+                        new Date().toISOString()
+
+                };
+
+
+                markedCount++;
+
+            }
+        );
+
+
+        saveAttendanceData(
+            attendance
+        );
+
+
+        updateSaveControls();
+
+
+        showToast(
+            `${markedCount} attendance record${
+                markedCount === 1
+                    ? ""
+                    : "s"
+            } saved successfully.`
+        );
+
+    }
+
+
+    /* =====================================================
+       RESET CURRENT ATTENDANCE
+       ===================================================== */
+
+    function resetCurrentAttendance() {
+
+        if (!currentLoaded) {
+
+            showToast(
+                "Please load attendance first.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        if (!displayedStudents.length) {
+
+            return;
+
+        }
+
+
+        const confirmed =
+            window.confirm(
+                `Reset attendance for ${
+                    displayedStudents.length
+                } student${
+                    displayedStudents.length === 1
+                        ? ""
+                        : "s"
+                } on ${
+                    formatDisplayDate(
+                        selectedDate
+                    )
+                }?`
+            );
+
+
+        if (!confirmed) {
+            return;
+        }
+
+
+        const attendance =
+            getAttendanceData();
+
+
+        displayedStudents.forEach(
+            student => {
+
+                const key =
+                    createAttendanceKey(
+                        student.id,
+                        selectedDate
+                    );
+
+
+                delete attendance[key];
+
+            }
+        );
+
+
+        saveAttendanceData(
+            attendance
+        );
+
+
+        renderStudents(
+            displayedStudents
+        );
+
+
+        updateSummary(
+            displayedStudents
+        );
+
+
+        updateSaveControls();
+
+
+        showToast(
+            "Attendance reset successfully."
+        );
+
+    }
+
+
+    /* =====================================================
+       STATUS UPDATE
        ===================================================== */
 
     function updateStudentRowStatus(
@@ -1061,17 +1577,25 @@ document.addEventListener("DOMContentLoaded", () => {
                     );
 
 
-                if (status === "present") {
+                if (
+                    status === "present"
+                ) {
 
                     present++;
 
-                } else if (
+                }
+
+
+                if (
                     status === "absent"
                 ) {
 
                     absent++;
 
-                } else if (
+                }
+
+
+                if (
                     status === "late"
                 ) {
 
@@ -1118,38 +1642,54 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================================
-       TABLE SUBTITLE
+       CURRENT STATS
        ===================================================== */
 
-    function updateTableSubtitle(
-        count
-    ) {
+    function getCurrentAttendanceStats() {
 
-        if (!tableSubtitle) {
-            return;
-        }
+        const stats = {
+
+            present: 0,
+
+            absent: 0,
+
+            late: 0,
+
+            pending: 0
+
+        };
 
 
-        const formattedDate =
-            formatDisplayDate(
-                selectedDate
-            );
+        displayedStudents.forEach(
+            student => {
+
+                const status =
+                    getAttendanceStatus(
+                        student.id,
+                        selectedDate
+                    );
 
 
-        tableSubtitle.textContent =
-            `${count} student${
-                count === 1 ? "" : "s"
-            } · ${
-                formatClass(
-                    selectedClass
-                )
-            } · ${
-                formatSection(
-                    selectedSection
-                )
-            } · ${
-                formattedDate
-            }`;
+                if (
+                    Object.prototype.hasOwnProperty.call(
+                        stats,
+                        status
+                    )
+                ) {
+
+                    stats[status]++;
+
+                } else {
+
+                    stats.pending++;
+
+                }
+
+            }
+        );
+
+
+        return stats;
 
     }
 
@@ -1158,17 +1698,17 @@ document.addEventListener("DOMContentLoaded", () => {
        SEARCH
        ===================================================== */
 
-    if (searchInput) {
-
-        searchInput.addEventListener(
-            "input",
-            handleSearch
-        );
-
-    }
-
-
     function handleSearch() {
+
+        if (
+            !currentLoaded ||
+            !displayedStudents.length
+        ) {
+
+            return;
+
+        }
+
 
         const query =
             String(
@@ -1178,16 +1718,17 @@ document.addEventListener("DOMContentLoaded", () => {
                 .toLowerCase();
 
 
-        if (!displayedStudents.length) {
-            return;
-        }
-
-
         if (!query) {
 
             renderStudents(
                 displayedStudents
             );
+
+            updateSummary(
+                displayedStudents
+            );
+
+            updateSaveControls();
 
             return;
 
@@ -1236,7 +1777,68 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================================
-       ATTENDANCE STORAGE
+       TABLE MESSAGE
+       ===================================================== */
+
+    function updateTableMessage(
+        title,
+        message
+    ) {
+
+        if (!tableBody) {
+            return;
+        }
+
+
+        tableBody.innerHTML = `
+
+            <tr>
+
+                <td colspan="6">
+
+                    <div
+                        class="attendance-empty"
+                    >
+
+                        <div
+                            class="attendance-empty-icon"
+                        >
+                            📋
+                        </div>
+
+                        <h3>
+                            ${escapeHtml(
+                                title
+                            )}
+                        </h3>
+
+                        <p>
+                            ${escapeHtml(
+                                message
+                            )}
+                        </p>
+
+                    </div>
+
+                </td>
+
+            </tr>
+
+        `;
+
+
+        if (tableSubtitle) {
+
+            tableSubtitle.textContent =
+                message;
+
+        }
+
+    }
+
+
+    /* =====================================================
+       STORAGE READ
        ===================================================== */
 
     function getAttendanceData() {
@@ -1250,7 +1852,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
             if (!raw) {
+
                 return {};
+
             }
 
 
@@ -1258,18 +1862,24 @@ document.addEventListener("DOMContentLoaded", () => {
                 JSON.parse(raw);
 
 
-            return (
-                parsed &&
-                typeof parsed === "object"
-            )
-                ? parsed
-                : {};
+            if (
+                !parsed ||
+                typeof parsed !== "object" ||
+                Array.isArray(parsed)
+            ) {
+
+                return {};
+
+            }
+
+
+            return parsed;
 
 
         } catch (error) {
 
             console.error(
-                "Unable to read attendance:",
+                "Attendance storage error:",
                 error
             );
 
@@ -1279,6 +1889,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     }
 
+
+    /* =====================================================
+       STORAGE SAVE
+       ===================================================== */
 
     function saveAttendanceData(
         data
@@ -1294,10 +1908,13 @@ document.addEventListener("DOMContentLoaded", () => {
             );
 
 
+            return true;
+
+
         } catch (error) {
 
             console.error(
-                "Unable to save attendance:",
+                "Attendance save error:",
                 error
             );
 
@@ -1306,6 +1923,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 "Attendance could not be saved.",
                 "error"
             );
+
+
+            return false;
 
         }
 
@@ -1342,12 +1962,16 @@ document.addEventListener("DOMContentLoaded", () => {
             );
 
 
+        const record =
+            attendance[key];
+
+
         if (
-            attendance[key] &&
-            attendance[key].status
+            record &&
+            record.status
         ) {
 
-            return attendance[key].status;
+            return record.status;
 
         }
 
@@ -1358,7 +1982,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================================
-       ATTENDANCE KEY
+       KEY
        ===================================================== */
 
     function createAttendanceKey(
@@ -1399,8 +2023,36 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================================
-       FORMAT CLASS
+       CLASS
        ===================================================== */
+
+    function normalizeClass(
+        value
+    ) {
+
+        if (
+            value === undefined ||
+            value === null
+        ) {
+
+            return "";
+
+        }
+
+
+        return String(value)
+            .trim()
+            .toLowerCase()
+            .replace(
+                /^class\s*/i,
+                ""
+            )
+            .replace(
+                /\s+/g,
+                "");
+
+    }
+
 
     function formatClass(
         value
@@ -1438,8 +2090,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================================
-       FORMAT SECTION
+       SECTION
        ===================================================== */
+
+    function normalizeSection(
+        value
+    ) {
+
+        if (
+            value === undefined ||
+            value === null
+        ) {
+
+            return "";
+
+        }
+
+
+        return String(value)
+            .trim()
+            .toLowerCase()
+            .replace(
+                /^section\s*/i,
+                "");
+
+    }
+
 
     function formatSection(
         value
@@ -1516,7 +2192,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================================
-       FORMAT DATE
+       DATE
        ===================================================== */
 
     function formatDisplayDate(
@@ -1566,14 +2242,14 @@ document.addEventListener("DOMContentLoaded", () => {
         type = "success"
     ) {
 
-        const existing =
+        const old =
             document.querySelector(
                 ".attendance-toast"
             );
 
 
-        if (existing) {
-            existing.remove();
+        if (old) {
+            old.remove();
         }
 
 
@@ -1591,49 +2267,57 @@ document.addEventListener("DOMContentLoaded", () => {
             message;
 
 
-        toast.style.position =
-            "fixed";
+        Object.assign(
+            toast.style,
+            {
 
-        toast.style.left =
-            "50%";
+                position: "fixed",
 
-        toast.style.bottom =
-            "25px";
+                left: "50%",
 
-        toast.style.transform =
-            "translateX(-50%) translateY(20px)";
+                bottom: "24px",
 
-        toast.style.zIndex =
-            "9999";
+                transform:
+                    "translateX(-50%) translateY(20px)",
 
-        toast.style.padding =
-            "13px 18px";
+                zIndex: "99999",
 
-        toast.style.borderRadius =
-            "12px";
+                padding:
+                    "13px 18px",
 
-        toast.style.fontSize =
-            "14px";
+                borderRadius:
+                    "13px",
 
-        toast.style.fontWeight =
-            "700";
+                fontSize:
+                    "14px",
 
-        toast.style.color =
-            "#ffffff";
+                fontWeight:
+                    "800",
 
-        toast.style.background =
-            type === "error"
-                ? "#dc2626"
-                : "#16a34a";
+                color:
+                    "#ffffff",
 
-        toast.style.boxShadow =
-            "0 12px 30px rgba(15,23,42,.20)";
+                background:
+                    type === "error"
+                        ? "#dc2626"
+                        : "#16a34a",
 
-        toast.style.opacity =
-            "0";
+                boxShadow:
+                    "0 12px 30px rgba(15,23,42,.20)",
 
-        toast.style.transition =
-            "all .25s ease";
+                opacity: "0",
+
+                transition:
+                    "all .25s ease",
+
+                maxWidth:
+                    "calc(100% - 30px)",
+
+                textAlign:
+                    "center"
+
+            }
+        );
 
 
         document.body.appendChild(
