@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -26,18 +27,19 @@
         href="../assets/css/fees.css"
     >
 
+
     <!-- =====================================================
-         MOBILE MODAL CLOSE FIX
+         MOBILE MODAL SAFETY
          ===================================================== -->
+
     <style>
-        /*
-         * SmartSchool360 Fee Modal Close Button
-         * Keeps the button compatible with existing fees.css.
-         */
+
         .fee-modal-close,
         .modal-close-btn {
+
             width: 38px !important;
             height: 38px !important;
+
             min-width: 38px !important;
             min-height: 38px !important;
 
@@ -65,82 +67,153 @@
             -webkit-appearance: none !important;
 
             touch-action: manipulation !important;
-            -webkit-tap-highlight-color: transparent !important;
+
+            -webkit-tap-highlight-color:
+                transparent !important;
 
             position: relative !important;
             z-index: 20 !important;
         }
 
+
         .fee-modal-close:hover,
         .modal-close-btn:hover {
+
             background: #fef2f2 !important;
             color: #dc2626 !important;
         }
 
+
         .fee-modal-close:active,
         .modal-close-btn:active {
+
             transform: scale(0.94) !important;
         }
 
+
         .fee-modal-overlay {
+
             touch-action: manipulation;
         }
+
 
         @media (max-width: 700px) {
 
             .fee-modal-overlay {
+
                 padding: 0 !important;
             }
 
+
             .fee-modal {
+
                 width: 100% !important;
                 max-width: 100% !important;
+
                 max-height: 94vh !important;
+
                 overflow-y: auto !important;
             }
 
+
             .fee-modal-header {
+
                 position: relative !important;
-                padding: 17px 14px 14px !important;
+
+                padding:
+                    17px
+                    14px
+                    14px !important;
             }
+
 
             .fee-modal-close,
             .modal-close-btn {
+
                 width: 42px !important;
                 height: 42px !important;
+
                 min-width: 42px !important;
                 min-height: 42px !important;
+
                 flex-basis: 42px !important;
 
                 font-size: 26px !important;
+
                 border-radius: 11px !important;
             }
         }
+
 
         @media (max-width: 400px) {
 
             .fee-modal-close,
             .modal-close-btn {
+
                 width: 40px !important;
                 height: 40px !important;
+
                 min-width: 40px !important;
                 min-height: 40px !important;
+
                 flex-basis: 40px !important;
 
                 font-size: 25px !important;
             }
         }
 
+
         body.modal-open {
+
             overflow: hidden !important;
+
             touch-action: none !important;
         }
+
+
+        /* =================================================
+           FEE REPORTS QUICK ACTION
+           ================================================= */
+
+        .fee-reports-action {
+
+            border: 1px solid #dbeafe !important;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #eff6ff,
+                    #f8fafc
+                ) !important;
+        }
+
+
+        .fee-reports-action
+        .quick-action-icon {
+
+            background: #dbeafe !important;
+        }
+
+
+        .fee-reports-action:hover {
+
+            border-color: #93c5fd !important;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #dbeafe,
+                    #eff6ff
+                ) !important;
+        }
+
     </style>
 
 </head>
 
 
 <body>
+
 
     <!-- =====================================================
          HEADER
@@ -159,9 +232,11 @@
                 ←
             </button>
 
+
             <div class="header-icon">
                 💰
             </div>
+
 
             <div class="header-title">
 
@@ -187,6 +262,7 @@
         </button>
 
     </header>
+
 
 
     <!-- =====================================================
@@ -228,6 +304,7 @@
             </article>
 
 
+
             <article class="fees-kpi-card collected">
 
                 <div class="kpi-icon">
@@ -253,6 +330,7 @@
             </article>
 
 
+
             <article class="fees-kpi-card pending">
 
                 <div class="kpi-icon">
@@ -276,6 +354,7 @@
                 </div>
 
             </article>
+
 
 
             <article class="fees-kpi-card overdue">
@@ -306,6 +385,7 @@
         </section>
 
 
+
         <!-- =================================================
              QUICK ACTIONS
              ================================================= -->
@@ -325,7 +405,8 @@
                     </h2>
 
                     <p>
-                        Create fee records, collect payments and manage receipts.
+                        Create fee records, collect payments,
+                        manage receipts and analyze collections.
                     </p>
 
                 </div>
@@ -367,6 +448,7 @@
                 </button>
 
 
+
                 <!-- PAYMENT -->
 
                 <button
@@ -396,6 +478,7 @@
                     </span>
 
                 </button>
+
 
 
                 <!-- RECEIPTS -->
@@ -429,6 +512,7 @@
                 </button>
 
 
+
                 <!-- DUES -->
 
                 <button
@@ -460,9 +544,42 @@
                 </button>
 
 
+
+                <!-- FEE REPORTS -->
+
+                <button
+                    type="button"
+                    class="quick-action fee-reports-action"
+                    id="openFeeReportsBtn"
+                >
+
+                    <span class="quick-action-icon">
+                        📊
+                    </span>
+
+                    <span class="quick-action-content">
+
+                        <strong>
+                            Fee Reports
+                        </strong>
+
+                        <small>
+                            Analytics, reports & exports
+                        </small>
+
+                    </span>
+
+                    <span class="quick-action-arrow">
+                        →
+                    </span>
+
+                </button>
+
+
             </div>
 
         </section>
+
 
 
         <!-- =================================================
@@ -484,7 +601,8 @@
                     </h2>
 
                     <p>
-                        Filter student fees by class, section and payment status.
+                        Filter student fees by class,
+                        section and payment status.
                     </p>
 
                 </div>
@@ -511,6 +629,7 @@
                 </div>
 
 
+
                 <div class="form-group">
 
                     <label for="feeClass">
@@ -528,6 +647,7 @@
                 </div>
 
 
+
                 <div class="form-group">
 
                     <label for="feeSection">
@@ -543,6 +663,7 @@
                     </select>
 
                 </div>
+
 
 
                 <div class="form-group">
@@ -591,6 +712,7 @@
                     🔎 Apply Filters
                 </button>
 
+
                 <button
                     type="button"
                     class="secondary-btn"
@@ -602,6 +724,7 @@
             </div>
 
         </section>
+
 
 
         <!-- =================================================
@@ -623,10 +746,12 @@
                     </h2>
 
                     <p id="feeTableSubtitle">
-                        Manage student fee records and outstanding balances.
+                        Manage student fee records
+                        and outstanding balances.
                     </p>
 
                 </div>
+
 
                 <span
                     class="record-count"
@@ -704,7 +829,8 @@
                                     </h3>
 
                                     <p>
-                                        Create a fee record to get started.
+                                        Create a fee record
+                                        to get started.
                                     </p>
 
                                 </div>
@@ -720,6 +846,7 @@
             </div>
 
         </section>
+
 
 
         <!-- =================================================
@@ -741,7 +868,8 @@
                     </h2>
 
                     <p>
-                        Latest fee transactions recorded in SmartSchool360.
+                        Latest fee transactions
+                        recorded in SmartSchool360.
                     </p>
 
                 </div>
@@ -760,7 +888,9 @@
 
             <div class="table-wrapper">
 
-                <table class="fees-table payment-history-table">
+                <table
+                    class="fees-table payment-history-table"
+                >
 
                     <thead>
 
@@ -805,7 +935,12 @@
 
                             <td colspan="7">
 
-                                <div class="fees-empty-state compact">
+                                <div
+                                    class="
+                                        fees-empty-state
+                                        compact
+                                    "
+                                >
 
                                     <div class="empty-icon">
                                         🧾
@@ -816,7 +951,8 @@
                                     </h3>
 
                                     <p>
-                                        Recorded payments will appear here.
+                                        Recorded payments
+                                        will appear here.
                                     </p>
 
                                 </div>
@@ -832,6 +968,7 @@
             </div>
 
         </section>
+
 
 
         <!-- =================================================
@@ -851,15 +988,15 @@
                 </h3>
 
                 <p>
-                    SmartSchool360 will maintain student-wise fee structures,
-                    payment history, pending balances and receipts.
-                    Payment data will remain connected with the student
-                    fee record.
+                    SmartSchool360 maintains
+                    student-wise fee structures,
+                    payment history, pending balances
+                    and receipts.
                 </p>
 
                 <p>
-                    Fee calculations on this dashboard are based on actual
-                    stored fee data.
+                    Fee calculations on this dashboard
+                    are based on actual stored fee data.
                 </p>
 
             </div>
@@ -868,6 +1005,7 @@
 
 
     </main>
+
 
 
     <!-- =====================================================
@@ -886,6 +1024,7 @@
             aria-modal="true"
             aria-labelledby="createFeeModalTitle"
         >
+
 
             <div class="fee-modal-header">
 
@@ -919,6 +1058,7 @@
             </div>
 
 
+
             <form
                 id="createFeeForm"
                 class="fee-modal-form"
@@ -945,10 +1085,12 @@
                     </select>
 
                     <small>
-                        Select the student for whom this fee record will be created.
+                        Select the student for whom
+                        this fee record will be created.
                     </small>
 
                 </div>
+
 
 
                 <!-- STUDENT PREVIEW -->
@@ -959,25 +1101,35 @@
                 >
 
                     <div
-                        class="fee-avatar fee-avatar-initials"
+                        class="
+                            fee-avatar
+                            fee-avatar-initials
+                        "
                         id="createFeeStudentAvatar"
                     >
                         ST
                     </div>
 
+
                     <div>
 
-                        <strong id="createFeeStudentName">
+                        <strong
+                            id="createFeeStudentName"
+                        >
                             Select a student
                         </strong>
 
-                        <span id="createFeeStudentDetails">
-                            Student details will appear here.
+                        <span
+                            id="createFeeStudentDetails"
+                        >
+                            Student details will
+                            appear here.
                         </span>
 
                     </div>
 
                 </div>
+
 
 
                 <!-- FEE TYPE -->
@@ -1042,6 +1194,7 @@
                 </div>
 
 
+
                 <!-- CUSTOM FEE TYPE -->
 
                 <div
@@ -1062,6 +1215,7 @@
                     >
 
                 </div>
+
 
 
                 <!-- ACADEMIC YEAR / DUE DATE -->
@@ -1105,6 +1259,7 @@
                 </div>
 
 
+
                 <!-- AMOUNTS -->
 
                 <div class="form-row">
@@ -1136,6 +1291,7 @@
                     </div>
 
 
+
                     <div class="form-group">
 
                         <label for="createFeeInitialPayment">
@@ -1165,10 +1321,15 @@
                 </div>
 
 
+
                 <!-- SUMMARY -->
 
-                <div class="payment-summary create-fee-summary">
-
+                <div
+                    class="
+                        payment-summary
+                        create-fee-summary
+                    "
+                >
 
                     <div class="summary-row">
 
@@ -1176,7 +1337,9 @@
                             Total Fee
                         </span>
 
-                        <strong id="createFeeSummaryTotal">
+                        <strong
+                            id="createFeeSummaryTotal"
+                        >
                             ₹0.00
                         </strong>
 
@@ -1189,7 +1352,9 @@
                             Initial Payment
                         </span>
 
-                        <strong id="createFeeSummaryPaid">
+                        <strong
+                            id="createFeeSummaryPaid"
+                        >
                             ₹0.00
                         </strong>
 
@@ -1202,14 +1367,16 @@
                             Opening Due
                         </span>
 
-                        <strong id="createFeeSummaryDue">
+                        <strong
+                            id="createFeeSummaryDue"
+                        >
                             ₹0.00
                         </strong>
 
                     </div>
 
-
                 </div>
+
 
 
                 <!-- DESCRIPTION -->
@@ -1236,6 +1403,7 @@
                 >
 
 
+
                 <!-- ACTIONS -->
 
                 <div class="fee-modal-actions">
@@ -1247,6 +1415,7 @@
                     >
                         Cancel
                     </button>
+
 
                     <button
                         type="submit"
@@ -1266,6 +1435,7 @@
     </div>
 
 
+
     <!-- =====================================================
          PAYMENT MODAL
          ===================================================== -->
@@ -1283,6 +1453,7 @@
             aria-labelledby="paymentModalTitle"
         >
 
+
             <div class="fee-modal-header">
 
                 <div>
@@ -1296,7 +1467,8 @@
                     </h2>
 
                     <p>
-                        Record a payment against the selected fee.
+                        Record a payment against
+                        the selected fee.
                     </p>
 
                 </div>
@@ -1315,15 +1487,18 @@
             </div>
 
 
+
             <form
                 id="feePaymentForm"
                 class="fee-modal-form"
             >
 
+
                 <input
                     type="hidden"
                     id="paymentFeeId"
                 >
+
 
                 <input
                     type="hidden"
@@ -1331,27 +1506,39 @@
                 >
 
 
+
                 <!-- STUDENT -->
 
                 <div class="fee-payment-student">
 
-                    <div class="fee-avatar fee-avatar-initials">
+                    <div
+                        class="
+                            fee-avatar
+                            fee-avatar-initials
+                        "
+                    >
                         👨‍🎓
                     </div>
 
+
                     <div>
 
-                        <strong id="paymentStudentName">
+                        <strong
+                            id="paymentStudentName"
+                        >
                             Student
                         </strong>
 
-                        <span id="paymentStudentIdDisplay">
+                        <span
+                            id="paymentStudentIdDisplay"
+                        >
                             —
                         </span>
 
                     </div>
 
                 </div>
+
 
 
                 <!-- PAYMENT SUMMARY -->
@@ -1414,6 +1601,7 @@
                 </div>
 
 
+
                 <!-- PAYMENT AMOUNT -->
 
                 <div class="form-group">
@@ -1440,6 +1628,7 @@
                     </div>
 
                 </div>
+
 
 
                 <!-- METHOD / DATE -->
@@ -1487,6 +1676,7 @@
                     </div>
 
 
+
                     <div class="form-group">
 
                         <label for="paymentDate">
@@ -1503,6 +1693,7 @@
 
 
                 </div>
+
 
 
                 <!-- NOTE -->
@@ -1523,6 +1714,7 @@
                 </div>
 
 
+
                 <!-- ACTIONS -->
 
                 <div class="fee-modal-actions">
@@ -1534,6 +1726,7 @@
                     >
                         Cancel
                     </button>
+
 
                     <button
                         type="submit"
@@ -1550,6 +1743,7 @@
         </div>
 
     </div>
+
 
 
     <!-- =====================================================
@@ -1569,6 +1763,7 @@
             aria-labelledby="receiptsModalTitle"
         >
 
+
             <div class="fee-modal-header">
 
                 <div>
@@ -1582,7 +1777,8 @@
                     </h2>
 
                     <p>
-                        View and print generated payment receipts.
+                        View and print generated
+                        payment receipts.
                     </p>
 
                 </div>
@@ -1612,6 +1808,7 @@
     </div>
 
 
+
     <!-- =====================================================
          PENDING DUES MODAL
          ===================================================== -->
@@ -1629,6 +1826,7 @@
             aria-labelledby="duesModalTitle"
         >
 
+
             <div class="fee-modal-header">
 
                 <div>
@@ -1642,13 +1840,12 @@
                     </h2>
 
                     <p>
-                        Students with outstanding fee balances.
+                        Students with outstanding
+                        fee balances.
                     </p>
 
                 </div>
 
-
-                <!-- FIXED CLOSE BUTTON -->
 
                 <button
                     type="button"
@@ -1674,6 +1871,7 @@
     </div>
 
 
+
     <!-- =====================================================
          TOAST
          ===================================================== -->
@@ -1684,6 +1882,7 @@
         role="status"
         aria-live="polite"
     ></div>
+
 
 
     <!-- =====================================================
@@ -1707,6 +1906,7 @@
     </footer>
 
 
+
     <!-- =====================================================
          JAVASCRIPT
          ===================================================== -->
@@ -1717,119 +1917,204 @@
     ></script>
 
 
+    <!-- Safe fee deletion manager -->
+
+    <script
+        src="../assets/js/fees-delete.js"
+        defer
+    ></script>
+
+
+    <!-- Fee Reports connection -->
+
+    <script
+        src="../assets/js/fee-reports-link.js"
+        defer
+    ></script>
+
+
+
     <!-- =====================================================
-         EXTRA MOBILE SAFETY
+         MOBILE MODAL SAFETY
          ===================================================== -->
 
     <script>
-        /*
-         * Extra mobile safety:
-         * If the main fees.js handler is delayed,
-         * these handlers still close the modal.
-         */
 
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
 
-            const closeMap = {
-                "closeCreateFeeModal": "createFeeModal",
-                "closeFeePaymentModal": "feePaymentModal",
-                "closeFeeReceiptsModal": "feeReceiptsModal",
-                "closeFeeDuesModal": "feeDuesModal"
-            };
+                const closeMap = {
 
+                    "closeCreateFeeModal":
+                        "createFeeModal",
 
-            Object.keys(closeMap).forEach(function (buttonId) {
+                    "closeFeePaymentModal":
+                        "feePaymentModal",
 
-                const button =
-                    document.getElementById(buttonId);
+                    "closeFeeReceiptsModal":
+                        "feeReceiptsModal",
 
-                const modal =
-                    document.getElementById(
-                        closeMap[buttonId]
-                    );
-
-
-                if (!button || !modal) {
-                    return;
-                }
-
-
-                const closeModal = function (event) {
-
-                    if (event) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                    }
-
-
-                    modal.classList.remove("show");
-
-                    modal.setAttribute(
-                        "aria-hidden",
-                        "true"
-                    );
-
-
-                    document.body.classList.remove(
-                        "modal-open"
-                    );
+                    "closeFeeDuesModal":
+                        "feeDuesModal"
 
                 };
 
 
-                /*
-                 * click
-                 */
-                button.addEventListener(
-                    "click",
-                    closeModal,
-                    true
-                );
+                Object.keys(closeMap).forEach(
+                    function (buttonId) {
+
+                        const button =
+                            document.getElementById(
+                                buttonId
+                            );
 
 
-                /*
-                 * touch
-                 */
-                button.addEventListener(
-                    "touchend",
-                    closeModal,
-                    {
-                        passive: false,
-                        capture: true
-                    }
-                );
+                        const modal =
+                            document.getElementById(
+                                closeMap[buttonId]
+                            );
 
-            });
-
-
-            /*
-             * Close when tapping outside modal
-             */
-
-            document.querySelectorAll(
-                ".fee-modal-overlay"
-            ).forEach(function (overlay) {
-
-                overlay.addEventListener(
-                    "click",
-                    function (event) {
 
                         if (
-                            event.target !== overlay
+                            !button ||
+                            !modal
                         ) {
                             return;
                         }
 
 
-                        overlay.classList.remove(
-                            "show"
+                        const closeModal =
+                            function (event) {
+
+                                if (event) {
+
+                                    event.preventDefault();
+
+                                    event.stopPropagation();
+                                }
+
+
+                                modal.classList.remove(
+                                    "show"
+                                );
+
+
+                                modal.setAttribute(
+                                    "aria-hidden",
+                                    "true"
+                                );
+
+
+                                document.body.classList.remove(
+                                    "modal-open"
+                                );
+
+                            };
+
+
+                        button.addEventListener(
+                            "click",
+                            closeModal,
+                            true
                         );
 
 
-                        overlay.setAttribute(
-                            "aria-hidden",
-                            "true"
+                        button.addEventListener(
+                            "touchend",
+                            closeModal,
+                            {
+                                passive: false,
+                                capture: true
+                            }
                         );
+
+                    }
+                );
+
+
+
+                /* =========================================
+                   OUTSIDE MODAL CLICK
+                   ========================================= */
+
+                document
+                    .querySelectorAll(
+                        ".fee-modal-overlay"
+                    )
+                    .forEach(
+                        function (overlay) {
+
+                            overlay.addEventListener(
+                                "click",
+                                function (event) {
+
+                                    if (
+                                        event.target !==
+                                        overlay
+                                    ) {
+                                        return;
+                                    }
+
+
+                                    overlay.classList.remove(
+                                        "show"
+                                    );
+
+
+                                    overlay.setAttribute(
+                                        "aria-hidden",
+                                        "true"
+                                    );
+
+
+                                    document.body.classList.remove(
+                                        "modal-open"
+                                    );
+
+                                }
+                            );
+
+                        }
+                    );
+
+
+
+                /* =========================================
+                   ESCAPE KEY
+                   ========================================= */
+
+                document.addEventListener(
+                    "keydown",
+                    function (event) {
+
+                        if (
+                            event.key !==
+                            "Escape"
+                        ) {
+                            return;
+                        }
+
+
+                        document
+                            .querySelectorAll(
+                                ".fee-modal-overlay.show"
+                            )
+                            .forEach(
+                                function (modal) {
+
+                                    modal.classList.remove(
+                                        "show"
+                                    );
+
+
+                                    modal.setAttribute(
+                                        "aria-hidden",
+                                        "true"
+                                    );
+
+                                }
+                            );
 
 
                         document.body.classList.remove(
@@ -1839,48 +2124,59 @@
                     }
                 );
 
-            });
 
 
-            /*
-             * Escape key
-             */
+                /* =========================================
+                   DIRECT FEE REPORTS BUTTON
+                   ========================================= */
 
-            document.addEventListener(
-                "keydown",
-                function (event) {
-
-                    if (
-                        event.key !== "Escape"
-                    ) {
-                        return;
-                    }
+                const reportsButton =
+                    document.getElementById(
+                        "openFeeReportsBtn"
+                    );
 
 
-                    document.querySelectorAll(
-                        ".fee-modal-overlay.show"
-                    ).forEach(function (modal) {
+                if (reportsButton) {
 
-                        modal.classList.remove(
-                            "show"
-                        );
+                    const openReports =
+                        function (event) {
 
-                        modal.setAttribute(
-                            "aria-hidden",
-                            "true"
-                        );
-
-                    });
+                            if (event) {
+                                event.preventDefault();
+                            }
 
 
-                    document.body.classList.remove(
-                        "modal-open"
+                            window.location.href =
+                                "fee-reports.html";
+
+                        };
+
+
+                    reportsButton.addEventListener(
+                        "click",
+                        openReports
+                    );
+
+
+                    reportsButton.addEventListener(
+                        "touchend",
+                        function (event) {
+
+                            event.preventDefault();
+
+                            openReports();
+
+                        },
+                        {
+                            passive: false
+                        }
                     );
 
                 }
-            );
 
-        });
+            }
+        );
+
     </script>
 
 
