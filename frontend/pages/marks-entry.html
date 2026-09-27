@@ -1,0 +1,7374 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Marks Entry | SmartSchool360</title>
+
+    <meta
+        name="description"
+        content="SmartSchool360 Examination Marks Entry"
+    >
+
+    <style>
+
+        :root {
+
+            --primary: #4f46e5;
+            --primary-dark: #3730a3;
+
+            --success: #059669;
+            --warning: #d97706;
+            --danger: #dc2626;
+
+            --text: #0f172a;
+            --muted: #64748b;
+
+            --border: #e2e8f0;
+
+            --bg: #f8fafc;
+            --card: #ffffff;
+
+        }
+
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+
+            margin: 0;
+
+            background: var(--bg);
+
+            color: var(--text);
+
+            font-family:
+                Inter,
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+
+        }
+
+
+        button,
+        input,
+        select,
+        textarea {
+            font: inherit;
+        }
+
+
+        button {
+            cursor: pointer;
+        }
+
+
+        /* =====================================================
+           HEADER
+           ===================================================== */
+
+        .marks-header {
+
+            position: sticky;
+
+            top: 0;
+
+            z-index: 50;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 15px;
+
+            padding: 14px 22px;
+
+            background:
+                rgba(255,255,255,.96);
+
+            border-bottom:
+                1px solid var(--border);
+
+            backdrop-filter:
+                blur(14px);
+
+        }
+
+
+        .marks-header-left {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            min-width: 0;
+
+        }
+
+
+        .marks-back-btn {
+
+            width: 42px;
+            height: 42px;
+
+            flex: 0 0 42px;
+
+            display: grid;
+
+            place-items: center;
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 12px;
+
+            background: #fff;
+
+            color: var(--text);
+
+            font-size: 20px;
+
+            text-decoration: none;
+
+        }
+
+
+        .marks-back-btn:hover {
+            background: #f1f5f9;
+        }
+
+
+        .marks-header-icon {
+
+            width: 46px;
+            height: 46px;
+
+            flex: 0 0 46px;
+
+            display: grid;
+
+            place-items: center;
+
+            border-radius: 14px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #4f46e5,
+                    #7c3aed
+                );
+
+            color: #fff;
+
+            font-size: 22px;
+
+            box-shadow:
+                0 8px 22px
+                rgba(79,70,229,.22);
+
+        }
+
+
+        .marks-header-title {
+
+            min-width: 0;
+
+        }
+
+
+        .marks-header-title h1 {
+
+            margin: 0;
+
+            font-size: 21px;
+
+            line-height: 1.25;
+
+        }
+
+
+        .marks-header-title p {
+
+            margin: 3px 0 0;
+
+            color: var(--muted);
+
+            font-size: 13px;
+
+        }
+
+
+        .marks-refresh-btn {
+
+            border: 0;
+
+            border-radius: 10px;
+
+            padding: 10px 14px;
+
+            background: #f1f5f9;
+
+            color: #334155;
+
+            font-weight: 700;
+
+        }
+
+
+        .marks-refresh-btn:hover {
+            background: #e2e8f0;
+        }
+
+
+        /* =====================================================
+           MAIN CONTAINER
+           ===================================================== */
+
+        .marks-container {
+
+            width:
+                min(
+                    1400px,
+                    calc(100% - 28px)
+                );
+
+            margin:
+                22px auto 40px;
+
+        }
+
+
+        /* =====================================================
+           KPI GRID
+           ===================================================== */
+
+        .marks-kpi-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, minmax(0, 1fr));
+
+            gap: 16px;
+
+            margin-bottom: 18px;
+
+        }
+
+
+        .marks-kpi-card {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 13px;
+
+            min-width: 0;
+
+            padding: 18px;
+
+            background: var(--card);
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 16px;
+
+            box-shadow:
+                0 5px 18px
+                rgba(15,23,42,.04);
+
+        }
+
+
+        .marks-kpi-icon {
+
+            width: 48px;
+            height: 48px;
+
+            flex: 0 0 48px;
+
+            display: grid;
+
+            place-items: center;
+
+            border-radius: 14px;
+
+            background: #eef2ff;
+
+            font-size: 21px;
+
+        }
+
+
+        .marks-kpi-card:nth-child(2)
+        .marks-kpi-icon {
+            background: #ecfdf5;
+        }
+
+
+        .marks-kpi-card:nth-child(3)
+        .marks-kpi-icon {
+            background: #fff7ed;
+        }
+
+
+        .marks-kpi-card:nth-child(4)
+        .marks-kpi-icon {
+            background: #eff6ff;
+        }
+
+
+        .marks-kpi-content {
+
+            min-width: 0;
+
+        }
+
+
+        .marks-kpi-label {
+
+            display: block;
+
+            margin-bottom: 4px;
+
+            color: var(--muted);
+
+            font-size: 12px;
+
+        }
+
+
+        .marks-kpi-value {
+
+            display: block;
+
+            font-size: 23px;
+
+            line-height: 1.1;
+
+            font-weight: 800;
+
+        }
+
+
+        .marks-kpi-note {
+
+            display: block;
+
+            margin-top: 4px;
+
+            color: #94a3b8;
+
+            font-size: 11px;
+
+        }
+
+
+        /* =====================================================
+           CARD
+           ===================================================== */
+
+        .marks-card {
+
+            margin-bottom: 18px;
+
+            background: var(--card);
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 18px;
+
+            box-shadow:
+                0 5px 20px
+                rgba(15,23,42,.04);
+
+            overflow: hidden;
+
+        }
+
+
+        .marks-card-header {
+
+            display: flex;
+
+            align-items: flex-start;
+
+            justify-content: space-between;
+
+            gap: 16px;
+
+            padding: 20px;
+
+        }
+
+
+        .marks-eyebrow {
+
+            display: block;
+
+            margin-bottom: 5px;
+
+            color: var(--primary);
+
+            font-size: 10px;
+
+            font-weight: 800;
+
+            letter-spacing: .12em;
+
+        }
+
+
+        .marks-card-header h2 {
+
+            margin: 0;
+
+            font-size: 18px;
+
+        }
+
+
+        .marks-card-header p {
+
+            margin: 5px 0 0;
+
+            color: var(--muted);
+
+            font-size: 13px;
+
+        }
+
+
+        /* =====================================================
+           BUTTONS
+           ===================================================== */
+
+        .marks-primary-btn {
+
+            border: 0;
+
+            border-radius: 11px;
+
+            padding: 11px 16px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--primary),
+                    #7c3aed
+                );
+
+            color: #fff;
+
+            font-weight: 800;
+
+            box-shadow:
+                0 7px 18px
+                rgba(79,70,229,.20);
+
+            white-space: nowrap;
+
+        }
+
+
+        .marks-primary-btn:hover {
+
+            filter:
+                brightness(.97);
+
+        }
+
+
+        .marks-secondary-btn {
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 10px;
+
+            padding: 10px 14px;
+
+            background: #fff;
+
+            color: #334155;
+
+            font-weight: 700;
+
+        }
+
+
+        .marks-success-btn {
+
+            border: 0;
+
+            border-radius: 11px;
+
+            padding: 11px 17px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #059669,
+                    #047857
+                );
+
+            color: #fff;
+
+            font-weight: 800;
+
+            box-shadow:
+                0 7px 18px
+                rgba(5,150,105,.18);
+
+        }
+
+
+        /* =====================================================
+           FILTER PANEL
+           ===================================================== */
+
+        .marks-filter-panel {
+
+            padding:
+                0 20px 20px;
+
+        }
+
+
+        .marks-filter-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, minmax(0,1fr));
+
+            gap: 13px;
+
+        }
+
+
+        .marks-form-group {
+
+            min-width: 0;
+
+        }
+
+
+        .marks-form-group label {
+
+            display: block;
+
+            margin-bottom: 6px;
+
+            color: #475569;
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+        }
+
+
+        .marks-form-group select,
+        .marks-form-group input {
+
+            width: 100%;
+
+            min-height: 43px;
+
+            padding:
+                9px 11px;
+
+            border:
+                1px solid #dbe3ec;
+
+            border-radius: 10px;
+
+            background: #fff;
+
+            color: var(--text);
+
+            outline: none;
+
+        }
+
+
+        .marks-form-group select:focus,
+        .marks-form-group input:focus {
+
+            border-color:
+                var(--primary);
+
+            box-shadow:
+                0 0 0 3px
+                rgba(79,70,229,.10);
+
+        }
+
+
+        .marks-filter-actions {
+
+            display: flex;
+
+            align-items: flex-end;
+
+            gap: 8px;
+
+            margin-top: 13px;
+
+        }
+
+
+        /* =====================================================
+           EXAM INFORMATION
+           ===================================================== */
+
+        .marks-exam-info {
+
+            display: none;
+
+            margin:
+                0 20px 20px;
+
+            padding: 16px;
+
+            border:
+                1px solid #e0e7ff;
+
+            border-radius: 14px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #eef2ff,
+                    #f8fafc
+                );
+
+        }
+
+
+        .marks-exam-info.show {
+            display: block;
+        }
+
+
+        .marks-exam-info-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(5, minmax(0,1fr));
+
+            gap: 12px;
+
+        }
+
+
+        .marks-info-item {
+
+            padding: 10px;
+
+            border:
+                1px solid rgba(226,232,240,.8);
+
+            border-radius: 10px;
+
+            background: rgba(255,255,255,.78);
+
+        }
+
+
+        .marks-info-item span {
+
+            display: block;
+
+            margin-bottom: 4px;
+
+            color: #64748b;
+
+            font-size: 10px;
+
+        }
+
+
+        .marks-info-item strong {
+
+            display: block;
+
+            color: #0f172a;
+
+            font-size: 13px;
+
+        }
+
+
+        /* =====================================================
+           SEARCH + PROGRESS
+           ===================================================== */
+
+        .marks-toolbar {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 14px;
+
+            padding:
+                0 20px 18px;
+
+        }
+
+
+        .marks-search {
+
+            width:
+                min(
+                    400px,
+                    100%
+                );
+
+        }
+
+
+        .marks-search input {
+
+            width: 100%;
+
+            min-height: 42px;
+
+            padding:
+                9px 12px;
+
+            border:
+                1px solid #dbe3ec;
+
+            border-radius: 10px;
+
+            outline: none;
+
+        }
+
+
+        .marks-search input:focus {
+
+            border-color:
+                var(--primary);
+
+            box-shadow:
+                0 0 0 3px
+                rgba(79,70,229,.10);
+
+        }
+
+
+        .marks-progress {
+
+            min-width:
+                260px;
+
+        }
+
+
+        .marks-progress-header {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            margin-bottom: 6px;
+
+            color: #64748b;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+        }
+
+
+        .marks-progress-track {
+
+            height: 8px;
+
+            overflow: hidden;
+
+            border-radius: 999px;
+
+            background: #e2e8f0;
+
+        }
+
+
+        .marks-progress-bar {
+
+            width: 0%;
+
+            height: 100%;
+
+            border-radius: inherit;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #4f46e5,
+                    #7c3aed
+                );
+
+            transition:
+                width .25s ease;
+
+        }
+
+
+        /* =====================================================
+           TABLE
+           ===================================================== */
+
+        .marks-table-wrap {
+
+            width: 100%;
+
+            overflow-x: auto;
+
+            -webkit-overflow-scrolling:
+                touch;
+
+        }
+
+
+        .marks-table {
+
+            width: 100%;
+
+            min-width: 1000px;
+
+            border-collapse:
+                collapse;
+
+        }
+
+
+        .marks-table th {
+
+            padding:
+                13px 15px;
+
+            background:
+                #f8fafc;
+
+            border-top:
+                1px solid var(--border);
+
+            border-bottom:
+                1px solid var(--border);
+
+            color: #64748b;
+
+            font-size: 11px;
+
+            text-align: left;
+
+            text-transform:
+                uppercase;
+
+            letter-spacing:
+                .04em;
+
+            white-space:
+                nowrap;
+
+        }
+
+
+        .marks-table td {
+
+            padding:
+                12px 15px;
+
+            border-bottom:
+                1px solid #eef2f7;
+
+            color: #334155;
+
+            font-size: 13px;
+
+            vertical-align: middle;
+
+        }
+
+
+        .marks-table tbody tr:hover {
+
+            background:
+                #fafbff;
+
+        }
+
+
+        .student-cell {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+        }
+
+
+        .student-avatar {
+
+            width: 40px;
+            height: 40px;
+
+            flex: 0 0 40px;
+
+            display: grid;
+
+            place-items: center;
+
+            overflow: hidden;
+
+            border-radius: 11px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #eef2ff,
+                    #e0e7ff
+                );
+
+            color: #4338ca;
+
+            font-size: 12px;
+
+            font-weight: 800;
+
+        }
+
+
+        .student-avatar img {
+
+            width: 100%;
+            height: 100%;
+
+            object-fit: cover;
+
+        }
+
+
+        .student-info strong {
+
+            display: block;
+
+            color: #0f172a;
+
+            font-size: 13px;
+
+        }
+
+
+        .student-info span {
+
+            display: block;
+
+            margin-top: 3px;
+
+            color: #94a3b8;
+
+            font-size: 11px;
+
+        }
+
+
+        .student-class {
+
+            display: inline-flex;
+
+            padding:
+                5px 9px;
+
+            border-radius: 8px;
+
+            background: #f1f5f9;
+
+            color: #475569;
+
+            font-size: 11px;
+
+            font-weight: 800;
+
+        }
+
+
+        .marks-input {
+
+            width: 110px;
+
+            min-height: 40px;
+
+            padding:
+                8px 10px;
+
+            border:
+                1px solid #cbd5e1;
+
+            border-radius: 9px;
+
+            outline: none;
+
+            font-weight: 700;
+
+            text-align: center;
+
+        }
+
+
+        .marks-input:focus {
+
+            border-color:
+                var(--primary);
+
+            box-shadow:
+                0 0 0 3px
+                rgba(79,70,229,.10);
+
+        }
+
+
+        .marks-input.invalid {
+
+            border-color:
+                #f87171;
+
+            background:
+                #fff1f2;
+
+        }
+
+
+        .marks-input.saved {
+
+            border-color:
+                #6ee7b7;
+
+            background:
+                #ecfdf5;
+
+        }
+
+
+        .absent-toggle {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            color: #475569;
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            white-space: nowrap;
+
+        }
+
+
+        .absent-toggle input {
+
+            width: 17px;
+            height: 17px;
+
+            accent-color:
+                var(--danger);
+
+        }
+
+
+        .percentage-cell {
+
+            min-width: 85px;
+
+        }
+
+
+        .percentage-value {
+
+            display: inline-flex;
+
+            padding:
+                5px 9px;
+
+            border-radius: 8px;
+
+            background:
+                #eef2ff;
+
+            color:
+                #4338ca;
+
+            font-weight: 800;
+
+            font-size: 11px;
+
+        }
+
+
+        .percentage-value.pass {
+
+            background:
+                #ecfdf5;
+
+            color:
+                #047857;
+
+        }
+
+
+        .percentage-value.fail {
+
+            background:
+                #fef2f2;
+
+            color:
+                #b91c1c;
+
+        }
+
+
+        .marks-status {
+
+            display: inline-flex;
+
+            padding:
+                5px 9px;
+
+            border-radius: 999px;
+
+            font-size: 10px;
+
+            font-weight: 800;
+
+            white-space: nowrap;
+
+        }
+
+
+        .marks-status.pending {
+
+            background:
+                #fff7ed;
+
+            color:
+                #c2410c;
+
+        }
+
+
+        .marks-status.entered {
+
+            background:
+                #ecfdf5;
+
+            color:
+                #047857;
+
+        }
+
+
+        .marks-status.absent {
+
+            background:
+                #fef2f2;
+
+            color:
+                #b91c1c;
+
+        }
+
+
+        .marks-remarks {
+
+            width: 150px;
+
+            min-height: 38px;
+
+            padding:
+                7px 9px;
+
+            border:
+                1px solid #dbe3ec;
+
+            border-radius: 9px;
+
+            outline: none;
+
+            resize: vertical;
+
+        }
+
+
+        .marks-remarks:focus {
+
+            border-color:
+                var(--primary);
+
+            box-shadow:
+                0 0 0 3px
+                rgba(79,70,229,.08);
+
+        }
+
+
+        .marks-empty {
+
+            padding:
+                55px 20px !important;
+
+            text-align: center;
+
+            color: #94a3b8;
+
+        }
+
+
+        .marks-empty-icon {
+
+            font-size: 38px;
+
+            margin-bottom: 10px;
+
+        }
+
+
+        .marks-empty strong {
+
+            display: block;
+
+            margin-bottom: 5px;
+
+            color: #475569;
+
+        }
+
+
+        .marks-empty span {
+
+            display: block;
+
+            font-size: 12px;
+
+        }
+
+
+        /* =====================================================
+           FOOT ACTIONS
+           ===================================================== */
+
+        .marks-actions {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 12px;
+
+            padding:
+                18px 20px;
+
+            border-top:
+                1px solid var(--border);
+
+            background:
+                #fcfdff;
+
+        }
+
+
+        .marks-action-left {
+
+            color: #64748b;
+
+            font-size: 12px;
+
+        }
+
+
+        .marks-action-right {
+
+            display: flex;
+
+            gap: 9px;
+
+        }
+
+
+        /* =====================================================
+           INFO CARD
+           ===================================================== */
+
+        .marks-info-card {
+
+            display: flex;
+
+            gap: 13px;
+
+            padding:
+                17px 20px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #eef2ff,
+                    #f8fafc
+                );
+
+            border:
+                1px solid #e0e7ff;
+
+        }
+
+
+        .marks-info-icon {
+
+            width: 40px;
+            height: 40px;
+
+            flex: 0 0 40px;
+
+            display: grid;
+
+            place-items: center;
+
+            border-radius: 12px;
+
+            background: #fff;
+
+            font-size: 18px;
+
+        }
+
+
+        .marks-info-card h3 {
+
+            margin:
+                0 0 4px;
+
+            font-size: 14px;
+
+        }
+
+
+        .marks-info-card p {
+
+            margin: 0;
+
+            color: #64748b;
+
+            font-size: 12px;
+
+            line-height: 1.6;
+
+        }
+
+
+        /* =====================================================
+           TOAST
+           ===================================================== */
+
+        .marks-toast {
+
+            position: fixed;
+
+            right: 18px;
+
+            bottom: 18px;
+
+            z-index: 2000;
+
+            max-width: 370px;
+
+            padding:
+                13px 16px;
+
+            border-radius: 12px;
+
+            background:
+                #0f172a;
+
+            color: #fff;
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+            box-shadow:
+                0 15px 40px
+                rgba(15,23,42,.22);
+
+            opacity: 0;
+
+            transform:
+                translateY(12px);
+
+            pointer-events:
+                none;
+
+            transition:
+                .25s ease;
+
+        }
+
+
+        .marks-toast.show {
+
+            opacity: 1;
+
+            transform:
+                translateY(0);
+
+        }
+
+
+        .marks-toast.success {
+            background:
+                #047857;
+        }
+
+
+        .marks-toast.error {
+            background:
+                #b91c1c;
+        }
+
+
+        /* =====================================================
+           FOOTER
+           ===================================================== */
+
+        .marks-footer {
+
+            width:
+                min(
+                    1400px,
+                    calc(100% - 28px)
+                );
+
+            margin:
+                0 auto;
+
+            padding:
+                22px 0 30px;
+
+            text-align:
+                center;
+
+            color:
+                #94a3b8;
+
+            font-size:
+                11px;
+
+        }
+
+
+        .marks-footer strong {
+
+            display:
+                block;
+
+            margin-bottom:
+                4px;
+
+            color:
+                #475569;
+
+            font-size:
+                12px;
+
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+           ===================================================== */
+
+        @media (max-width: 1100px) {
+
+            .marks-kpi-grid {
+
+                grid-template-columns:
+                    repeat(2,minmax(0,1fr));
+
+            }
+
+
+            .marks-filter-grid {
+
+                grid-template-columns:
+                    repeat(2,minmax(0,1fr));
+
+            }
+
+
+            .marks-exam-info-grid {
+
+                grid-template-columns:
+                    repeat(3,minmax(0,1fr));
+
+            }
+
+        }
+
+
+        @media (max-width: 700px) {
+
+            .marks-header {
+
+                padding:
+                    12px 14px;
+
+            }
+
+
+            .marks-header-icon {
+
+                width: 40px;
+                height: 40px;
+
+                flex-basis: 40px;
+
+                border-radius: 11px;
+
+            }
+
+
+            .marks-header-title h1 {
+
+                font-size:
+                    17px;
+
+            }
+
+
+            .marks-header-title p {
+
+                font-size:
+                    11px;
+
+            }
+
+
+            .marks-refresh-btn {
+
+                padding:
+                    9px 10px;
+
+                font-size:
+                    12px;
+
+            }
+
+
+            .marks-container {
+
+                width:
+                    calc(100% - 20px);
+
+                margin-top:
+                    14px;
+
+            }
+
+
+            .marks-kpi-grid {
+
+                gap: 9px;
+
+            }
+
+
+            .marks-kpi-card {
+
+                padding:
+                    12px;
+
+                gap:
+                    9px;
+
+                border-radius:
+                    13px;
+
+            }
+
+
+            .marks-kpi-icon {
+
+                width:
+                    37px;
+
+                height:
+                    37px;
+
+                flex-basis:
+                    37px;
+
+                border-radius:
+                    10px;
+
+                font-size:
+                    16px;
+
+            }
+
+
+            .marks-kpi-value {
+
+                font-size:
+                    18px;
+
+            }
+
+
+            .marks-kpi-label {
+
+                font-size:
+                    10px;
+
+            }
+
+
+            .marks-kpi-note {
+
+                font-size:
+                    9px;
+
+            }
+
+
+            .marks-card {
+
+                border-radius:
+                    14px;
+
+            }
+
+
+            .marks-card-header {
+
+                padding:
+                    16px 14px 13px;
+
+            }
+
+
+            .marks-card-header h2 {
+
+                font-size:
+                    16px;
+
+            }
+
+
+            .marks-primary-btn,
+            .marks-success-btn {
+
+                padding:
+                    9px 11px;
+
+                font-size:
+                    12px;
+
+            }
+
+
+            .marks-filter-panel {
+
+                padding:
+                    0 14px 15px;
+
+            }
+
+
+            .marks-filter-grid {
+
+                grid-template-columns:
+                    1fr;
+
+            }
+
+
+            .marks-filter-actions {
+
+                width:
+                    100%;
+
+            }
+
+
+            .marks-filter-actions button {
+
+                flex:
+                    1;
+
+            }
+
+
+            .marks-exam-info {
+
+                margin:
+                    0 14px 15px;
+
+            }
+
+
+            .marks-exam-info-grid {
+
+                grid-template-columns:
+                    repeat(2,minmax(0,1fr));
+
+            }
+
+
+            .marks-toolbar {
+
+                align-items:
+                    stretch;
+
+                flex-direction:
+                    column;
+
+                padding:
+                    0 14px 15px;
+
+            }
+
+
+            .marks-search {
+
+                width:
+                    100%;
+
+            }
+
+
+            .marks-progress {
+
+                min-width:
+                    0;
+
+                width:
+                    100%;
+
+            }
+
+
+            .marks-table {
+
+                min-width:
+                    1050px;
+
+            }
+
+
+            .marks-actions {
+
+                align-items:
+                    stretch;
+
+                flex-direction:
+                    column;
+
+                padding:
+                    15px 14px;
+
+            }
+
+
+            .marks-action-right {
+
+                width:
+                    100%;
+
+            }
+
+
+            .marks-action-right button {
+
+                flex:
+                    1;
+
+            }
+
+
+            .marks-info-card {
+
+                padding:
+                    14px;
+
+            }
+
+
+            .marks-toast {
+
+                left:
+                    12px;
+
+                right:
+                    12px;
+
+                bottom:
+                    12px;
+
+                max-width:
+                    none;
+
+            }
+
+        }
+
+
+        @media (max-width: 390px) {
+
+            .marks-header-title p {
+
+                display:
+                    none;
+
+            }
+
+
+            .marks-kpi-icon {
+
+                display:
+                    none;
+
+            }
+
+
+            .marks-exam-info-grid {
+
+                grid-template-columns:
+                    1fr;
+
+            }
+
+        }
+
+
+        @media print {
+
+            .marks-header,
+            .marks-filter-panel,
+            .marks-toolbar,
+            .marks-actions,
+            .marks-info-card,
+            .marks-footer {
+
+                display:
+                    none !important;
+
+            }
+
+
+            body {
+
+                background:
+                    #fff;
+
+            }
+
+
+            .marks-container {
+
+                width:
+                    100%;
+
+                margin:
+                    0;
+
+            }
+
+
+            .marks-card {
+
+                box-shadow:
+                    none;
+
+                border:
+                    1px solid #ddd;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         HEADER
+         ===================================================== -->
+
+    <header class="marks-header">
+
+        <div class="marks-header-left">
+
+            <a
+                href="exams.html"
+                class="marks-back-btn"
+                aria-label="Back to Exams"
+            >
+                ←
+            </a>
+
+
+            <div class="marks-header-icon">
+                ✍️
+            </div>
+
+
+            <div class="marks-header-title">
+
+                <h1>
+                    Marks Entry
+                </h1>
+
+                <p>
+                    Enter and manage student examination marks
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <button
+            type="button"
+            class="marks-refresh-btn"
+            id="refreshMarksBtn"
+        >
+            ↻ Refresh
+        </button>
+
+    </header>
+
+
+
+    <!-- =====================================================
+         MAIN
+         ===================================================== -->
+
+    <main class="marks-container">
+
+
+        <!-- =================================================
+             KPI CARDS
+             ================================================= -->
+
+        <section class="marks-kpi-grid">
+
+
+            <article class="marks-kpi-card">
+
+                <div class="marks-kpi-icon">
+                    👨‍🎓
+                </div>
+
+                <div class="marks-kpi-content">
+
+                    <span class="marks-kpi-label">
+                        Students
+                    </span>
+
+                    <strong
+                        class="marks-kpi-value"
+                        id="marksTotalStudents"
+                    >
+                        0
+                    </strong>
+
+                    <span class="marks-kpi-note">
+                        Students in selected class
+                    </span>
+
+                </div>
+
+            </article>
+
+
+
+            <article class="marks-kpi-card">
+
+                <div class="marks-kpi-icon">
+                    ✅
+                </div>
+
+                <div class="marks-kpi-content">
+
+                    <span class="marks-kpi-label">
+                        Marks Entered
+                    </span>
+
+                    <strong
+                        class="marks-kpi-value"
+                        id="marksEnteredCount"
+                    >
+                        0
+                    </strong>
+
+                    <span class="marks-kpi-note">
+                        Completed entries
+                    </span>
+
+                </div>
+
+            </article>
+
+
+
+            <article class="marks-kpi-card">
+
+                <div class="marks-kpi-icon">
+                    ⏳
+                </div>
+
+                <div class="marks-kpi-content">
+
+                    <span class="marks-kpi-label">
+                        Pending
+                    </span>
+
+                    <strong
+                        class="marks-kpi-value"
+                        id="marksPendingCount"
+                    >
+                        0
+                    </strong>
+
+                    <span class="marks-kpi-note">
+                        Marks remaining
+                    </span>
+
+                </div>
+
+            </article>
+
+
+
+            <article class="marks-kpi-card">
+
+                <div class="marks-kpi-icon">
+                    📊
+                </div>
+
+                <div class="marks-kpi-content">
+
+                    <span class="marks-kpi-label">
+                        Average
+                    </span>
+
+                    <strong
+                        class="marks-kpi-value"
+                        id="marksAverage"
+                    >
+                        0%
+                    </strong>
+
+                    <span class="marks-kpi-note">
+                        Current class average
+                    </span>
+
+                </div>
+
+            </article>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             SELECTION PANEL
+             ================================================= -->
+
+        <section class="marks-card">
+
+
+            <div class="marks-card-header">
+
+                <div>
+
+                    <span class="marks-eyebrow">
+                        EXAMINATION
+                    </span>
+
+                    <h2>
+                        Select Exam & Subject
+                    </h2>
+
+                    <p>
+                        Select the examination and subject
+                        before entering marks.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="marks-filter-panel">
+
+
+                <div class="marks-filter-grid">
+
+
+                    <!-- EXAM -->
+
+                    <div class="marks-form-group">
+
+                        <label for="marksExam">
+
+                            Exam
+
+                            <span
+                                style="color:#dc2626;"
+                            >
+                                *
+                            </span>
+
+                        </label>
+
+                        <select
+                            id="marksExam"
+                        >
+
+                            <option value="">
+                                Select Exam
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+
+                    <!-- SUBJECT -->
+
+                    <div class="marks-form-group">
+
+                        <label for="marksSubject">
+
+                            Subject
+
+                            <span
+                                style="color:#dc2626;"
+                            >
+                                *
+                            </span>
+
+                        </label>
+
+                        <select
+                            id="marksSubject"
+                            disabled
+                        >
+
+                            <option value="">
+                                Select Subject
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+
+                    <!-- CLASS -->
+
+                    <div class="marks-form-group">
+
+                        <label for="marksClass">
+
+                            Class
+
+                            <span
+                                style="color:#dc2626;"
+                            >
+                                *
+                            </span>
+
+                        </label>
+
+                        <select
+                            id="marksClass"
+                            disabled
+                        >
+
+                            <option value="">
+                                Select Class
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+
+                    <!-- SECTION -->
+
+                    <div class="marks-form-group">
+
+                        <label for="marksSection">
+                            Section
+                        </label>
+
+                        <select
+                            id="marksSection"
+                            disabled
+                        >
+
+                            <option value="">
+                                All Sections
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <div class="marks-filter-actions">
+
+                    <button
+                        type="button"
+                        class="marks-primary-btn"
+                        id="loadStudentsBtn"
+                    >
+                        👨‍🎓 Load Students
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="marks-secondary-btn"
+                        id="clearMarksSelectionBtn"
+                    >
+                        Clear
+                    </button>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 EXAM INFORMATION
+                 ================================================= -->
+
+            <div
+                class="marks-exam-info"
+                id="marksExamInfo"
+            >
+
+                <div class="marks-exam-info-grid">
+
+
+                    <div class="marks-info-item">
+
+                        <span>
+                            Examination
+                        </span>
+
+                        <strong id="infoExamName">
+                            —
+                        </strong>
+
+                    </div>
+
+
+                    <div class="marks-info-item">
+
+                        <span>
+                            Subject
+                        </span>
+
+                        <strong id="infoSubjectName">
+                            —
+                        </strong>
+
+                    </div>
+
+
+                    <div class="marks-info-item">
+
+                        <span>
+                            Maximum Marks
+                        </span>
+
+                        <strong id="infoMaxMarks">
+                            —
+                        </strong>
+
+                    </div>
+
+
+                    <div class="marks-info-item">
+
+                        <span>
+                            Pass Marks
+                        </span>
+
+                        <strong id="infoPassMarks">
+                            —
+                        </strong>
+
+                    </div>
+
+
+                    <div class="marks-info-item">
+
+                        <span>
+                            Exam Date
+                        </span>
+
+                        <strong id="infoExamDate">
+                            —
+                        </strong>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             MARKS TABLE
+             ================================================= -->
+
+        <section class="marks-card">
+
+
+            <div class="marks-card-header">
+
+                <div>
+
+                    <span class="marks-eyebrow">
+                        MARKS REGISTER
+                    </span>
+
+                    <h2>
+                        Student Marks
+                    </h2>
+
+                    <p id="marksTableSubtitle">
+                        Select an exam and subject
+                        to load students.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- TOOLBAR -->
+
+            <div class="marks-toolbar">
+
+
+                <div class="marks-search">
+
+                    <input
+                        type="search"
+                        id="marksStudentSearch"
+                        placeholder="Search student by name or ID..."
+                        autocomplete="off"
+                    >
+
+                </div>
+
+
+
+                <div class="marks-progress">
+
+                    <div
+                        class="marks-progress-header"
+                    >
+
+                        <span>
+                            Entry Progress
+                        </span>
+
+                        <strong
+                            id="marksProgressText"
+                        >
+                            0%
+                        </strong>
+
+                    </div>
+
+
+                    <div
+                        class="marks-progress-track"
+                    >
+
+                        <div
+                            class="marks-progress-bar"
+                            id="marksProgressBar"
+                        ></div>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- TABLE -->
+
+            <div class="marks-table-wrap">
+
+                <table class="marks-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Student
+                            </th>
+
+                            <th>
+                                Class
+                            </th>
+
+                            <th>
+                                Obtained Marks
+                            </th>
+
+                            <th>
+                                Maximum
+                            </th>
+
+                            <th>
+                                Absent
+                            </th>
+
+                            <th>
+                                Percentage
+                            </th>
+
+                            <th>
+                                Result
+                            </th>
+
+                            <th>
+                                Remarks
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody
+                        id="marksTableBody"
+                    >
+
+                        <tr>
+
+                            <td
+                                colspan="8"
+                                class="marks-empty"
+                            >
+
+                                <div
+                                    class="marks-empty-icon"
+                                >
+                                    ✍️
+                                </div>
+
+                                <strong>
+                                    No students loaded
+                                </strong>
+
+                                <span>
+                                    Select an exam,
+                                    subject and class,
+                                    then click
+                                    "Load Students".
+                                </span>
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+
+            <!-- ACTIONS -->
+
+            <div class="marks-actions">
+
+                <div
+                    class="marks-action-left"
+                    id="marksSaveInfo"
+                >
+                    Select students and enter marks
+                    to begin.
+                </div>
+
+
+                <div class="marks-action-right">
+
+                    <button
+                        type="button"
+                        class="marks-secondary-btn"
+                        id="resetMarksBtn"
+                    >
+                        Reset
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="marks-success-btn"
+                        id="saveMarksBtn"
+                    >
+                        💾 Save Marks
+                    </button>
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             INFORMATION
+             ================================================= -->
+
+        <section class="marks-card marks-info-card">
+
+            <div class="marks-info-icon">
+                💡
+            </div>
+
+            <div>
+
+                <h3>
+                    Marks Entry System
+                </h3>
+
+                <p>
+                    Select an examination and subject,
+                    load the corresponding students,
+                    enter obtained marks or mark a student
+                    absent. Percentage and pass/fail status
+                    will be calculated automatically.
+                    Saved marks will be used by the upcoming
+                    Results and Report Card modules.
+                </p>
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+
+
+    <!-- =====================================================
+         TOAST
+         ===================================================== -->
+
+    <div
+        class="marks-toast"
+        id="marksToast"
+        role="status"
+        aria-live="polite"
+    ></div>
+
+
+
+    <!-- =====================================================
+         FOOTER
+         ===================================================== -->
+
+    <footer class="marks-footer">
+
+        <strong>
+            SmartSchool360
+        </strong>
+
+        <span>
+            Examination Marks Management
+        </span>
+
+        <br>
+
+        <span>
+            © 2026 SmartSchool360 · Built by Priyanshu Kumar
+        </span>
+
+    </footer>
+        <!-- =====================================================
+         MARKS ENTRY DATA ENGINE
+         ===================================================== -->
+
+    <script>
+
+        "use strict";
+
+
+        /* =====================================================
+           STORAGE KEYS
+           ===================================================== */
+
+        const MARKS_STORAGE_KEY =
+            "smartschool_marks";
+
+        const EXAMS_STORAGE_KEY =
+            "smartschool_exams";
+
+        const SUBJECTS_STORAGE_KEY =
+            "smartschool_subjects";
+
+        const STUDENTS_STORAGE_KEY =
+            "smartschool_students";
+
+
+        /* =====================================================
+           GLOBAL STATE
+           ===================================================== */
+
+        const marksState = {
+
+            exams: [],
+
+            subjects: [],
+
+            students: [],
+
+            marks: [],
+
+            filteredStudents: [],
+
+            selectedExam: null,
+
+            selectedSubject: null,
+
+            selectedClass: "",
+
+            selectedSection: "",
+
+            maxMarks: 0,
+
+            passMarks: 0,
+
+            loaded: false
+
+        };
+
+
+        /* =====================================================
+           DOM HELPERS
+           ===================================================== */
+
+        const $ = (id) =>
+            document.getElementById(id);
+
+
+        function safeArray(value) {
+
+            return Array.isArray(value)
+                ? value
+                : [];
+
+        }
+
+
+        function readStorage(key) {
+
+            try {
+
+                const raw =
+                    localStorage.getItem(key);
+
+                if (!raw) {
+                    return [];
+                }
+
+                const parsed =
+                    JSON.parse(raw);
+
+                return Array.isArray(parsed)
+                    ? parsed
+                    : [];
+
+            } catch (error) {
+
+                console.error(
+                    "Storage read error:",
+                    key,
+                    error
+                );
+
+                return [];
+
+            }
+
+        }
+
+
+        function writeStorage(
+            key,
+            value
+        ) {
+
+            try {
+
+                localStorage.setItem(
+                    key,
+                    JSON.stringify(value)
+                );
+
+                return true;
+
+            } catch (error) {
+
+                console.error(
+                    "Storage write error:",
+                    key,
+                    error
+                );
+
+                showToast(
+                    "Unable to save data in this browser.",
+                    "error"
+                );
+
+                return false;
+
+            }
+
+        }
+
+
+        /* =====================================================
+           TEXT HELPERS
+           ===================================================== */
+
+        function cleanText(value) {
+
+            return String(
+                value ?? ""
+            )
+                .replace(/\s+/g, " ")
+                .trim();
+
+        }
+
+
+        function normalizeId(value) {
+
+            return cleanText(value);
+
+        }
+
+
+        function escapeHTML(value) {
+
+            return String(
+                value ?? ""
+            )
+                .replace(
+                    /&/g,
+                    "&amp;"
+                )
+                .replace(
+                    /</g,
+                    "&lt;"
+                )
+                .replace(
+                    />/g,
+                    "&gt;"
+                )
+                .replace(
+                    /"/g,
+                    "&quot;"
+                )
+                .replace(
+                    /'/g,
+                    "&#039;"
+                );
+
+        }
+
+
+        function initials(name) {
+
+            const value =
+                cleanText(name);
+
+            if (!value) {
+                return "ST";
+            }
+
+            const parts =
+                value
+                    .split(" ")
+                    .filter(Boolean);
+
+            if (parts.length === 1) {
+
+                return parts[0]
+                    .slice(0, 2)
+                    .toUpperCase();
+
+            }
+
+            return (
+                parts[0][0] +
+                parts[parts.length - 1][0]
+            )
+                .toUpperCase();
+
+        }
+
+
+        /* =====================================================
+           DATE HELPERS
+           ===================================================== */
+
+        function normalizeDate(value) {
+
+            const text =
+                cleanText(value);
+
+            if (!text) {
+                return "";
+            }
+
+            if (
+                /^\d{4}-\d{2}-\d{2}$/
+                .test(text)
+            ) {
+                return text;
+            }
+
+            const date =
+                new Date(text);
+
+            if (
+                Number.isNaN(
+                    date.getTime()
+                )
+            ) {
+                return "";
+            }
+
+            const year =
+                date.getFullYear();
+
+            const month =
+                String(
+                    date.getMonth() + 1
+                ).padStart(2, "0");
+
+            const day =
+                String(
+                    date.getDate()
+                ).padStart(2, "0");
+
+            return (
+                year +
+                "-" +
+                month +
+                "-" +
+                day
+            );
+
+        }
+
+
+        function formatDate(value) {
+
+            const normalized =
+                normalizeDate(value);
+
+            if (!normalized) {
+                return "—";
+            }
+
+            const parts =
+                normalized.split("-");
+
+            if (parts.length !== 3) {
+                return normalized;
+            }
+
+            return (
+                parts[2] +
+                "/" +
+                parts[1] +
+                "/" +
+                parts[0]
+            );
+
+        }
+
+
+        function todayISO() {
+
+            const now =
+                new Date();
+
+            const year =
+                now.getFullYear();
+
+            const month =
+                String(
+                    now.getMonth() + 1
+                ).padStart(2, "0");
+
+            const day =
+                String(
+                    now.getDate()
+                ).padStart(2, "0");
+
+            return (
+                year +
+                "-" +
+                month +
+                "-" +
+                day
+            );
+
+        }
+
+
+        /* =====================================================
+           NUMBER HELPERS
+           ===================================================== */
+
+        function toNumber(
+            value,
+            fallback = 0
+        ) {
+
+            const number =
+                Number(value);
+
+            return Number.isFinite(number)
+                ? number
+                : fallback;
+
+        }
+
+
+        function clampMarks(
+            value,
+            max
+        ) {
+
+            const numeric =
+                toNumber(value, 0);
+
+            const maximum =
+                toNumber(max, 0);
+
+            if (numeric < 0) {
+                return 0;
+            }
+
+            if (
+                maximum > 0 &&
+                numeric > maximum
+            ) {
+                return maximum;
+            }
+
+            return numeric;
+
+        }
+
+
+        function calculatePercentage(
+            obtained,
+            maximum
+        ) {
+
+            const marks =
+                toNumber(obtained, 0);
+
+            const max =
+                toNumber(maximum, 0);
+
+            if (
+                max <= 0 ||
+                marks < 0
+            ) {
+                return 0;
+            }
+
+            return Number(
+                (
+                    marks / max * 100
+                ).toFixed(2)
+            );
+
+        }
+
+
+        /* =====================================================
+           TOAST
+           ===================================================== */
+
+        let toastTimer = null;
+
+
+        function showToast(
+            message,
+            type = ""
+        ) {
+
+            const toast =
+                $("marksToast");
+
+            if (!toast) {
+                return;
+            }
+
+            clearTimeout(
+                toastTimer
+            );
+
+            toast.textContent =
+                cleanText(message);
+
+            toast.className =
+                "marks-toast show " +
+                type;
+
+            toastTimer =
+                setTimeout(
+                    () => {
+
+                        toast.className =
+                            "marks-toast";
+
+                    },
+                    3000
+                );
+
+        }
+
+
+        /* =====================================================
+           LOAD ALL DATA
+           ===================================================== */
+
+        function loadAllData() {
+
+            marksState.exams =
+                safeArray(
+                    readStorage(
+                        EXAMS_STORAGE_KEY
+                    )
+                );
+
+            marksState.subjects =
+                safeArray(
+                    readStorage(
+                        SUBJECTS_STORAGE_KEY
+                    )
+                );
+
+            marksState.students =
+                safeArray(
+                    readStorage(
+                        STUDENTS_STORAGE_KEY
+                    )
+                );
+
+            marksState.marks =
+                safeArray(
+                    readStorage(
+                        MARKS_STORAGE_KEY
+                    )
+                );
+
+        }
+
+
+        /* =====================================================
+           EXAM NORMALIZATION
+           ===================================================== */
+
+        function getExamName(exam) {
+
+            return cleanText(
+                exam?.name ||
+                exam?.examName ||
+                exam?.title ||
+                "Unnamed Exam"
+            );
+
+        }
+
+
+        function getExamClass(exam) {
+
+            return cleanText(
+                exam?.className ||
+                exam?.class ||
+                exam?.classNameValue ||
+                ""
+            );
+
+        }
+
+
+        function getExamSection(exam) {
+
+            return cleanText(
+                exam?.section ||
+                exam?.sectionName ||
+                ""
+            );
+
+        }
+
+
+        function getExamMaxMarks(exam) {
+
+            return toNumber(
+                exam?.maxMarks ||
+                exam?.maximumMarks ||
+                100,
+                100
+            );
+
+        }
+
+
+        function getExamPassMarks(exam) {
+
+            return toNumber(
+                exam?.passMarks ||
+                exam?.passingMarks ||
+                33,
+                33
+            );
+
+        }
+
+
+        /* =====================================================
+           SUBJECT NORMALIZATION
+           ===================================================== */
+
+        function getSubjectName(subject) {
+
+            return cleanText(
+                subject?.name ||
+                subject?.subjectName ||
+                subject?.title ||
+                "Unnamed Subject"
+            );
+
+        }
+
+
+        function getSubjectExamId(subject) {
+
+            return normalizeId(
+                subject?.examId ||
+                subject?.examID ||
+                ""
+            );
+
+        }
+
+
+        function getSubjectClass(subject) {
+
+            return cleanText(
+                subject?.className ||
+                subject?.class ||
+                ""
+            );
+
+        }
+
+
+        function getSubjectSection(subject) {
+
+            return cleanText(
+                subject?.section ||
+                subject?.sectionName ||
+                ""
+            );
+
+        }
+
+
+        function getSubjectMaxMarks(
+            subject,
+            exam
+        ) {
+
+            const subjectMarks =
+                toNumber(
+                    subject?.maxMarks ||
+                    subject?.maximumMarks,
+                    0
+                );
+
+            if (subjectMarks > 0) {
+                return subjectMarks;
+            }
+
+            return getExamMaxMarks(
+                exam
+            );
+
+        }
+
+
+        function getSubjectPassMarks(
+            subject,
+            exam
+        ) {
+
+            const subjectMarks =
+                toNumber(
+                    subject?.passMarks ||
+                    subject?.passingMarks,
+                    0
+                );
+
+            if (subjectMarks > 0) {
+                return subjectMarks;
+            }
+
+            return getExamPassMarks(
+                exam
+            );
+
+        }
+
+
+        /* =====================================================
+           STUDENT NORMALIZATION
+           ===================================================== */
+
+        function getStudentId(student) {
+
+            return normalizeId(
+                student?.id ||
+                student?.studentId ||
+                ""
+            );
+
+        }
+
+
+        function getStudentName(student) {
+
+            return cleanText(
+                student?.name ||
+                student?.studentName ||
+                "Unnamed Student"
+            );
+
+        }
+
+
+        function getStudentClass(student) {
+
+            return cleanText(
+                student?.className ||
+                student?.class ||
+                ""
+            );
+
+        }
+
+
+        function getStudentSection(student) {
+
+            return cleanText(
+                student?.section ||
+                student?.sectionName ||
+                ""
+            );
+
+        }
+
+
+        function getStudentPhoto(student) {
+
+            return cleanText(
+                student?.photo ||
+                student?.photoUrl ||
+                ""
+            );
+
+        }
+
+
+        /* =====================================================
+           FIND EXAM / SUBJECT
+           ===================================================== */
+
+        function findExam(examId) {
+
+            const id =
+                normalizeId(examId);
+
+            return (
+                marksState.exams.find(
+                    exam =>
+                        normalizeId(
+                            exam?.id
+                        ) === id
+                ) ||
+                null
+            );
+
+        }
+
+
+        function findSubject(subjectId) {
+
+            const id =
+                normalizeId(subjectId);
+
+            return (
+                marksState.subjects.find(
+                    subject =>
+                        normalizeId(
+                            subject?.id
+                        ) === id
+                ) ||
+                null
+            );
+
+        }
+
+
+        /* =====================================================
+           POPULATE EXAMS
+           ===================================================== */
+
+        function populateExams() {
+
+            const select =
+                $("marksExam");
+
+            if (!select) {
+                return;
+            }
+
+            const currentValue =
+                select.value;
+
+            select.innerHTML = `
+                <option value="">
+                    Select Exam
+                </option>
+            `;
+
+
+            const sortedExams =
+                [...marksState.exams]
+                    .sort(
+                        (a, b) =>
+                            getExamName(a)
+                                .localeCompare(
+                                    getExamName(b)
+                                )
+                    );
+
+
+            sortedExams.forEach(
+                exam => {
+
+                    const option =
+                        document.createElement(
+                            "option"
+                        );
+
+                    option.value =
+                        normalizeId(
+                            exam.id
+                        );
+
+                    const className =
+                        getExamClass(exam);
+
+                    const section =
+                        getExamSection(exam);
+
+                    let label =
+                        getExamName(exam);
+
+                    if (className) {
+
+                        label +=
+                            " • Class " +
+                            className;
+
+                    }
+
+                    if (section) {
+
+                        label +=
+                            " • Section " +
+                            section;
+
+                    }
+
+                    option.textContent =
+                        label;
+
+                    select.appendChild(
+                        option
+                    );
+
+                }
+            );
+
+
+            if (
+                currentValue &&
+                marksState.exams.some(
+                    exam =>
+                        normalizeId(
+                            exam.id
+                        ) === currentValue
+                )
+            ) {
+
+                select.value =
+                    currentValue;
+
+            }
+
+        }
+
+
+        /* =====================================================
+           POPULATE SUBJECTS
+           ===================================================== */
+
+        function populateSubjects(
+            examId
+        ) {
+
+            const select =
+                $("marksSubject");
+
+            if (!select) {
+                return;
+            }
+
+            select.innerHTML = `
+                <option value="">
+                    Select Subject
+                </option>
+            `;
+
+            select.disabled =
+                !examId;
+
+
+            if (!examId) {
+                return;
+            }
+
+
+            const subjects =
+                marksState.subjects
+                    .filter(
+                        subject =>
+                            getSubjectExamId(
+                                subject
+                            ) ===
+                            normalizeId(
+                                examId
+                            )
+                    )
+                    .sort(
+                        (a, b) =>
+                            getSubjectName(a)
+                                .localeCompare(
+                                    getSubjectName(b)
+                                )
+                    );
+
+
+            /*
+             * If subjects are not linked by examId,
+             * try matching by class.
+             */
+
+            let finalSubjects =
+                subjects;
+
+
+            if (
+                finalSubjects.length === 0
+            ) {
+
+                const exam =
+                    findExam(examId);
+
+                const examClass =
+                    getExamClass(exam);
+
+                finalSubjects =
+                    marksState.subjects
+                        .filter(
+                            subject => {
+
+                                const subjectClass =
+                                    getSubjectClass(
+                                        subject
+                                    );
+
+                                return (
+                                    examClass &&
+                                    subjectClass ===
+                                    examClass
+                                );
+
+                            }
+                        )
+                        .sort(
+                            (a, b) =>
+                                getSubjectName(a)
+                                    .localeCompare(
+                                        getSubjectName(b)
+                                    )
+                        );
+
+            }
+
+
+            finalSubjects.forEach(
+                subject => {
+
+                    const option =
+                        document.createElement(
+                            "option"
+                        );
+
+                    option.value =
+                        normalizeId(
+                            subject.id
+                        );
+
+                    option.textContent =
+                        getSubjectName(
+                            subject
+                        );
+
+                    select.appendChild(
+                        option
+                    );
+
+                }
+            );
+
+
+            if (
+                finalSubjects.length === 0
+            ) {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+                option.value = "";
+
+                option.textContent =
+                    "No subjects available";
+
+                select.appendChild(
+                    option
+                );
+
+            }
+
+        }
+
+
+        /* =====================================================
+           POPULATE CLASSES
+           ===================================================== */
+
+        function populateClasses(
+            exam,
+            subject
+        ) {
+
+            const select =
+                $("marksClass");
+
+            if (!select) {
+                return;
+            }
+
+            select.innerHTML = `
+                <option value="">
+                    Select Class
+                </option>
+            `;
+
+
+            const classes =
+                new Set();
+
+
+            const examClass =
+                getExamClass(exam);
+
+            const subjectClass =
+                getSubjectClass(subject);
+
+
+            if (examClass) {
+                classes.add(
+                    examClass
+                );
+            }
+
+
+            if (subjectClass) {
+                classes.add(
+                    subjectClass
+                );
+            }
+
+
+            marksState.students.forEach(
+                student => {
+
+                    const className =
+                        getStudentClass(
+                            student
+                        );
+
+                    if (className) {
+                        classes.add(
+                            className
+                        );
+                    }
+
+                }
+            );
+
+
+            const sortedClasses =
+                [...classes].sort(
+                    (a, b) =>
+                        a.localeCompare(
+                            b,
+                            undefined,
+                            {
+                                numeric: true,
+                                sensitivity:
+                                    "base"
+                            }
+                        )
+                );
+
+
+            sortedClasses.forEach(
+                className => {
+
+                    const option =
+                        document.createElement(
+                            "option"
+                        );
+
+                    option.value =
+                        className;
+
+                    option.textContent =
+                        "Class " +
+                        className;
+
+                    select.appendChild(
+                        option
+                    );
+
+                }
+            );
+
+
+            select.disabled =
+                sortedClasses.length === 0;
+
+
+            if (examClass) {
+
+                const exists =
+                    sortedClasses.includes(
+                        examClass
+                    );
+
+                if (exists) {
+
+                    select.value =
+                        examClass;
+
+                }
+
+            } else if (
+                subjectClass
+            ) {
+
+                const exists =
+                    sortedClasses.includes(
+                        subjectClass
+                    );
+
+                if (exists) {
+
+                    select.value =
+                        subjectClass;
+
+                }
+
+            }
+
+
+            populateSections();
+
+        }
+
+
+        /* =====================================================
+           POPULATE SECTIONS
+           ===================================================== */
+
+        function populateSections() {
+
+            const classSelect =
+                $("marksClass");
+
+            const sectionSelect =
+                $("marksSection");
+
+            if (
+                !classSelect ||
+                !sectionSelect
+            ) {
+                return;
+            }
+
+
+            const className =
+                cleanText(
+                    classSelect.value
+                );
+
+
+            sectionSelect.innerHTML = `
+                <option value="">
+                    All Sections
+                </option>
+            `;
+
+
+            if (!className) {
+
+                sectionSelect.disabled =
+                    true;
+
+                return;
+
+            }
+
+
+            const sections =
+                new Set();
+
+
+            marksState.students
+                .filter(
+                    student =>
+                        getStudentClass(
+                            student
+                        ) === className
+                )
+                .forEach(
+                    student => {
+
+                        const section =
+                            getStudentSection(
+                                student
+                            );
+
+                        if (section) {
+
+                            sections.add(
+                                section
+                            );
+
+                        }
+
+                    }
+                );
+
+
+            const selectedSubject =
+                marksState.selectedSubject;
+
+
+            if (selectedSubject) {
+
+                const subjectSection =
+                    getSubjectSection(
+                        selectedSubject
+                    );
+
+                if (subjectSection) {
+
+                    sections.add(
+                        subjectSection
+                    );
+
+                }
+
+            }
+
+
+            [...sections]
+                .sort(
+                    (a, b) =>
+                        a.localeCompare(
+                            b,
+                            undefined,
+                            {
+                                numeric: true
+                            }
+                        )
+                )
+                .forEach(
+                    section => {
+
+                        const option =
+                            document.createElement(
+                                "option"
+                            );
+
+                        option.value =
+                            section;
+
+                        option.textContent =
+                            "Section " +
+                            section;
+
+                        sectionSelect.appendChild(
+                            option
+                        );
+
+                    }
+                );
+
+
+            sectionSelect.disabled =
+                sections.size === 0;
+
+        }
+
+
+        /* =====================================================
+           UPDATE EXAM INFORMATION
+           ===================================================== */
+
+        function updateExamInfo() {
+
+            const exam =
+                marksState.selectedExam;
+
+            const subject =
+                marksState.selectedSubject;
+
+
+            const info =
+                $("marksExamInfo");
+
+
+            if (
+                !exam ||
+                !subject
+            ) {
+
+                info.classList.remove(
+                    "show"
+                );
+
+                return;
+
+            }
+
+
+            const maxMarks =
+                getSubjectMaxMarks(
+                    subject,
+                    exam
+                );
+
+            const passMarks =
+                getSubjectPassMarks(
+                    subject,
+                    exam
+                );
+
+
+            marksState.maxMarks =
+                maxMarks;
+
+            marksState.passMarks =
+                passMarks;
+
+
+            $("infoExamName")
+                .textContent =
+                getExamName(exam);
+
+
+            $("infoSubjectName")
+                .textContent =
+                getSubjectName(subject);
+
+
+            $("infoMaxMarks")
+                .textContent =
+                maxMarks;
+
+
+            $("infoPassMarks")
+                .textContent =
+                passMarks;
+
+
+            $("infoExamDate")
+                .textContent =
+                formatDate(
+                    subject.examDate ||
+                    exam.startDate
+                );
+
+
+            info.classList.add(
+                "show"
+            );
+
+        }
+
+
+        /* =====================================================
+           GET STUDENTS FOR SELECTION
+           ===================================================== */
+
+        function getMatchingStudents() {
+
+            const className =
+                cleanText(
+                    $("marksClass")?.value
+                );
+
+            const section =
+                cleanText(
+                    $("marksSection")?.value
+                );
+
+
+            if (!className) {
+                return [];
+            }
+
+
+            return marksState.students
+                .filter(
+                    student => {
+
+                        const studentClass =
+                            getStudentClass(
+                                student
+                            );
+
+                        const studentSection =
+                            getStudentSection(
+                                student
+                            );
+
+
+                        if (
+                            studentClass !==
+                            className
+                        ) {
+                            return false;
+                        }
+
+
+                        if (
+                            section &&
+                            studentSection !==
+                            section
+                        ) {
+                            return false;
+                        }
+
+
+                        return true;
+
+                    }
+                )
+                .sort(
+                    (a, b) =>
+                        getStudentName(a)
+                            .localeCompare(
+                                getStudentName(b)
+                            )
+                );
+
+        }
+
+
+        /* =====================================================
+           LOAD STUDENTS
+           ===================================================== */
+
+        function loadStudents() {
+
+            const examId =
+                cleanText(
+                    $("marksExam")?.value
+                );
+
+            const subjectId =
+                cleanText(
+                    $("marksSubject")?.value
+                );
+
+            const className =
+                cleanText(
+                    $("marksClass")?.value
+                );
+
+
+            if (!examId) {
+
+                showToast(
+                    "Please select an exam first.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            if (!subjectId) {
+
+                showToast(
+                    "Please select a subject.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            if (!className) {
+
+                showToast(
+                    "Please select a class.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            const exam =
+                findExam(examId);
+
+            const subject =
+                findSubject(subjectId);
+
+
+            if (!exam || !subject) {
+
+                showToast(
+                    "Selected exam or subject was not found.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            marksState.selectedExam =
+                exam;
+
+            marksState.selectedSubject =
+                subject;
+
+            marksState.selectedClass =
+                className;
+
+            marksState.selectedSection =
+                cleanText(
+                    $("marksSection")?.value
+                );
+
+
+            marksState.maxMarks =
+                getSubjectMaxMarks(
+                    subject,
+                    exam
+                );
+
+            marksState.passMarks =
+                getSubjectPassMarks(
+                    subject,
+                    exam
+                );
+
+
+            const students =
+                getMatchingStudents();
+
+
+            marksState.filteredStudents =
+                students;
+
+
+            marksState.loaded =
+                true;
+
+
+            updateExamInfo();
+
+            renderMarksTable();
+
+            updateSummary();
+
+
+            if (
+                students.length === 0
+            ) {
+
+                showToast(
+                    "No students found for the selected class/section.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            showToast(
+                students.length +
+                " student" +
+                (
+                    students.length === 1
+                        ? ""
+                        : "s"
+                ) +
+                " loaded successfully.",
+                "success"
+            );
+
+        }
+
+
+        /* =====================================================
+           GET SAVED MARK
+           ===================================================== */
+
+        function getSavedMark(
+            studentId
+        ) {
+
+            const examId =
+                normalizeId(
+                    marksState.selectedExam?.id
+                );
+
+            const subjectId =
+                normalizeId(
+                    marksState.selectedSubject?.id
+                );
+
+            const id =
+                normalizeId(
+                    studentId
+                );
+
+
+            return (
+                marksState.marks.find(
+                    record => {
+
+                        return (
+                            normalizeId(
+                                record?.examId
+                            ) === examId &&
+
+                            normalizeId(
+                                record?.subjectId
+                            ) === subjectId &&
+
+                            normalizeId(
+                                record?.studentId
+                            ) === id
+                        );
+
+                    }
+                ) ||
+                null
+            );
+
+        }
+
+
+        /* =====================================================
+           FILTER STUDENTS
+           ===================================================== */
+
+        function applyStudentSearch() {
+
+            const search =
+                cleanText(
+                    $("marksStudentSearch")
+                        ?.value
+                )
+                    .toLowerCase();
+
+
+            const allStudents =
+                getMatchingStudents();
+
+
+            if (!search) {
+
+                marksState.filteredStudents =
+                    allStudents;
+
+            } else {
+
+                marksState.filteredStudents =
+                    allStudents.filter(
+                        student => {
+
+                            const name =
+                                getStudentName(
+                                    student
+                                )
+                                    .toLowerCase();
+
+                            const id =
+                                getStudentId(
+                                    student
+                                )
+                                    .toLowerCase();
+
+                            return (
+                                name.includes(
+                                    search
+                                ) ||
+                                id.includes(
+                                    search
+                                )
+                            );
+
+                        }
+                    );
+
+            }
+
+
+            renderMarksTable();
+
+            updateSummary();
+
+        }
+
+
+        /* =====================================================
+           RENDER TABLE
+           ===================================================== */
+
+        function renderMarksTable() {
+
+            const tbody =
+                $("marksTableBody");
+
+
+            if (!tbody) {
+                return;
+            }
+
+
+            const students =
+                marksState.filteredStudents;
+
+
+            if (
+                !marksState.loaded ||
+                students.length === 0
+            ) {
+
+                tbody.innerHTML = `
+                    <tr>
+                        <td
+                            colspan="8"
+                            class="marks-empty"
+                        >
+                            <div class="marks-empty-icon">
+                                ${
+                                    marksState.loaded
+                                        ? "🔍"
+                                        : "✍️"
+                                }
+                            </div>
+
+                            <strong>
+                                ${
+                                    marksState.loaded
+                                        ? "No matching students"
+                                        : "No students loaded"
+                                }
+                            </strong>
+
+                            <span>
+                                ${
+                                    marksState.loaded
+                                        ? "Try another student search or section."
+                                        : "Select an exam, subject and class, then click Load Students."
+                                }
+                            </span>
+                        </td>
+                    </tr>
+                `;
+
+                return;
+
+            }
+
+
+            const maxMarks =
+                marksState.maxMarks;
+
+            const passMarks =
+                marksState.passMarks;
+
+
+            tbody.innerHTML =
+                students.map(
+                    student => {
+
+                        const studentId =
+                            getStudentId(
+                                student
+                            );
+
+                        const studentName =
+                            getStudentName(
+                                student
+                            );
+
+                        const studentClass =
+                            getStudentClass(
+                                student
+                            );
+
+                        const studentSection =
+                            getStudentSection(
+                                student
+                            );
+
+                        const photo =
+                            getStudentPhoto(
+                                student
+                            );
+
+
+                        const saved =
+                            getSavedMark(
+                                studentId
+                            );
+
+
+                        const isAbsent =
+                            saved?.status ===
+                            "Absent";
+
+
+                        const obtained =
+                            saved &&
+                            !isAbsent
+                                ? saved.obtainedMarks
+                                : "";
+
+
+                        const percentage =
+                            isAbsent
+                                ? 0
+                                : calculatePercentage(
+                                    obtained,
+                                    maxMarks
+                                );
+
+
+                        const hasValue =
+                            isAbsent ||
+                            (
+                                saved &&
+                                saved.obtainedMarks !==
+                                undefined &&
+                                saved.obtainedMarks !==
+                                null &&
+                                saved.obtainedMarks !==
+                                ""
+                            );
+
+
+                        let resultClass =
+                            "";
+
+                        let resultText =
+                            "Pending";
+
+
+                        if (isAbsent) {
+
+                            resultClass =
+                                "absent";
+
+                            resultText =
+                                "Absent";
+
+                        } else if (
+                            hasValue
+                        ) {
+
+                            if (
+                                Number(obtained) >=
+                                passMarks
+                            ) {
+
+                                resultClass =
+                                    "pass";
+
+                                resultText =
+                                    "Pass";
+
+                            } else {
+
+                                resultClass =
+                                    "fail";
+
+                                resultText =
+                                    "Fail";
+
+                            }
+
+                        }
+
+
+                        const percentageClass =
+                            isAbsent
+                                ? "fail"
+                                : (
+                                    hasValue
+                                        ? resultClass
+                                        : ""
+                                );
+
+
+                        const statusClass =
+                            isAbsent
+                                ? "absent"
+                                : (
+                                    hasValue
+                                        ? "entered"
+                                        : "pending"
+                                );
+
+
+                        const statusText =
+                            isAbsent
+                                ? "Absent"
+                                : (
+                                    hasValue
+                                        ? "Entered"
+                                        : "Pending"
+                                );
+
+
+                        const avatar =
+                            photo
+                                ? `
+                                    <img
+                                        src="${escapeHTML(photo)}"
+                                        alt="${escapeHTML(studentName)}"
+                                        onerror="
+                                            this.style.display='none';
+                                            this.parentElement.textContent='${escapeHTML(initials(studentName))}';
+                                        "
+                                    >
+                                `
+                                : escapeHTML(
+                                    initials(
+                                        studentName
+                                    )
+                                );
+
+
+                        return `
+                            <tr
+                                data-student-row="${escapeHTML(studentId)}"
+                            >
+
+                                <td>
+
+                                    <div class="student-cell">
+
+                                        <div class="student-avatar">
+                                            ${avatar}
+                                        </div>
+
+                                        <div class="student-info">
+
+                                            <strong>
+                                                ${escapeHTML(studentName)}
+                                            </strong>
+
+                                            <span>
+                                                ${escapeHTML(studentId || "No ID")}
+                                            </span>
+
+                                        </div>
+
+                                    </div>
+
+                                </td>
+
+
+                                <td>
+
+                                    <span class="student-class">
+
+                                        Class
+                                        ${escapeHTML(studentClass)}
+
+                                        ${
+                                            studentSection
+                                                ? " • " +
+                                                  escapeHTML(
+                                                      studentSection
+                                                  )
+                                                : ""
+                                        }
+
+                                    </span>
+
+                                </td>
+
+
+                                <td>
+
+                                    <input
+                                        type="number"
+                                        class="marks-input ${
+                                            hasValue
+                                                ? "saved"
+                                                : ""
+                                        }"
+                                        data-student-id="${escapeHTML(studentId)}"
+                                        data-field="obtained"
+                                        min="0"
+                                        max="${maxMarks}"
+                                        step="0.01"
+                                        value="${
+                                            obtained === ""
+                                                ? ""
+                                                : escapeHTML(obtained)
+                                        }"
+                                        ${
+                                            isAbsent
+                                                ? "disabled"
+                                                : ""
+                                        }
+                                        placeholder="0 - ${maxMarks}"
+                                        inputmode="decimal"
+                                    >
+
+                                </td>
+
+
+                                <td>
+
+                                    <strong>
+                                        ${maxMarks}
+                                    </strong>
+
+                                </td>
+
+
+                                <td>
+
+                                    <label class="absent-toggle">
+
+                                        <input
+                                            type="checkbox"
+                                            data-student-id="${escapeHTML(studentId)}"
+                                            data-field="absent"
+                                            ${
+                                                isAbsent
+                                                    ? "checked"
+                                                    : ""
+                                            }
+                                        >
+
+                                        <span>
+                                            Absent
+                                        </span>
+
+                                    </label>
+
+                                </td>
+
+
+                                <td class="percentage-cell">
+
+                                    <span
+                                        class="percentage-value ${percentageClass}"
+                                        data-percentage-for="${escapeHTML(studentId)}"
+                                    >
+                                        ${
+                                            hasValue
+                                                ? percentage + "%"
+                                                : "—"
+                                        }
+                                    </span>
+
+                                </td>
+
+
+                                <td>
+
+                                    <span
+                                        class="marks-status ${statusClass}"
+                                        data-status-for="${escapeHTML(studentId)}"
+                                    >
+                                        ${resultText}
+                                    </span>
+
+                                </td>
+
+
+                                <td>
+
+                                    <textarea
+                                        class="marks-remarks"
+                                        data-student-id="${escapeHTML(studentId)}"
+                                        data-field="remarks"
+                                        rows="1"
+                                        placeholder="Optional..."
+                                    >${
+                                        escapeHTML(
+                                            saved?.remarks || ""
+                                        )
+                                    }</textarea>
+
+                                </td>
+
+                            </tr>
+                        `;
+
+                    }
+                ).join("");
+
+
+            updateTableSubtitle();
+
+        }
+
+
+        /* =====================================================
+           TABLE SUBTITLE
+           ===================================================== */
+
+        function updateTableSubtitle() {
+
+            const subtitle =
+                $("marksTableSubtitle");
+
+            if (!subtitle) {
+                return;
+            }
+
+
+            const total =
+                getMatchingStudents()
+                    .length;
+
+            const visible =
+                marksState.filteredStudents
+                    .length;
+
+
+            if (
+                !marksState.loaded
+            ) {
+
+                subtitle.textContent =
+                    "Select an exam and subject to load students.";
+
+                return;
+
+            }
+
+
+            const examName =
+                getExamName(
+                    marksState.selectedExam
+                );
+
+            const subjectName =
+                getSubjectName(
+                    marksState.selectedSubject
+                );
+
+
+            subtitle.textContent =
+                examName +
+                " • " +
+                subjectName +
+                " • " +
+                visible +
+                " of " +
+                total +
+                " students";
+
+        }
+
+
+        /* =====================================================
+           UPDATE SINGLE ROW
+           ===================================================== */
+
+        function updateRowPreview(
+            studentId
+        ) {
+
+            const row =
+                document.querySelector(
+                    `[data-student-row="${CSS.escape(studentId)}"]`
+                );
+
+
+            if (!row) {
+                return;
+            }
+
+
+            const input =
+                row.querySelector(
+                    '[data-field="obtained"]'
+                );
+
+            const absent =
+                row.querySelector(
+                    '[data-field="absent"]'
+                );
+
+            const percentage =
+                row.querySelector(
+                    `[data-percentage-for="${CSS.escape(studentId)}"]`
+                );
+
+            const status =
+                row.querySelector(
+                    `[data-status-for="${CSS.escape(studentId)}"]`
+                );
+
+
+            const isAbsent =
+                Boolean(
+                    absent?.checked
+                );
+
+
+            if (isAbsent) {
+
+                if (input) {
+
+                    input.value =
+                        "";
+
+                    input.disabled =
+                        true;
+
+                    input.classList.remove(
+                        "invalid"
+                    );
+
+                }
+
+
+                if (percentage) {
+
+                    percentage.textContent =
+                        "0%";
+
+                    percentage.className =
+                        "percentage-value fail";
+
+                }
+
+
+                if (status) {
+
+                    status.textContent =
+                        "Absent";
+
+                    status.className =
+                        "marks-status absent";
+
+                }
+
+                return;
+
+            }
+
+
+            if (input) {
+
+                input.disabled =
+                    false;
+
+            }
+
+
+            const raw =
+                input?.value ?? "";
+
+
+            if (raw === "") {
+
+                if (percentage) {
+
+                    percentage.textContent =
+                        "—";
+
+                    percentage.className =
+                        "percentage-value";
+
+                }
+
+
+                if (status) {
+
+                    status.textContent =
+                        "Pending";
+
+                    status.className =
+                        "marks-status pending";
+
+                }
+
+                return;
+
+            }
+
+
+            const obtained =
+                Number(raw);
+
+
+            const maxMarks =
+                marksState.maxMarks;
+
+            const passMarks =
+                marksState.passMarks;
+
+
+            if (
+                !Number.isFinite(obtained) ||
+                obtained < 0 ||
+                obtained > maxMarks
+            ) {
+
+                input.classList.add(
+                    "invalid"
+                );
+
+
+                if (percentage) {
+
+                    percentage.textContent =
+                        "Invalid";
+
+                    percentage.className =
+                        "percentage-value fail";
+
+                }
+
+
+                if (status) {
+
+                    status.textContent =
+                        "Invalid";
+
+                    status.className =
+                        "marks-status absent";
+
+                }
+
+                return;
+
+            }
+
+
+            input.classList.remove(
+                "invalid"
+            );
+
+
+            const percentageValue =
+                calculatePercentage(
+                    obtained,
+                    maxMarks
+                );
+
+
+            if (percentage) {
+
+                percentage.textContent =
+                    percentageValue +
+                    "%";
+
+                percentage.className =
+                    "percentage-value " +
+                    (
+                        obtained >=
+                        passMarks
+                            ? "pass"
+                            : "fail"
+                    );
+
+            }
+
+
+            if (status) {
+
+                if (
+                    obtained >=
+                    passMarks
+                ) {
+
+                    status.textContent =
+                        "Pass";
+
+                    status.className =
+                        "marks-status entered";
+
+                } else {
+
+                    status.textContent =
+                        "Fail";
+
+                    status.className =
+                        "marks-status absent";
+
+                }
+
+            }
+
+        }
+
+
+        /* =====================================================
+           UPDATE SUMMARY
+           ===================================================== */
+
+        function updateSummary() {
+
+            const allStudents =
+                getMatchingStudents();
+
+
+            const total =
+                allStudents.length;
+
+
+            let entered =
+                0;
+
+            let pending =
+                0;
+
+            let percentageTotal =
+                0;
+
+            let percentageCount =
+                0;
+
+
+            allStudents.forEach(
+                student => {
+
+                    const saved =
+                        getSavedMark(
+                            getStudentId(
+                                student
+                            )
+                        );
+
+
+                    if (
+                        !saved
+                    ) {
+
+                        pending++;
+
+                        return;
+
+                    }
+
+
+                    const isAbsent =
+                        saved.status ===
+                        "Absent";
+
+
+                    if (
+                        isAbsent
+                    ) {
+
+                        entered++;
+
+                        return;
+
+                    }
+
+
+                    const obtained =
+                        Number(
+                            saved.obtainedMarks
+                        );
+
+
+                    if (
+                        Number.isFinite(
+                            obtained
+                        ) &&
+                        saved.obtainedMarks !==
+                        ""
+                    ) {
+
+                        entered++;
+
+                        const percentage =
+                            calculatePercentage(
+                                obtained,
+                                marksState.maxMarks
+                            );
+
+
+                        percentageTotal +=
+                            percentage;
+
+                        percentageCount++;
+
+                    } else {
+
+                        pending++;
+
+                    }
+
+                }
+            );
+
+
+            const average =
+                percentageCount > 0
+                    ? Number(
+                        (
+                            percentageTotal /
+                            percentageCount
+                        ).toFixed(2)
+                    )
+                    : 0;
+
+
+            $("marksTotalStudents")
+                .textContent =
+                total;
+
+
+            $("marksEnteredCount")
+                .textContent =
+                entered;
+
+
+            $("marksPendingCount")
+                .textContent =
+                pending;
+
+
+            $("marksAverage")
+                .textContent =
+                average +
+                "%";
+
+
+            const progress =
+                total > 0
+                    ? Math.round(
+                        (
+                            entered /
+                            total
+                        ) * 100
+                    )
+                    : 0;
+
+
+            $("marksProgressText")
+                .textContent =
+                progress +
+                "%";
+
+
+            $("marksProgressBar")
+                .style.width =
+                progress +
+                "%";
+
+
+            $("marksSaveInfo")
+                .textContent =
+                total === 0
+                    ? "Select students and enter marks to begin."
+                    : (
+                        entered +
+                        " of " +
+                        total +
+                        " students completed."
+                    );
+
+        }
+
+
+        /* =====================================================
+           COLLECT CURRENT ROW DATA
+           ===================================================== */
+
+        function collectRowData(
+            student
+        ) {
+
+            const studentId =
+                getStudentId(
+                    student
+                );
+
+
+            const row =
+                document.querySelector(
+                    `[data-student-row="${CSS.escape(studentId)}"]`
+                );
+
+
+            if (!row) {
+
+                return {
+                    valid: false,
+                    reason:
+                        "Student row not found."
+                };
+
+            }
+
+
+            const input =
+                row.querySelector(
+                    '[data-field="obtained"]'
+                );
+
+            const absentCheckbox =
+                row.querySelector(
+                    '[data-field="absent"]'
+                );
+
+            const remarksInput =
+                row.querySelector(
+                    '[data-field="remarks"]'
+                );
+
+
+            const isAbsent =
+                Boolean(
+                    absentCheckbox?.checked
+                );
+
+
+            const remarks =
+                cleanText(
+                    remarksInput?.value
+                );
+
+
+            if (isAbsent) {
+
+                return {
+
+                    valid: true,
+
+                    record: {
+
+                        studentId,
+
+                        obtainedMarks:
+                            0,
+
+                        status:
+                            "Absent",
+
+                        percentage:
+                            0,
+
+                        remarks
+
+                    }
+
+                };
+
+            }
+
+
+            const raw =
+                cleanText(
+                    input?.value
+                );
+
+
+            if (raw === "") {
+
+                return {
+
+                    valid: false,
+
+                    reason:
+                        getStudentName(
+                            student
+                        ) +
+                        " ke marks pending hain."
+
+                };
+
+            }
+
+
+            const obtained =
+                Number(raw);
+
+
+            if (
+                !Number.isFinite(
+                    obtained
+                )
+            ) {
+
+                return {
+
+                    valid: false,
+
+                    reason:
+                        getStudentName(
+                            student
+                        ) +
+                        " ke marks invalid hain."
+
+                };
+
+            }
+
+
+            if (
+                obtained < 0
+            ) {
+
+                return {
+
+                    valid: false,
+
+                    reason:
+                        getStudentName(
+                            student
+                        ) +
+                        " ke marks 0 se kam nahi ho sakte."
+
+                };
+
+            }
+
+
+            if (
+                obtained >
+                marksState.maxMarks
+            ) {
+
+                return {
+
+                    valid: false,
+
+                    reason:
+                        getStudentName(
+                            student
+                        ) +
+                        " ke marks maximum " +
+                        marksState.maxMarks +
+                        " ho sakte hain."
+
+                };
+
+            }
+
+
+            return {
+
+                valid: true,
+
+                record: {
+
+                    studentId,
+
+                    obtainedMarks:
+                        Number(
+                            obtained.toFixed(2)
+                        ),
+
+                    status:
+                        "Present",
+
+                    percentage:
+                        calculatePercentage(
+                            obtained,
+                            marksState.maxMarks
+                        ),
+
+                    remarks
+
+                }
+
+            };
+
+        }
+
+
+        /* =====================================================
+           SAVE MARKS
+           ===================================================== */
+
+        function saveMarks() {
+
+            if (
+                !marksState.loaded ||
+                !marksState.selectedExam ||
+                !marksState.selectedSubject
+            ) {
+
+                showToast(
+                    "Please load an exam, subject and students first.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            const students =
+                getMatchingStudents();
+
+
+            if (
+                students.length === 0
+            ) {
+
+                showToast(
+                    "No students available to save.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            const collected = [];
+
+
+            for (
+                const student
+                of students
+            ) {
+
+                const result =
+                    collectRowData(
+                        student
+                    );
+
+
+                if (
+                    !result.valid
+                ) {
+
+                    showToast(
+                        result.reason,
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                collected.push(
+                    result.record
+                );
+
+            }
+
+
+            const now =
+                new Date().toISOString();
+
+
+            const examId =
+                normalizeId(
+                    marksState.selectedExam.id
+                );
+
+            const subjectId =
+                normalizeId(
+                    marksState.selectedSubject.id
+                );
+
+
+            collected.forEach(
+                item => {
+
+                    const existingIndex =
+                        marksState.marks.findIndex(
+                            record => {
+
+                                return (
+                                    normalizeId(
+                                        record?.examId
+                                    ) === examId &&
+
+                                    normalizeId(
+                                        record?.subjectId
+                                    ) === subjectId &&
+
+                                    normalizeId(
+                                        record?.studentId
+                                    ) ===
+                                    normalizeId(
+                                        item.studentId
+                                    )
+                                );
+
+                            }
+                        );
+
+
+                    const existing =
+                        existingIndex >= 0
+                            ? marksState.marks[
+                                existingIndex
+                            ]
+                            : null;
+
+
+                    const record = {
+
+                        id:
+                            existing?.id ||
+                            (
+                                "MARK" +
+                                Date.now() +
+                                "_" +
+                                Math.random()
+                                    .toString(36)
+                                    .slice(2, 8)
+                            ),
+
+                        examId,
+
+                        subjectId,
+
+                        studentId:
+                            normalizeId(
+                                item.studentId
+                            ),
+
+                        maxMarks:
+                            marksState.maxMarks,
+
+                        obtainedMarks:
+                            item.obtainedMarks,
+
+                        status:
+                            item.status,
+
+                        percentage:
+                            item.percentage,
+
+                        remarks:
+                            item.remarks,
+
+                        updatedAt:
+                            now,
+
+                        createdAt:
+                            existing?.createdAt ||
+                            now
+
+                    };
+
+
+                    if (
+                        existingIndex >= 0
+                    ) {
+
+                        marksState.marks[
+                            existingIndex
+                        ] = record;
+
+                    } else {
+
+                        marksState.marks.push(
+                            record
+                        );
+
+                    }
+
+                }
+            );
+
+
+            const saved =
+                writeStorage(
+                    MARKS_STORAGE_KEY,
+                    marksState.marks
+                );
+
+
+            if (!saved) {
+                return;
+            }
+
+
+            renderMarksTable();
+
+            updateSummary();
+
+
+            showToast(
+                collected.length +
+                " student marks saved successfully.",
+                "success"
+            );
+
+        }
+
+
+        /* =====================================================
+           RESET CURRENT MARKS
+           ===================================================== */
+
+        function resetCurrentMarks() {
+
+            if (
+                !marksState.loaded
+            ) {
+
+                showToast(
+                    "No marks are currently loaded.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            const students =
+                getMatchingStudents();
+
+
+            if (
+                students.length === 0
+            ) {
+
+                return;
+
+            }
+
+
+            const examId =
+                normalizeId(
+                    marksState.selectedExam?.id
+                );
+
+            const subjectId =
+                normalizeId(
+                    marksState.selectedSubject?.id
+                );
+
+
+            const studentIds =
+                new Set(
+                    students.map(
+                        student =>
+                            normalizeId(
+                                getStudentId(
+                                    student
+                                )
+                            )
+                    )
+                );
+
+
+            marksState.marks =
+                marksState.marks.filter(
+                    record => {
+
+                        const sameExam =
+                            normalizeId(
+                                record?.examId
+                            ) === examId;
+
+                        const sameSubject =
+                            normalizeId(
+                                record?.subjectId
+                            ) === subjectId;
+
+                        const sameStudent =
+                            studentIds.has(
+                                normalizeId(
+                                    record?.studentId
+                                )
+                            );
+
+
+                        return !(
+                            sameExam &&
+                            sameSubject &&
+                            sameStudent
+                        );
+
+                    }
+                );
+
+
+            writeStorage(
+                MARKS_STORAGE_KEY,
+                marksState.marks
+            );
+
+
+            renderMarksTable();
+
+            updateSummary();
+
+
+            showToast(
+                "Current marks entries reset.",
+                "success"
+            );
+
+        }
+
+
+        /* =====================================================
+           CLEAR SELECTION
+           ===================================================== */
+
+        function clearSelection() {
+
+            marksState.selectedExam =
+                null;
+
+            marksState.selectedSubject =
+                null;
+
+            marksState.selectedClass =
+                "";
+
+            marksState.selectedSection =
+                "";
+
+            marksState.maxMarks =
+                0;
+
+            marksState.passMarks =
+                0;
+
+            marksState.filteredStudents =
+                [];
+
+            marksState.loaded =
+                false;
+
+
+            $("marksExam").value =
+                "";
+
+
+            $("marksSubject").innerHTML = `
+                <option value="">
+                    Select Subject
+                </option>
+            `;
+
+            $("marksSubject").disabled =
+                true;
+
+
+            $("marksClass").innerHTML = `
+                <option value="">
+                    Select Class
+                </option>
+            `;
+
+            $("marksClass").disabled =
+                true;
+
+
+            $("marksSection").innerHTML = `
+                <option value="">
+                    All Sections
+                </option>
+            `;
+
+            $("marksSection").disabled =
+                true;
+
+
+            $("marksStudentSearch").value =
+                "";
+
+
+            $("marksExamInfo")
+                .classList.remove(
+                    "show"
+                );
+
+
+            renderMarksTable();
+
+            updateSummary();
+
+        }
+
+
+        /* =====================================================
+           HANDLE EXAM CHANGE
+           ===================================================== */
+
+        function handleExamChange() {
+
+            const examId =
+                cleanText(
+                    $("marksExam").value
+                );
+
+
+            marksState.selectedExam =
+                findExam(examId);
+
+
+            marksState.selectedSubject =
+                null;
+
+
+            marksState.loaded =
+                false;
+
+
+            populateSubjects(
+                examId
+            );
+
+
+            $("marksClass").innerHTML = `
+                <option value="">
+                    Select Class
+                </option>
+            `;
+
+            $("marksClass").disabled =
+                true;
+
+
+            $("marksSection").innerHTML = `
+                <option value="">
+                    All Sections
+                </option>
+            `;
+
+            $("marksSection").disabled =
+                true;
+
+
+            $("marksExamInfo")
+                .classList.remove(
+                    "show"
+                );
+
+
+            marksState.filteredStudents =
+                [];
+
+
+            renderMarksTable();
+
+            updateSummary();
+
+        }
+
+
+        /* =====================================================
+           HANDLE SUBJECT CHANGE
+           ===================================================== */
+
+        function handleSubjectChange() {
+
+            const exam =
+                marksState.selectedExam;
+
+
+            const subjectId =
+                cleanText(
+                    $("marksSubject").value
+                );
+
+
+            marksState.selectedSubject =
+                findSubject(
+                    subjectId
+                );
+
+
+            marksState.loaded =
+                false;
+
+
+            if (
+                exam &&
+                marksState.selectedSubject
+            ) {
+
+                populateClasses(
+                    exam,
+                    marksState.selectedSubject
+                );
+
+                updateExamInfo();
+
+            } else {
+
+                $("marksClass").innerHTML = `
+                    <option value="">
+                        Select Class
+                    </option>
+                `;
+
+                $("marksClass").disabled =
+                    true;
+
+
+                $("marksSection").innerHTML = `
+                    <option value="">
+                        All Sections
+                    </option>
+                `;
+
+                $("marksSection").disabled =
+                    true;
+
+
+                $("marksExamInfo")
+                    .classList.remove(
+                        "show"
+                    );
+
+            }
+
+
+            marksState.filteredStudents =
+                [];
+
+
+            renderMarksTable();
+
+            updateSummary();
+
+        }
+
+
+        /* =====================================================
+           HANDLE CLASS CHANGE
+           ===================================================== */
+
+        function handleClassChange() {
+
+            populateSections();
+
+            marksState.loaded =
+                false;
+
+            marksState.filteredStudents =
+                [];
+
+
+            renderMarksTable();
+
+            updateSummary();
+
+        }
+
+
+        /* =====================================================
+           HANDLE SECTION CHANGE
+           ===================================================== */
+
+        function handleSectionChange() {
+
+            marksState.loaded =
+                false;
+
+            marksState.selectedSection =
+                cleanText(
+                    $("marksSection").value
+                );
+
+            marksState.filteredStudents =
+                [];
+
+
+            renderMarksTable();
+
+            updateSummary();
+
+        }
+
+
+        /* =====================================================
+           EVENT: MARKS INPUT
+           ===================================================== */
+
+        function handleMarksInput(
+            event
+        ) {
+
+            const target =
+                event.target;
+
+
+            if (
+                !target.matches(
+                    '[data-field="obtained"]'
+                )
+            ) {
+                return;
+            }
+
+
+            const studentId =
+                normalizeId(
+                    target.dataset.studentId
+                );
+
+
+            updateRowPreview(
+                studentId
+            );
+
+
+            updateLiveProgress();
+
+        }
+
+
+        /* =====================================================
+           EVENT: ABSENT
+           ===================================================== */
+
+        function handleAbsentChange(
+            event
+        ) {
+
+            const target =
+                event.target;
+
+
+            if (
+                !target.matches(
+                    '[data-field="absent"]'
+                )
+            ) {
+                return;
+            }
+
+
+            const studentId =
+                normalizeId(
+                    target.dataset.studentId
+                );
+
+
+            updateRowPreview(
+                studentId
+            );
+
+
+            updateLiveProgress();
+
+        }
+
+
+        /* =====================================================
+           LIVE PROGRESS
+           ===================================================== */
+
+        function updateLiveProgress() {
+
+            const students =
+                getMatchingStudents();
+
+
+            const total =
+                students.length;
+
+
+            let completed =
+                0;
+
+            let percentageTotal =
+                0;
+
+            let percentageCount =
+                0;
+
+
+            students.forEach(
+                student => {
+
+                    const studentId =
+                        getStudentId(
+                            student
+                        );
+
+
+                    const row =
+                        document.querySelector(
+                            `[data-student-row="${CSS.escape(studentId)}"]`
+                        );
+
+
+                    if (!row) {
+                        return;
+                    }
+
+
+                    const absent =
+                        row.querySelector(
+                            '[data-field="absent"]'
+                        )?.checked;
+
+
+                    const input =
+                        row.querySelector(
+                            '[data-field="obtained"]'
+                        );
+
+
+                    if (absent) {
+
+                        completed++;
+
+                        return;
+
+                    }
+
+
+                    const raw =
+                        cleanText(
+                            input?.value
+                        );
+
+
+                    if (raw === "") {
+                        return;
+                    }
+
+
+                    const obtained =
+                        Number(raw);
+
+
+                    if (
+                        Number.isFinite(
+                            obtained
+                        ) &&
+                        obtained >= 0 &&
+                        obtained <=
+                            marksState.maxMarks
+                    ) {
+
+                        completed++;
+
+
+                        percentageTotal +=
+                            calculatePercentage(
+                                obtained,
+                                marksState.maxMarks
+                            );
+
+                        percentageCount++;
+
+                    }
+
+                }
+            );
+
+
+            const progress =
+                total > 0
+                    ? Math.round(
+                        (
+                            completed /
+                            total
+                        ) * 100
+                    )
+                    : 0;
+
+
+            $("marksProgressText")
+                .textContent =
+                progress +
+                "%";
+
+
+            $("marksProgressBar")
+                .style.width =
+                progress +
+                "%";
+
+
+            const average =
+                percentageCount > 0
+                    ? Number(
+                        (
+                            percentageTotal /
+                            percentageCount
+                        ).toFixed(2)
+                    )
+                    : 0;
+
+
+            $("marksAverage")
+                .textContent =
+                average +
+                "%";
+
+
+            $("marksEnteredCount")
+                .textContent =
+                completed;
+
+
+            $("marksPendingCount")
+                .textContent =
+                Math.max(
+                    0,
+                    total - completed
+                );
+
+
+            $("marksSaveInfo")
+                .textContent =
+                total === 0
+                    ? "Select students and enter marks to begin."
+                    : (
+                        completed +
+                        " of " +
+                        total +
+                        " students completed."
+                    );
+
+        }
+
+
+        /* =====================================================
+           REFRESH DATA
+           ===================================================== */
+
+        function refreshMarksPage() {
+
+            const previousExam =
+                $("marksExam")?.value ||
+                "";
+
+            const previousSubject =
+                $("marksSubject")?.value ||
+                "";
+
+            const previousClass =
+                $("marksClass")?.value ||
+                "";
+
+            const previousSection =
+                $("marksSection")?.value ||
+                "";
+
+
+            loadAllData();
+
+            populateExams();
+
+
+            if (
+                previousExam
+            ) {
+
+                $("marksExam").value =
+                    previousExam;
+
+                marksState.selectedExam =
+                    findExam(
+                        previousExam
+                    );
+
+                populateSubjects(
+                    previousExam
+                );
+
+            }
+
+
+            if (
+                previousSubject
+            ) {
+
+                const subjectExists =
+                    marksState.subjects.some(
+                        subject =>
+                            normalizeId(
+                                subject.id
+                            ) ===
+                            previousSubject
+                    );
+
+
+                if (
+                    subjectExists
+                ) {
+
+                    $("marksSubject").value =
+                        previousSubject;
+
+                    marksState.selectedSubject =
+                        findSubject(
+                            previousSubject
+                        );
+
+                    populateClasses(
+                        marksState.selectedExam,
+                        marksState.selectedSubject
+                    );
+
+                }
+
+            }
+
+
+            if (
+                previousClass
+            ) {
+
+                $("marksClass").value =
+                    previousClass;
+
+                populateSections();
+
+            }
+
+
+            if (
+                previousSection
+            ) {
+
+                $("marksSection").value =
+                    previousSection;
+
+            }
+
+
+            if (
+                marksState.selectedExam &&
+                marksState.selectedSubject
+            ) {
+
+                updateExamInfo();
+
+            }
+
+
+            if (
+                marksState.loaded
+            ) {
+
+                loadStudents();
+
+            } else {
+
+                renderMarksTable();
+
+                updateSummary();
+
+            }
+
+
+            showToast(
+                "Marks data refreshed.",
+                "success"
+            );
+
+        }
+
+
+        /* =====================================================
+           STORAGE EVENT
+           ===================================================== */
+
+        window.addEventListener(
+            "storage",
+            event => {
+
+                if (
+                    [
+                        MARKS_STORAGE_KEY,
+                        EXAMS_STORAGE_KEY,
+                        SUBJECTS_STORAGE_KEY,
+                        STUDENTS_STORAGE_KEY
+                    ].includes(
+                        event.key
+                    )
+                ) {
+
+                    loadAllData();
+
+                    populateExams();
+
+                    if (
+                        marksState.loaded
+                    ) {
+
+                        loadStudents();
+
+                    } else {
+
+                        updateSummary();
+
+                    }
+
+                }
+
+            }
+        );
+
+
+        /* =====================================================
+           INITIALIZATION
+           ===================================================== */
+
+        function initializeMarksPage() {
+
+            loadAllData();
+
+            populateExams();
+
+            renderMarksTable();
+
+            updateSummary();
+
+
+            console.log(
+                "SmartSchool360 Marks Entry initialized.",
+                {
+                    exams:
+                        marksState.exams.length,
+
+                    subjects:
+                        marksState.subjects.length,
+
+                    students:
+                        marksState.students.length,
+
+                    marks:
+                        marksState.marks.length
+                }
+            );
+
+        }
+
+
+        /* =====================================================
+           EVENT LISTENERS
+           ===================================================== */
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            () => {
+
+                initializeMarksPage();
+
+
+                $("marksExam")
+                    ?.addEventListener(
+                        "change",
+                        handleExamChange
+                    );
+
+
+                $("marksSubject")
+                    ?.addEventListener(
+                        "change",
+                        handleSubjectChange
+                    );
+
+
+                $("marksClass")
+                    ?.addEventListener(
+                        "change",
+                        handleClassChange
+                    );
+
+
+                $("marksSection")
+                    ?.addEventListener(
+                        "change",
+                        handleSectionChange
+                    );
+
+
+                $("loadStudentsBtn")
+                    ?.addEventListener(
+                        "click",
+                        loadStudents
+                    );
+
+
+                $("clearMarksSelectionBtn")
+                    ?.addEventListener(
+                        "click",
+                        clearSelection
+                    );
+
+
+                $("saveMarksBtn")
+                    ?.addEventListener(
+                        "click",
+                        saveMarks
+                    );
+
+
+                $("resetMarksBtn")
+                    ?.addEventListener(
+                        "click",
+                        () => {
+
+                            const confirmed =
+                                window.confirm(
+                                    "Reset marks for the currently selected class, subject and exam?"
+                                );
+
+
+                            if (
+                                confirmed
+                            ) {
+
+                                resetCurrentMarks();
+
+                            }
+
+                        }
+                    );
+
+
+                $("refreshMarksBtn")
+                    ?.addEventListener(
+                        "click",
+                        refreshMarksPage
+                    );
+
+
+                $("marksStudentSearch")
+                    ?.addEventListener(
+                        "input",
+                        applyStudentSearch
+                    );
+
+
+                $("marksTableBody")
+                    ?.addEventListener(
+                        "input",
+                        handleMarksInput
+                    );
+
+
+                $("marksTableBody")
+                    ?.addEventListener(
+                        "change",
+                        handleAbsentChange
+                    );
+
+
+                /*
+                 * Mobile-friendly touch handling.
+                 */
+
+                $("loadStudentsBtn")
+                    ?.addEventListener(
+                        "touchend",
+                        event => {
+
+                            event.preventDefault();
+
+                            loadStudents();
+
+                        },
+                        {
+                            passive: false
+                        }
+                    );
+
+
+                $("saveMarksBtn")
+                    ?.addEventListener(
+                        "touchend",
+                        event => {
+
+                            event.preventDefault();
+
+                            saveMarks();
+
+                        },
+                        {
+                            passive: false
+                        }
+                    );
+
+
+                $("clearMarksSelectionBtn")
+                    ?.addEventListener(
+                        "touchend",
+                        event => {
+
+                            event.preventDefault();
+
+                            clearSelection();
+
+                        },
+                        {
+                            passive: false
+                        }
+                    );
+
+            }
+        );
+
+    </script>
+        <!-- =====================================================
+         FINAL VALIDATION + URL SUPPORT
+         ===================================================== -->
+
+    <script>
+
+        /*
+         * URL parameters support:
+         *
+         * marks-entry.html?examId=EXAM_ID&subjectId=SUBJECT_ID
+         *
+         * This allows Exams/Subjects modules to directly
+         * open Marks Entry for a particular examination.
+         */
+
+        function readURLParameters() {
+
+            const params =
+                new URLSearchParams(
+                    window.location.search
+                );
+
+
+            const examId =
+                cleanText(
+                    params.get("examId")
+                );
+
+
+            const subjectId =
+                cleanText(
+                    params.get("subjectId")
+                );
+
+
+            return {
+                examId,
+                subjectId
+            };
+
+        }
+
+
+        /* =====================================================
+           APPLY URL SELECTION
+           ===================================================== */
+
+        function applyURLSelection() {
+
+            const {
+                examId,
+                subjectId
+            } =
+                readURLParameters();
+
+
+            if (!examId) {
+                return;
+            }
+
+
+            const exam =
+                findExam(
+                    examId
+                );
+
+
+            if (!exam) {
+
+                showToast(
+                    "Exam from the link was not found.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            $("marksExam").value =
+                normalizeId(
+                    exam.id
+                );
+
+
+            marksState.selectedExam =
+                exam;
+
+
+            populateSubjects(
+                exam.id
+            );
+
+
+            if (!subjectId) {
+
+                return;
+
+            }
+
+
+            const subject =
+                findSubject(
+                    subjectId
+                );
+
+
+            if (!subject) {
+
+                showToast(
+                    "Subject from the link was not found.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            const subjectOption =
+                [
+                    ...$("marksSubject")
+                        .options
+                ]
+                    .find(
+                        option =>
+                            option.value ===
+                            normalizeId(
+                                subject.id
+                            )
+                    );
+
+
+            if (
+                subjectOption
+            ) {
+
+                $("marksSubject").value =
+                    normalizeId(
+                        subject.id
+                    );
+
+                marksState.selectedSubject =
+                    subject;
+
+
+                populateClasses(
+                    exam,
+                    subject
+                );
+
+
+                updateExamInfo();
+
+            }
+
+        }
+
+
+        /* =====================================================
+           VALIDATE CURRENT SELECTION
+           ===================================================== */
+
+        function validateSelection() {
+
+            const examId =
+                cleanText(
+                    $("marksExam")?.value
+                );
+
+
+            const subjectId =
+                cleanText(
+                    $("marksSubject")?.value
+                );
+
+
+            const className =
+                cleanText(
+                    $("marksClass")?.value
+                );
+
+
+            if (!examId) {
+
+                return {
+                    valid: false,
+                    message:
+                        "Please select an examination."
+                };
+
+            }
+
+
+            if (!subjectId) {
+
+                return {
+                    valid: false,
+                    message:
+                        "Please select a subject."
+                };
+
+            }
+
+
+            if (!className) {
+
+                return {
+                    valid: false,
+                    message:
+                        "Please select a class."
+                };
+
+            }
+
+
+            if (
+                !marksState.selectedExam
+            ) {
+
+                return {
+                    valid: false,
+                    message:
+                        "Selected examination could not be loaded."
+                };
+
+            }
+
+
+            if (
+                !marksState.selectedSubject
+            ) {
+
+                return {
+                    valid: false,
+                    message:
+                        "Selected subject could not be loaded."
+                };
+
+            }
+
+
+            if (
+                marksState.maxMarks <= 0
+            ) {
+
+                return {
+                    valid: false,
+                    message:
+                        "Maximum marks must be greater than zero."
+                };
+
+            }
+
+
+            return {
+                valid: true
+            };
+
+        }
+
+
+        /* =====================================================
+           ENHANCED SAVE VALIDATION
+           ===================================================== */
+
+        function validateAllVisibleRows() {
+
+            const students =
+                getMatchingStudents();
+
+
+            if (
+                students.length === 0
+            ) {
+
+                return {
+                    valid: false,
+                    message:
+                        "No students are available for this selection."
+                };
+
+            }
+
+
+            const errors = [];
+
+
+            students.forEach(
+                student => {
+
+                    const result =
+                        collectRowData(
+                            student
+                        );
+
+
+                    if (
+                        !result.valid
+                    ) {
+
+                        errors.push(
+                            result.reason
+                        );
+
+                    }
+
+                }
+            );
+
+
+            if (
+                errors.length > 0
+            ) {
+
+                return {
+                    valid: false,
+                    message:
+                        errors[0],
+                    count:
+                        errors.length
+                };
+
+            }
+
+
+            return {
+                valid: true
+            };
+
+        }
+
+
+        /* =====================================================
+           SAVE BUTTON GUARD
+           ===================================================== */
+
+        const originalSaveMarks =
+            saveMarks;
+
+
+        saveMarks =
+            function () {
+
+                const selection =
+                    validateSelection();
+
+
+                if (
+                    !selection.valid
+                ) {
+
+                    showToast(
+                        selection.message,
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                const validation =
+                    validateAllVisibleRows();
+
+
+                if (
+                    !validation.valid
+                ) {
+
+                    showToast(
+                        validation.message,
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                const confirmed =
+                    window.confirm(
+                        "Save marks for " +
+                        getMatchingStudents().length +
+                        " students?"
+                    );
+
+
+                if (!confirmed) {
+                    return;
+                }
+
+
+                originalSaveMarks();
+
+            };
+
+
+        /* =====================================================
+           KEYBOARD NAVIGATION
+           ===================================================== */
+
+        document.addEventListener(
+            "keydown",
+            event => {
+
+                const target =
+                    event.target;
+
+
+                if (
+                    !target.matches(
+                        ".marks-input"
+                    )
+                ) {
+                    return;
+                }
+
+
+                if (
+                    event.key !==
+                    "Enter"
+                ) {
+                    return;
+                }
+
+
+                event.preventDefault();
+
+
+                const inputs =
+                    [
+                        ...document.querySelectorAll(
+                            ".marks-input:not(:disabled)"
+                        )
+                    ];
+
+
+                const currentIndex =
+                    inputs.indexOf(
+                        target
+                    );
+
+
+                if (
+                    currentIndex >= 0 &&
+                    currentIndex <
+                    inputs.length - 1
+                ) {
+
+                    inputs[
+                        currentIndex + 1
+                    ].focus();
+
+                }
+
+            }
+        );
+
+
+        /* =====================================================
+           PREVENT NEGATIVE MARKS
+           ===================================================== */
+
+        document.addEventListener(
+            "input",
+            event => {
+
+                const target =
+                    event.target;
+
+
+                if (
+                    !target.matches(
+                        '.marks-input[data-field="obtained"]'
+                    )
+                ) {
+                    return;
+                }
+
+
+                const value =
+                    Number(
+                        target.value
+                    );
+
+
+                if (
+                    Number.isFinite(
+                        value
+                    ) &&
+                    value < 0
+                ) {
+
+                    target.value =
+                        0;
+
+                }
+
+
+                if (
+                    Number.isFinite(
+                        value
+                    ) &&
+                    value >
+                    marksState.maxMarks
+                ) {
+
+                    target.classList.add(
+                        "invalid"
+                    );
+
+                } else {
+
+                    target.classList.remove(
+                        "invalid"
+                    );
+
+                }
+
+            }
+        );
+
+
+        /* =====================================================
+           AUTO RESTORE AFTER INITIAL PAGE LOAD
+           ===================================================== */
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            () => {
+
+                /*
+                 * Small delay ensures the data engine has
+                 * completed its initial setup first.
+                 */
+
+                setTimeout(
+                    () => {
+
+                        applyURLSelection();
+
+                    },
+                    150
+                );
+
+            }
+        );
+
+
+        /* =====================================================
+           PUBLIC MARKS API
+           ===================================================== */
+
+        window.SmartSchoolMarks = {
+
+            getMarks() {
+
+                return [
+                    ...marksState.marks
+                ];
+
+            },
+
+
+            getMarksByExam(
+                examId
+            ) {
+
+                const id =
+                    normalizeId(
+                        examId
+                    );
+
+
+                return marksState.marks
+                    .filter(
+                        record =>
+                            normalizeId(
+                                record?.examId
+                            ) === id
+                    );
+
+            },
+
+
+            getMarksBySubject(
+                subjectId
+            ) {
+
+                const id =
+                    normalizeId(
+                        subjectId
+                    );
+
+
+                return marksState.marks
+                    .filter(
+                        record =>
+                            normalizeId(
+                                record?.subjectId
+                            ) === id
+                    );
+
+            },
+
+
+            getStudentMarks(
+                studentId
+            ) {
+
+                const id =
+                    normalizeId(
+                        studentId
+                    );
+
+
+                return marksState.marks
+                    .filter(
+                        record =>
+                            normalizeId(
+                                record?.studentId
+                            ) === id
+                    );
+
+            },
+
+
+            getResult(
+                examId,
+                subjectId,
+                studentId
+            ) {
+
+                const exam =
+                    normalizeId(
+                        examId
+                    );
+
+                const subject =
+                    normalizeId(
+                        subjectId
+                    );
+
+                const student =
+                    normalizeId(
+                        studentId
+                    );
+
+
+                return (
+                    marksState.marks.find(
+                        record =>
+                            normalizeId(
+                                record?.examId
+                            ) === exam &&
+
+                            normalizeId(
+                                record?.subjectId
+                            ) === subject &&
+
+                            normalizeId(
+                                record?.studentId
+                            ) === student
+                    ) ||
+                    null
+                );
+
+            },
+
+
+            refresh() {
+
+                loadAllData();
+
+                populateExams();
+
+                renderMarksTable();
+
+                updateSummary();
+
+            }
+
+        };
+
+
+        /* =====================================================
+           DEBUG INFORMATION
+           ===================================================== */
+
+        console.log(
+            "SmartSchool360 Marks Entry API ready.",
+            "Use window.SmartSchoolMarks"
+        );
+
+    </script>
+
+
+
+</body>
+
+</html>
