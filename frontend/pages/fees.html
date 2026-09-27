@@ -27,11 +27,6 @@
         href="../assets/css/fees.css"
     >
 
-
-    <!-- =====================================================
-         MOBILE MODAL SAFETY
-         ===================================================== -->
-
     <style>
 
         .fee-modal-close,
@@ -75,7 +70,6 @@
             z-index: 20 !important;
         }
 
-
         .fee-modal-close:hover,
         .modal-close-btn:hover {
 
@@ -83,19 +77,16 @@
             color: #dc2626 !important;
         }
 
-
         .fee-modal-close:active,
         .modal-close-btn:active {
 
             transform: scale(0.94) !important;
         }
 
-
         .fee-modal-overlay {
 
             touch-action: manipulation;
         }
-
 
         @media (max-width: 700px) {
 
@@ -103,7 +94,6 @@
 
                 padding: 0 !important;
             }
-
 
             .fee-modal {
 
@@ -115,7 +105,6 @@
                 overflow-y: auto !important;
             }
 
-
             .fee-modal-header {
 
                 position: relative !important;
@@ -125,7 +114,6 @@
                     14px
                     14px !important;
             }
-
 
             .fee-modal-close,
             .modal-close-btn {
@@ -144,7 +132,6 @@
             }
         }
 
-
         @media (max-width: 400px) {
 
             .fee-modal-close,
@@ -162,7 +149,6 @@
             }
         }
 
-
         body.modal-open {
 
             overflow: hidden !important;
@@ -170,10 +156,7 @@
             touch-action: none !important;
         }
 
-
-        /* =================================================
-           FEE REPORTS QUICK ACTION
-           ================================================= */
+        /* FEE REPORTS */
 
         .fee-reports-action {
 
@@ -187,13 +170,11 @@
                 ) !important;
         }
 
-
         .fee-reports-action
         .quick-action-icon {
 
             background: #dbeafe !important;
         }
-
 
         .fee-reports-action:hover {
 
@@ -207,6 +188,38 @@
                 ) !important;
         }
 
+        /* ADVANCED FEE ANALYTICS */
+
+        .advanced-fee-analytics-action {
+
+            border: 1px solid #ddd6fe !important;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #f5f3ff,
+                    #f8fafc
+                ) !important;
+        }
+
+        .advanced-fee-analytics-action
+        .quick-action-icon {
+
+            background: #ede9fe !important;
+        }
+
+        .advanced-fee-analytics-action:hover {
+
+            border-color: #c4b5fd !important;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #ede9fe,
+                    #f5f3ff
+                ) !important;
+        }
+
     </style>
 
 </head>
@@ -215,795 +228,686 @@
 <body>
 
 
-    <!-- =====================================================
-         HEADER
-         ===================================================== -->
+<header class="page-header">
 
-    <header class="page-header">
+    <div class="header-left">
 
-        <div class="header-left">
+        <button
+            type="button"
+            class="back-btn"
+            onclick="window.location.href='../../index.html'"
+            aria-label="Back"
+        >
+            ←
+        </button>
+
+        <div class="header-icon">
+            💰
+        </div>
+
+        <div class="header-title">
+
+            <h1>
+                Fees Management
+            </h1>
+
+            <p>
+                Manage student fees and payments
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <button
+        type="button"
+        class="refresh-btn"
+        id="refreshFeesBtn"
+    >
+        ↻ Refresh
+    </button>
+
+</header>
+
+
+<main class="fees-page">
+
+
+<section class="fees-kpi-grid">
+
+    <article class="fees-kpi-card total">
+
+        <div class="kpi-icon">
+            💰
+        </div>
+
+        <div class="kpi-content">
+
+            <span class="kpi-label">
+                Total Fees
+            </span>
+
+            <strong id="totalFeesAmount">
+                ₹0.00
+            </strong>
+
+            <small>
+                Overall fee value
+            </small>
+
+        </div>
+
+    </article>
+
+
+    <article class="fees-kpi-card collected">
+
+        <div class="kpi-icon">
+            ✅
+        </div>
+
+        <div class="kpi-content">
+
+            <span class="kpi-label">
+                Collected
+            </span>
+
+            <strong id="collectedFeesAmount">
+                ₹0.00
+            </strong>
+
+            <small id="collectedFeesCount">
+                0 payment records
+            </small>
+
+        </div>
+
+    </article>
+
+
+    <article class="fees-kpi-card pending">
+
+        <div class="kpi-icon">
+            ⏳
+        </div>
+
+        <div class="kpi-content">
+
+            <span class="kpi-label">
+                Pending
+            </span>
+
+            <strong id="pendingFeesAmount">
+                ₹0.00
+            </strong>
+
+            <small id="pendingFeesCount">
+                0 due records
+            </small>
+
+        </div>
+
+    </article>
+
+
+    <article class="fees-kpi-card overdue">
+
+        <div class="kpi-icon">
+            ⚠️
+        </div>
+
+        <div class="kpi-content">
+
+            <span class="kpi-label">
+                Overdue
+            </span>
+
+            <strong id="overdueFeesAmount">
+                ₹0.00
+            </strong>
+
+            <small id="overdueFeesCount">
+                0 overdue records
+            </small>
+
+        </div>
+
+    </article>
+
+</section>
+
+
+<section class="fees-card quick-actions-card">
+
+    <div class="section-heading">
+
+        <div>
+
+            <span class="section-eyebrow">
+                FEE MANAGEMENT
+            </span>
+
+            <h2>
+                Quick Actions
+            </h2>
+
+            <p>
+                Create fee records, collect payments,
+                manage receipts and analyze collections.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="quick-actions-grid">
+
+
+        <button
+            type="button"
+            class="quick-action create-fee-action"
+            id="createFeeRecordBtn"
+        >
+
+            <span class="quick-action-icon">
+                ➕
+            </span>
+
+            <span class="quick-action-content">
+
+                <strong>
+                    Create Fee Record
+                </strong>
+
+                <small>
+                    Add a new student fee
+                </small>
+
+            </span>
+
+            <span class="quick-action-arrow">
+                →
+            </span>
+
+        </button>
+
+
+        <button
+            type="button"
+            class="quick-action payment-action"
+            id="recordPaymentBtn"
+        >
+
+            <span class="quick-action-icon">
+                💳
+            </span>
+
+            <span class="quick-action-content">
+
+                <strong>
+                    Record Payment
+                </strong>
+
+                <small>
+                    Collect a fee payment
+                </small>
+
+            </span>
+
+            <span class="quick-action-arrow">
+                →
+            </span>
+
+        </button>
+
+
+        <button
+            type="button"
+            class="quick-action receipt-action"
+            id="viewReceiptsBtn"
+        >
+
+            <span class="quick-action-icon">
+                🧾
+            </span>
+
+            <span class="quick-action-content">
+
+                <strong>
+                    Fee Receipts
+                </strong>
+
+                <small>
+                    View generated receipts
+                </small>
+
+            </span>
+
+            <span class="quick-action-arrow">
+                →
+            </span>
+
+        </button>
+
+
+        <button
+            type="button"
+            class="quick-action dues-action"
+            id="viewDuesBtn"
+        >
+
+            <span class="quick-action-icon">
+                ⏳
+            </span>
+
+            <span class="quick-action-content">
+
+                <strong>
+                    Pending Dues
+                </strong>
+
+                <small>
+                    Track outstanding fees
+                </small>
+
+            </span>
+
+            <span class="quick-action-arrow">
+                →
+            </span>
+
+        </button>
+
+
+        <button
+            type="button"
+            class="quick-action fee-reports-action"
+            id="openFeeReportsBtn"
+        >
+
+            <span class="quick-action-icon">
+                📊
+            </span>
+
+            <span class="quick-action-content">
+
+                <strong>
+                    Fee Reports
+                </strong>
+
+                <small>
+                    Reports & exports
+                </small>
+
+            </span>
+
+            <span class="quick-action-arrow">
+                →
+            </span>
+
+        </button>
+
+
+        <button
+            type="button"
+            class="quick-action advanced-fee-analytics-action"
+            id="openAdvancedFeeAnalyticsBtn"
+        >
+
+            <span class="quick-action-icon">
+                📈
+            </span>
+
+            <span class="quick-action-content">
+
+                <strong>
+                    Advanced Analytics
+                </strong>
+
+                <small>
+                    Collection trends & insights
+                </small>
+
+            </span>
+
+            <span class="quick-action-arrow">
+                →
+            </span>
+
+        </button>
+
+
+    </div>
+
+</section>
+
+
+<section class="fees-card filters-card">
+
+    <div class="section-heading">
+
+        <div>
+
+            <span class="section-eyebrow">
+                SEARCH & FILTER
+            </span>
+
+            <h2>
+                Fee Records
+            </h2>
+
+            <p id="feeTableSubtitle">
+                Manage all student fee records.
+            </p>
+
+        </div>
+
+        <span
+            class="record-count-badge"
+            id="feeRecordCount"
+        >
+            0 records
+        </span>
+
+    </div>
+
+
+    <div class="fee-filters">
+
+        <div class="form-group">
+
+            <label for="feeSearch">
+                Search
+            </label>
+
+            <input
+                type="search"
+                id="feeSearch"
+                placeholder="Student name or ID..."
+                autocomplete="off"
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="feeClass">
+                Class
+            </label>
+
+            <select id="feeClass">
+
+                <option value="">
+                    All Classes
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="feeSection">
+                Section
+            </label>
+
+            <select id="feeSection">
+
+                <option value="">
+                    All Sections
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="feeStatus">
+                Status
+            </label>
+
+            <select id="feeStatus">
+
+                <option value="">
+                    All Status
+                </option>
+
+                <option value="Paid">
+                    Paid
+                </option>
+
+                <option value="Partial">
+                    Partial
+                </option>
+
+                <option value="Pending">
+                    Pending
+                </option>
+
+                <option value="Overdue">
+                    Overdue
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div class="filter-actions">
 
             <button
                 type="button"
-                class="back-btn"
-                onclick="window.location.href='../../index.html'"
-                aria-label="Back"
+                class="primary-btn"
+                id="applyFeeFilterBtn"
             >
-                ←
+                Apply Filter
             </button>
 
+            <button
+                type="button"
+                class="secondary-btn"
+                id="clearFeeFilterBtn"
+            >
+                Clear
+            </button>
 
-            <div class="header-icon">
-                💰
-            </div>
+        </div>
+
+    </div>
+
+</section>
 
 
-            <div class="header-title">
+<section class="fees-card table-card">
 
-                <h1>
-                    Fees Management
-                </h1>
+    <div class="table-responsive">
 
-                <p>
-                    Manage student fees and payments
-                </p>
+        <table class="fees-table">
 
-            </div>
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Student
+                    </th>
+
+                    <th>
+                        Class
+                    </th>
+
+                    <th>
+                        Fee Type
+                    </th>
+
+                    <th>
+                        Total
+                    </th>
+
+                    <th>
+                        Paid
+                    </th>
+
+                    <th>
+                        Due
+                    </th>
+
+                    <th>
+                        Status
+                    </th>
+
+                    <th>
+                        Due Date
+                    </th>
+
+                    <th>
+                        Actions
+                    </th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="feesTableBody">
+
+                <tr>
+
+                    <td
+                        colspan="9"
+                        class="empty-state"
+                    >
+                        Loading fee records...
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
+
+<section class="fees-card recent-payments-card">
+
+    <div class="section-heading">
+
+        <div>
+
+            <span class="section-eyebrow">
+                TRANSACTIONS
+            </span>
+
+            <h2>
+                Recent Payments
+            </h2>
+
+            <p>
+                Latest fee collection transactions.
+            </p>
 
         </div>
 
 
         <button
             type="button"
-            class="refresh-btn"
-            id="refreshFeesBtn"
+            class="secondary-btn"
+            id="viewAllPaymentsBtn"
         >
-            ↻ Refresh
+            View All
         </button>
 
-    </header>
+    </div>
 
 
+    <div class="table-responsive">
 
-    <!-- =====================================================
-         MAIN
-         ===================================================== -->
+        <table class="fees-table payments-table">
 
-    <main class="fees-page">
+            <thead>
 
+                <tr>
 
-        <!-- =================================================
-             KPI CARDS
-             ================================================= -->
+                    <th>
+                        Receipt
+                    </th>
 
-        <section class="fees-kpi-grid">
+                    <th>
+                        Student
+                    </th>
 
+                    <th>
+                        Amount
+                    </th>
 
-            <article class="fees-kpi-card total">
+                    <th>
+                        Method
+                    </th>
 
-                <div class="kpi-icon">
-                    💰
-                </div>
+                    <th>
+                        Date
+                    </th>
 
-                <div class="kpi-content">
+                    <th>
+                        Action
+                    </th>
 
-                    <span class="kpi-label">
-                        Total Fees
-                    </span>
+                </tr>
 
-                    <strong id="totalFeesAmount">
-                        ₹0.00
-                    </strong>
+            </thead>
 
-                    <small>
-                        Overall fee value
-                    </small>
+            <tbody id="recentPaymentsBody">
 
-                </div>
+                <tr>
 
-            </article>
-
-
-
-            <article class="fees-kpi-card collected">
-
-                <div class="kpi-icon">
-                    ✅
-                </div>
-
-                <div class="kpi-content">
-
-                    <span class="kpi-label">
-                        Collected
-                    </span>
-
-                    <strong id="collectedFeesAmount">
-                        ₹0.00
-                    </strong>
-
-                    <small id="collectedFeesCount">
-                        0 payment records
-                    </small>
-
-                </div>
-
-            </article>
-
-
-
-            <article class="fees-kpi-card pending">
-
-                <div class="kpi-icon">
-                    ⏳
-                </div>
-
-                <div class="kpi-content">
-
-                    <span class="kpi-label">
-                        Pending
-                    </span>
-
-                    <strong id="pendingFeesAmount">
-                        ₹0.00
-                    </strong>
-
-                    <small id="pendingFeesCount">
-                        0 due records
-                    </small>
-
-                </div>
-
-            </article>
-
-
-
-            <article class="fees-kpi-card overdue">
-
-                <div class="kpi-icon">
-                    ⚠️
-                </div>
-
-                <div class="kpi-content">
-
-                    <span class="kpi-label">
-                        Overdue
-                    </span>
-
-                    <strong id="overdueFeesAmount">
-                        ₹0.00
-                    </strong>
-
-                    <small id="overdueFeesCount">
-                        0 overdue records
-                    </small>
-
-                </div>
-
-            </article>
-
-
-        </section>
-
-
-
-        <!-- =================================================
-             QUICK ACTIONS
-             ================================================= -->
-
-        <section class="fees-card quick-actions-card">
-
-            <div class="section-heading">
-
-                <div>
-
-                    <span class="section-eyebrow">
-                        FEE MANAGEMENT
-                    </span>
-
-                    <h2>
-                        Quick Actions
-                    </h2>
-
-                    <p>
-                        Create fee records, collect payments,
-                        manage receipts and analyze collections.
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <div class="quick-actions-grid">
-
-
-                <!-- CREATE FEE -->
-
-                <button
-                    type="button"
-                    class="quick-action create-fee-action"
-                    id="createFeeRecordBtn"
-                >
-
-                    <span class="quick-action-icon">
-                        ➕
-                    </span>
-
-                    <span class="quick-action-content">
-
-                        <strong>
-                            Create Fee Record
-                        </strong>
-
-                        <small>
-                            Add a new student fee
-                        </small>
-
-                    </span>
-
-                    <span class="quick-action-arrow">
-                        →
-                    </span>
-
-                </button>
-
-
-
-                <!-- PAYMENT -->
-
-                <button
-                    type="button"
-                    class="quick-action"
-                    id="recordPaymentBtn"
-                >
-
-                    <span class="quick-action-icon">
-                        💳
-                    </span>
-
-                    <span class="quick-action-content">
-
-                        <strong>
-                            Record Payment
-                        </strong>
-
-                        <small>
-                            Add a new fee payment
-                        </small>
-
-                    </span>
-
-                    <span class="quick-action-arrow">
-                        →
-                    </span>
-
-                </button>
-
-
-
-                <!-- RECEIPTS -->
-
-                <button
-                    type="button"
-                    class="quick-action"
-                    id="viewReceiptsBtn"
-                >
-
-                    <span class="quick-action-icon">
-                        🧾
-                    </span>
-
-                    <span class="quick-action-content">
-
-                        <strong>
-                            Fee Receipts
-                        </strong>
-
-                        <small>
-                            View generated receipts
-                        </small>
-
-                    </span>
-
-                    <span class="quick-action-arrow">
-                        →
-                    </span>
-
-                </button>
-
-
-
-                <!-- DUES -->
-
-                <button
-                    type="button"
-                    class="quick-action"
-                    id="viewDuesBtn"
-                >
-
-                    <span class="quick-action-icon">
-                        📋
-                    </span>
-
-                    <span class="quick-action-content">
-
-                        <strong>
-                            Pending Dues
-                        </strong>
-
-                        <small>
-                            View outstanding fees
-                        </small>
-
-                    </span>
-
-                    <span class="quick-action-arrow">
-                        →
-                    </span>
-
-                </button>
-
-
-
-                <!-- FEE REPORTS -->
-
-                <button
-                    type="button"
-                    class="quick-action fee-reports-action"
-                    id="openFeeReportsBtn"
-                >
-
-                    <span class="quick-action-icon">
-                        📊
-                    </span>
-
-                    <span class="quick-action-content">
-
-                        <strong>
-                            Fee Reports
-                        </strong>
-
-                        <small>
-                            Analytics, reports & exports
-                        </small>
-
-                    </span>
-
-                    <span class="quick-action-arrow">
-                        →
-                    </span>
-
-                </button>
-
-
-            </div>
-
-        </section>
-
-
-
-        <!-- =================================================
-             FILTERS
-             ================================================= -->
-
-        <section class="fees-card">
-
-            <div class="section-heading">
-
-                <div>
-
-                    <span class="section-eyebrow">
-                        FEE FILTERS
-                    </span>
-
-                    <h2>
-                        Search Fee Records
-                    </h2>
-
-                    <p>
-                        Filter student fees by class,
-                        section and payment status.
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <div class="fee-filters-grid">
-
-
-                <div class="form-group">
-
-                    <label for="feeSearch">
-                        Search Student
-                    </label>
-
-                    <input
-                        type="search"
-                        id="feeSearch"
-                        placeholder="Search student name or ID..."
-                        autocomplete="off"
+                    <td
+                        colspan="6"
+                        class="empty-state"
                     >
+                        No payments found.
+                    </td>
 
-                </div>
+                </tr>
 
+            </tbody>
 
+        </table>
 
-                <div class="form-group">
+    </div>
 
-                    <label for="feeClass">
-                        Class
-                    </label>
+</section>
 
-                    <select id="feeClass">
 
-                        <option value="">
-                            All Classes
-                        </option>
+<section class="fees-card info-card">
 
-                    </select>
+    <div class="info-icon">
+        ℹ️
+    </div>
 
-                </div>
+    <div>
 
+        <h3>
+            Fee Management
+        </h3>
 
+        <p>
+            Fee records and payment transactions are
+            stored locally in this frontend version.
+            Backend database integration will be added
+            in the next development phase.
+        </p>
 
-                <div class="form-group">
+    </div>
 
-                    <label for="feeSection">
-                        Section
-                    </label>
-
-                    <select id="feeSection">
-
-                        <option value="">
-                            All Sections
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-
-                <div class="form-group">
-
-                    <label for="feeStatus">
-                        Payment Status
-                    </label>
-
-                    <select id="feeStatus">
-
-                        <option value="">
-                            All Status
-                        </option>
-
-                        <option value="paid">
-                            Paid
-                        </option>
-
-                        <option value="partial">
-                            Partial
-                        </option>
-
-                        <option value="pending">
-                            Pending
-                        </option>
-
-                        <option value="overdue">
-                            Overdue
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-            </div>
-
-
-            <div class="filter-actions">
-
-                <button
-                    type="button"
-                    class="primary-btn"
-                    id="applyFeeFilterBtn"
-                >
-                    🔎 Apply Filters
-                </button>
-
-
-                <button
-                    type="button"
-                    class="secondary-btn"
-                    id="clearFeeFilterBtn"
-                >
-                    ✕ Clear
-                </button>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- =================================================
-             FEE RECORDS
-             ================================================= -->
-
-        <section class="fees-card">
-
-            <div class="section-heading heading-with-meta">
-
-                <div>
-
-                    <span class="section-eyebrow">
-                        STUDENT FEE RECORDS
-                    </span>
-
-                    <h2>
-                        Fee Records
-                    </h2>
-
-                    <p id="feeTableSubtitle">
-                        Manage student fee records
-                        and outstanding balances.
-                    </p>
-
-                </div>
-
-
-                <span
-                    class="record-count"
-                    id="feeRecordCount"
-                >
-                    0 records
-                </span>
-
-            </div>
-
-
-            <div class="table-wrapper">
-
-                <table class="fees-table">
-
-                    <thead>
-
-                        <tr>
-
-                            <th>
-                                Student
-                            </th>
-
-                            <th>
-                                Class
-                            </th>
-
-                            <th>
-                                Section
-                            </th>
-
-                            <th>
-                                Fee Type
-                            </th>
-
-                            <th>
-                                Total
-                            </th>
-
-                            <th>
-                                Paid
-                            </th>
-
-                            <th>
-                                Due
-                            </th>
-
-                            <th>
-                                Status
-                            </th>
-
-                            <th>
-                                Action
-                            </th>
-
-                        </tr>
-
-                    </thead>
-
-
-                    <tbody id="feesTableBody">
-
-                        <tr>
-
-                            <td colspan="9">
-
-                                <div class="fees-empty-state">
-
-                                    <div class="empty-icon">
-                                        💰
-                                    </div>
-
-                                    <h3>
-                                        No fee records found
-                                    </h3>
-
-                                    <p>
-                                        Create a fee record
-                                        to get started.
-                                    </p>
-
-                                </div>
-
-                            </td>
-
-                        </tr>
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- =================================================
-             PAYMENT HISTORY
-             ================================================= -->
-
-        <section class="fees-card">
-
-            <div class="section-heading heading-with-meta">
-
-                <div>
-
-                    <span class="section-eyebrow">
-                        PAYMENT HISTORY
-                    </span>
-
-                    <h2>
-                        Recent Payments
-                    </h2>
-
-                    <p>
-                        Latest fee transactions
-                        recorded in SmartSchool360.
-                    </p>
-
-                </div>
-
-
-                <button
-                    type="button"
-                    class="text-btn"
-                    id="viewAllPaymentsBtn"
-                >
-                    View All
-                </button>
-
-            </div>
-
-
-            <div class="table-wrapper">
-
-                <table
-                    class="fees-table payment-history-table"
-                >
-
-                    <thead>
-
-                        <tr>
-
-                            <th>
-                                Receipt
-                            </th>
-
-                            <th>
-                                Student
-                            </th>
-
-                            <th>
-                                Amount
-                            </th>
-
-                            <th>
-                                Method
-                            </th>
-
-                            <th>
-                                Date
-                            </th>
-
-                            <th>
-                                Fee Type
-                            </th>
-
-                            <th>
-                                Action
-                            </th>
-
-                        </tr>
-
-                    </thead>
-
-
-                    <tbody id="recentPaymentsBody">
-
-                        <tr>
-
-                            <td colspan="7">
-
-                                <div
-                                    class="
-                                        fees-empty-state
-                                        compact
-                                    "
-                                >
-
-                                    <div class="empty-icon">
-                                        🧾
-                                    </div>
-
-                                    <h3>
-                                        No payments yet
-                                    </h3>
-
-                                    <p>
-                                        Recorded payments
-                                        will appear here.
-                                    </p>
-
-                                </div>
-
-                            </td>
-
-                        </tr>
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- =================================================
-             INFORMATION
-             ================================================= -->
-
-        <section class="fees-info-card">
-
-            <div class="info-icon">
-                💡
-            </div>
-
-            <div>
-
-                <h3>
-                    Fees Management
-                </h3>
-
-                <p>
-                    SmartSchool360 maintains
-                    student-wise fee structures,
-                    payment history, pending balances
-                    and receipts.
-                </p>
-
-                <p>
-                    Fee calculations on this dashboard
-                    are based on actual stored fee data.
-                </p>
-
-            </div>
-
-        </section>
-
-
+</section>
     </main>
 
 
@@ -1904,10 +1808,7 @@
         </small>
 
     </footer>
-
-
-
-    <!-- =====================================================
+        <!-- =====================================================
          JAVASCRIPT
          ===================================================== -->
 
@@ -1917,15 +1818,11 @@
     ></script>
 
 
-    <!-- Safe fee deletion manager -->
-
     <script
         src="../assets/js/fees-delete.js"
         defer
     ></script>
 
-
-    <!-- Fee Reports connection -->
 
     <script
         src="../assets/js/fee-reports-link.js"
@@ -1933,9 +1830,15 @@
     ></script>
 
 
+    <script
+        src="../assets/js/fee-analytics-link.js"
+        defer
+    ></script>
+
+
 
     <!-- =====================================================
-         MOBILE MODAL SAFETY
+         FEE DASHBOARD NAVIGATION
          ===================================================== -->
 
     <script>
@@ -1944,207 +1847,25 @@
             "DOMContentLoaded",
             function () {
 
-                const closeMap = {
+                /*
+                 * Fee Reports
+                 */
 
-                    "closeCreateFeeModal":
-                        "createFeeModal",
-
-                    "closeFeePaymentModal":
-                        "feePaymentModal",
-
-                    "closeFeeReceiptsModal":
-                        "feeReceiptsModal",
-
-                    "closeFeeDuesModal":
-                        "feeDuesModal"
-
-                };
-
-
-                Object.keys(closeMap).forEach(
-                    function (buttonId) {
-
-                        const button =
-                            document.getElementById(
-                                buttonId
-                            );
-
-
-                        const modal =
-                            document.getElementById(
-                                closeMap[buttonId]
-                            );
-
-
-                        if (
-                            !button ||
-                            !modal
-                        ) {
-                            return;
-                        }
-
-
-                        const closeModal =
-                            function (event) {
-
-                                if (event) {
-
-                                    event.preventDefault();
-
-                                    event.stopPropagation();
-                                }
-
-
-                                modal.classList.remove(
-                                    "show"
-                                );
-
-
-                                modal.setAttribute(
-                                    "aria-hidden",
-                                    "true"
-                                );
-
-
-                                document.body.classList.remove(
-                                    "modal-open"
-                                );
-
-                            };
-
-
-                        button.addEventListener(
-                            "click",
-                            closeModal,
-                            true
-                        );
-
-
-                        button.addEventListener(
-                            "touchend",
-                            closeModal,
-                            {
-                                passive: false,
-                                capture: true
-                            }
-                        );
-
-                    }
-                );
-
-
-
-                /* =========================================
-                   OUTSIDE MODAL CLICK
-                   ========================================= */
-
-                document
-                    .querySelectorAll(
-                        ".fee-modal-overlay"
-                    )
-                    .forEach(
-                        function (overlay) {
-
-                            overlay.addEventListener(
-                                "click",
-                                function (event) {
-
-                                    if (
-                                        event.target !==
-                                        overlay
-                                    ) {
-                                        return;
-                                    }
-
-
-                                    overlay.classList.remove(
-                                        "show"
-                                    );
-
-
-                                    overlay.setAttribute(
-                                        "aria-hidden",
-                                        "true"
-                                    );
-
-
-                                    document.body.classList.remove(
-                                        "modal-open"
-                                    );
-
-                                }
-                            );
-
-                        }
-                    );
-
-
-
-                /* =========================================
-                   ESCAPE KEY
-                   ========================================= */
-
-                document.addEventListener(
-                    "keydown",
-                    function (event) {
-
-                        if (
-                            event.key !==
-                            "Escape"
-                        ) {
-                            return;
-                        }
-
-
-                        document
-                            .querySelectorAll(
-                                ".fee-modal-overlay.show"
-                            )
-                            .forEach(
-                                function (modal) {
-
-                                    modal.classList.remove(
-                                        "show"
-                                    );
-
-
-                                    modal.setAttribute(
-                                        "aria-hidden",
-                                        "true"
-                                    );
-
-                                }
-                            );
-
-
-                        document.body.classList.remove(
-                            "modal-open"
-                        );
-
-                    }
-                );
-
-
-
-                /* =========================================
-                   DIRECT FEE REPORTS BUTTON
-                   ========================================= */
-
-                const reportsButton =
+                const feeReportsBtn =
                     document.getElementById(
                         "openFeeReportsBtn"
                     );
 
 
-                if (reportsButton) {
+                if (feeReportsBtn) {
 
-                    const openReports =
+                    const openFeeReports =
                         function (event) {
 
                             if (event) {
                                 event.preventDefault();
+                                event.stopPropagation();
                             }
-
 
                             window.location.href =
                                 "fee-reports.html";
@@ -2152,19 +1873,19 @@
                         };
 
 
-                    reportsButton.addEventListener(
+                    feeReportsBtn.addEventListener(
                         "click",
-                        openReports
+                        openFeeReports
                     );
 
 
-                    reportsButton.addEventListener(
+                    feeReportsBtn.addEventListener(
                         "touchend",
                         function (event) {
 
                             event.preventDefault();
 
-                            openReports();
+                            openFeeReports(event);
 
                         },
                         {
@@ -2174,10 +1895,155 @@
 
                 }
 
+
+
+                /*
+                 * Advanced Fee Analytics
+                 */
+
+                const analyticsBtn =
+                    document.getElementById(
+                        "openAdvancedFeeAnalyticsBtn"
+                    );
+
+
+                if (analyticsBtn) {
+
+                    const openAdvancedAnalytics =
+                        function (event) {
+
+                            if (event) {
+                                event.preventDefault();
+                                event.stopPropagation();
+                            }
+
+                            window.location.href =
+                                "fee-analytics.html";
+
+                        };
+
+
+                    analyticsBtn.addEventListener(
+                        "click",
+                        openAdvancedAnalytics
+                    );
+
+
+                    analyticsBtn.addEventListener(
+                        "touchend",
+                        function (event) {
+
+                            event.preventDefault();
+
+                            openAdvancedAnalytics(event);
+
+                        },
+                        {
+                            passive: false
+                        }
+                    );
+
+                }
+
+
+
+                /*
+                 * Prevent accidental page scroll
+                 * while modal is open.
+                 */
+
+                const modalSelectors = [
+
+                    "#createFeeModal",
+                    "#feePaymentModal",
+                    "#feeReceiptsModal",
+                    "#feeDuesModal"
+
+                ];
+
+
+                function updateBodyModalState() {
+
+                    const hasOpenModal =
+                        modalSelectors.some(
+                            function (selector) {
+
+                                const modal =
+                                    document.querySelector(
+                                        selector
+                                    );
+
+                                if (!modal) {
+                                    return false;
+                                }
+
+                                return (
+                                    modal.classList.contains(
+                                        "active"
+                                    ) ||
+                                    modal.classList.contains(
+                                        "show"
+                                    ) ||
+                                    modal.style.display ===
+                                        "flex" ||
+                                    modal.style.display ===
+                                        "block"
+                                );
+
+                            }
+                        );
+
+
+                    document.body.classList.toggle(
+                        "modal-open",
+                        hasOpenModal
+                    );
+
+                }
+
+
+
+                modalSelectors.forEach(
+                    function (selector) {
+
+                        const modal =
+                            document.querySelector(
+                                selector
+                            );
+
+                        if (!modal) {
+                            return;
+                        }
+
+
+                        const observer =
+                            new MutationObserver(
+                                updateBodyModalState
+                            );
+
+
+                        observer.observe(
+                            modal,
+                            {
+                                attributes: true,
+                                attributeFilter: [
+                                    "class",
+                                    "style",
+                                    "aria-hidden"
+                                ]
+                            );
+
+                    }
+                );
+
+
+                updateBodyModalState();
+
             }
         );
 
     </script>
+
 
 
 </body>
