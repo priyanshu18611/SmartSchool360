@@ -1,0 +1,4900 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Exams Management | SmartSchool360</title>
+
+    <meta
+        name="description"
+        content="SmartSchool360 Exams and Results Management"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../assets/css/style.css"
+    >
+
+    <style>
+
+        :root {
+            --exam-primary: #4f46e5;
+            --exam-primary-dark: #3730a3;
+            --exam-success: #059669;
+            --exam-warning: #d97706;
+            --exam-danger: #dc2626;
+            --exam-text: #0f172a;
+            --exam-muted: #64748b;
+            --exam-border: #e2e8f0;
+            --exam-bg: #f8fafc;
+            --exam-card: #ffffff;
+        }
+
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+            margin: 0;
+            background: var(--exam-bg);
+            color: var(--exam-text);
+            font-family:
+                Inter,
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+        }
+
+
+        button,
+        input,
+        select,
+        textarea {
+            font: inherit;
+        }
+
+
+        button {
+            cursor: pointer;
+        }
+
+
+        .exams-page-header {
+
+            position: sticky;
+            top: 0;
+            z-index: 50;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 16px;
+
+            padding: 14px 22px;
+
+            background: rgba(255,255,255,.96);
+
+            border-bottom:
+                1px solid var(--exam-border);
+
+            backdrop-filter: blur(14px);
+        }
+
+
+        .exams-header-left {
+
+            display: flex;
+            align-items: center;
+
+            gap: 12px;
+
+            min-width: 0;
+        }
+
+
+        .exams-back-btn {
+
+            width: 42px;
+            height: 42px;
+
+            border:
+                1px solid var(--exam-border);
+
+            border-radius: 12px;
+
+            background: #fff;
+
+            color: var(--exam-text);
+
+            font-size: 20px;
+
+            display: grid;
+            place-items: center;
+
+            text-decoration: none;
+
+            flex: 0 0 auto;
+        }
+
+
+        .exams-back-btn:hover {
+            background: #f1f5f9;
+        }
+
+
+        .exams-header-icon {
+
+            width: 46px;
+            height: 46px;
+
+            border-radius: 14px;
+
+            display: grid;
+            place-items: center;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #4f46e5,
+                    #7c3aed
+                );
+
+            color: #fff;
+
+            font-size: 22px;
+
+            box-shadow:
+                0 8px 22px
+                rgba(79,70,229,.22);
+        }
+
+
+        .exams-header-title {
+            min-width: 0;
+        }
+
+
+        .exams-header-title h1 {
+
+            margin: 0;
+
+            font-size: 21px;
+
+            line-height: 1.25;
+        }
+
+
+        .exams-header-title p {
+
+            margin: 3px 0 0;
+
+            color: var(--exam-muted);
+
+            font-size: 13px;
+        }
+
+
+        .exams-refresh-btn {
+
+            border: 0;
+
+            border-radius: 10px;
+
+            padding: 10px 14px;
+
+            background: #f1f5f9;
+
+            color: #334155;
+
+            font-weight: 700;
+        }
+
+
+        .exams-refresh-btn:hover {
+            background: #e2e8f0;
+        }
+
+
+        .exams-container {
+
+            width: min(
+                1400px,
+                calc(100% - 28px)
+            );
+
+            margin: 22px auto 40px;
+        }
+
+
+        .exams-kpi-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, minmax(0, 1fr));
+
+            gap: 16px;
+
+            margin-bottom: 18px;
+        }
+
+
+        .exam-kpi {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 13px;
+
+            min-width: 0;
+
+            padding: 18px;
+
+            background: var(--exam-card);
+
+            border:
+                1px solid var(--exam-border);
+
+            border-radius: 16px;
+
+            box-shadow:
+                0 5px 18px
+                rgba(15,23,42,.04);
+        }
+
+
+        .exam-kpi-icon {
+
+            width: 48px;
+            height: 48px;
+
+            flex: 0 0 48px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 14px;
+
+            font-size: 21px;
+        }
+
+
+        .exam-kpi:nth-child(1)
+        .exam-kpi-icon {
+            background: #eef2ff;
+        }
+
+
+        .exam-kpi:nth-child(2)
+        .exam-kpi-icon {
+            background: #ecfdf5;
+        }
+
+
+        .exam-kpi:nth-child(3)
+        .exam-kpi-icon {
+            background: #fff7ed;
+        }
+
+
+        .exam-kpi:nth-child(4)
+        .exam-kpi-icon {
+            background: #eff6ff;
+        }
+
+
+        .exam-kpi-content {
+            min-width: 0;
+        }
+
+
+        .exam-kpi-label {
+
+            display: block;
+
+            color: var(--exam-muted);
+
+            font-size: 12px;
+
+            margin-bottom: 4px;
+        }
+
+
+        .exam-kpi-value {
+
+            display: block;
+
+            font-size: 23px;
+
+            line-height: 1.1;
+
+            font-weight: 800;
+        }
+
+
+        .exam-kpi-note {
+
+            display: block;
+
+            margin-top: 4px;
+
+            color: #94a3b8;
+
+            font-size: 11px;
+        }
+
+
+        .exams-card {
+
+            background: var(--exam-card);
+
+            border:
+                1px solid var(--exam-border);
+
+            border-radius: 18px;
+
+            box-shadow:
+                0 5px 20px
+                rgba(15,23,42,.04);
+
+            margin-bottom: 18px;
+
+            overflow: hidden;
+        }
+
+
+        .exams-card-header {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 16px;
+
+            padding: 20px 20px 16px;
+        }
+
+
+        .exams-card-header h2 {
+
+            margin: 0;
+
+            font-size: 18px;
+        }
+
+
+        .exams-card-header p {
+
+            margin: 5px 0 0;
+
+            color: var(--exam-muted);
+
+            font-size: 13px;
+        }
+
+
+        .exam-eyebrow {
+
+            display: block;
+
+            margin-bottom: 5px;
+
+            color: var(--exam-primary);
+
+            font-size: 10px;
+
+            font-weight: 800;
+
+            letter-spacing: .12em;
+        }
+
+
+        .exam-primary-btn {
+
+            border: 0;
+
+            border-radius: 11px;
+
+            padding: 11px 16px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--exam-primary),
+                    #7c3aed
+                );
+
+            color: #fff;
+
+            font-weight: 800;
+
+            box-shadow:
+                0 7px 18px
+                rgba(79,70,229,.20);
+
+            white-space: nowrap;
+        }
+
+
+        .exam-primary-btn:hover {
+            filter: brightness(.97);
+        }
+
+
+        .exam-secondary-btn {
+
+            border:
+                1px solid var(--exam-border);
+
+            border-radius: 10px;
+
+            padding: 10px 14px;
+
+            background: #fff;
+
+            color: #334155;
+
+            font-weight: 700;
+        }
+
+
+        .exam-danger-btn {
+
+            border:
+                1px solid #fecaca;
+
+            border-radius: 10px;
+
+            padding: 9px 12px;
+
+            background: #fff;
+
+            color: var(--exam-danger);
+
+            font-weight: 700;
+        }
+
+
+        .exam-filters {
+
+            display: grid;
+
+            grid-template-columns:
+                minmax(200px, 1.6fr)
+                repeat(3, minmax(140px, 1fr))
+                auto;
+
+            gap: 12px;
+
+            padding: 0 20px 20px;
+        }
+
+
+        .exam-form-group {
+            min-width: 0;
+        }
+
+
+        .exam-form-group label {
+
+            display: block;
+
+            margin-bottom: 6px;
+
+            color: #475569;
+
+            font-size: 12px;
+
+            font-weight: 700;
+        }
+
+
+        .exam-form-group input,
+        .exam-form-group select,
+        .exam-form-group textarea {
+
+            width: 100%;
+
+            min-height: 42px;
+
+            padding: 9px 11px;
+
+            border:
+                1px solid #dbe3ec;
+
+            border-radius: 10px;
+
+            background: #fff;
+
+            color: var(--exam-text);
+
+            outline: none;
+        }
+
+
+        .exam-form-group input:focus,
+        .exam-form-group select:focus,
+        .exam-form-group textarea:focus {
+
+            border-color:
+                var(--exam-primary);
+
+            box-shadow:
+                0 0 0 3px
+                rgba(79,70,229,.10);
+        }
+
+
+        .exam-filter-actions {
+
+            display: flex;
+
+            align-items: end;
+
+            gap: 8px;
+        }
+
+
+        .exam-filter-actions button {
+            min-height: 42px;
+        }
+
+
+        .exam-table-wrap {
+
+            width: 100%;
+
+            overflow-x: auto;
+
+            -webkit-overflow-scrolling: touch;
+        }
+
+
+        .exam-table {
+
+            width: 100%;
+
+            min-width: 1050px;
+
+            border-collapse: collapse;
+        }
+
+
+        .exam-table th {
+
+            padding: 13px 15px;
+
+            background: #f8fafc;
+
+            border-top:
+                1px solid var(--exam-border);
+
+            border-bottom:
+                1px solid var(--exam-border);
+
+            color: #64748b;
+
+            font-size: 11px;
+
+            text-align: left;
+
+            text-transform: uppercase;
+
+            letter-spacing: .04em;
+
+            white-space: nowrap;
+        }
+
+
+        .exam-table td {
+
+            padding: 14px 15px;
+
+            border-bottom:
+                1px solid #eef2f7;
+
+            color: #334155;
+
+            font-size: 13px;
+
+            vertical-align: middle;
+        }
+
+
+        .exam-table tbody tr:hover {
+            background: #fafbff;
+        }
+
+
+        .exam-name-cell {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+        }
+
+
+        .exam-icon-small {
+
+            width: 38px;
+            height: 38px;
+
+            flex: 0 0 38px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 11px;
+
+            background: #eef2ff;
+
+            font-size: 18px;
+        }
+
+
+        .exam-name-info strong {
+
+            display: block;
+
+            color: #0f172a;
+
+            font-size: 13px;
+        }
+
+
+        .exam-name-info span {
+
+            display: block;
+
+            margin-top: 3px;
+
+            color: #94a3b8;
+
+            font-size: 11px;
+        }
+
+
+        .exam-status {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 5px;
+
+            padding: 5px 9px;
+
+            border-radius: 999px;
+
+            font-size: 11px;
+
+            font-weight: 800;
+
+            white-space: nowrap;
+        }
+
+
+        .exam-status.upcoming {
+
+            background: #eff6ff;
+
+            color: #2563eb;
+        }
+
+
+        .exam-status.active {
+
+            background: #ecfdf5;
+
+            color: #047857;
+        }
+
+
+        .exam-status.completed {
+
+            background: #f1f5f9;
+
+            color: #475569;
+        }
+
+
+        .exam-status.draft {
+
+            background: #fff7ed;
+
+            color: #c2410c;
+        }
+
+
+        .exam-actions {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 6px;
+
+            white-space: nowrap;
+        }
+
+
+        .exam-action-btn {
+
+            min-width: 34px;
+            height: 34px;
+
+            border:
+                1px solid #e2e8f0;
+
+            border-radius: 9px;
+
+            background: #fff;
+
+            display: inline-grid;
+
+            place-items: center;
+
+            color: #475569;
+
+            font-size: 15px;
+        }
+
+
+        .exam-action-btn:hover {
+            background: #f8fafc;
+        }
+
+
+        .exam-action-btn.view:hover {
+            color: #2563eb;
+        }
+
+
+        .exam-action-btn.edit:hover {
+            color: #7c3aed;
+        }
+
+
+        .exam-action-btn.delete:hover {
+            color: #dc2626;
+        }
+
+
+        .exam-empty {
+
+            padding: 50px 20px !important;
+
+            text-align: center;
+
+            color: #94a3b8;
+        }
+
+
+        .exam-empty-icon {
+
+            font-size: 36px;
+
+            margin-bottom: 10px;
+        }
+
+
+        .exam-empty strong {
+
+            display: block;
+
+            color: #475569;
+
+            margin-bottom: 5px;
+        }
+
+
+        .exam-empty span {
+
+            display: block;
+
+            font-size: 12px;
+        }
+
+
+        .exam-info-card {
+
+            display: flex;
+
+            gap: 13px;
+
+            padding: 17px 20px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #eef2ff,
+                    #f8fafc
+                );
+
+            border:
+                1px solid #e0e7ff;
+        }
+
+
+        .exam-info-icon {
+
+            width: 40px;
+            height: 40px;
+
+            flex: 0 0 40px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 12px;
+
+            background: #fff;
+
+            font-size: 18px;
+        }
+
+
+        .exam-info-card h3 {
+
+            margin: 0 0 4px;
+
+            font-size: 14px;
+        }
+
+
+        .exam-info-card p {
+
+            margin: 0;
+
+            color: #64748b;
+
+            font-size: 12px;
+
+            line-height: 1.6;
+        }
+
+
+        /* =====================================================
+           MODAL
+           ===================================================== */
+
+        .exam-modal-overlay {
+
+            position: fixed;
+
+            inset: 0;
+
+            z-index: 1000;
+
+            display: none;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 18px;
+
+            background:
+                rgba(15,23,42,.58);
+
+            backdrop-filter: blur(5px);
+        }
+
+
+        .exam-modal-overlay.show {
+            display: flex;
+        }
+
+
+        .exam-modal {
+
+            width: min(
+                680px,
+                100%
+            );
+
+            max-height: 92vh;
+
+            overflow-y: auto;
+
+            background: #fff;
+
+            border-radius: 20px;
+
+            box-shadow:
+                0 25px 80px
+                rgba(15,23,42,.25);
+        }
+
+
+        .exam-modal-header {
+
+            display: flex;
+
+            align-items: flex-start;
+
+            justify-content: space-between;
+
+            gap: 16px;
+
+            padding: 20px;
+
+            border-bottom:
+                1px solid var(--exam-border);
+        }
+
+
+        .exam-modal-header h2 {
+
+            margin: 0;
+
+            font-size: 19px;
+        }
+
+
+        .exam-modal-header p {
+
+            margin: 5px 0 0;
+
+            color: var(--exam-muted);
+
+            font-size: 12px;
+        }
+
+
+        .exam-modal-close {
+
+            width: 40px;
+            height: 40px;
+
+            flex: 0 0 40px;
+
+            border:
+                1px solid var(--exam-border);
+
+            border-radius: 10px;
+
+            background: #fff;
+
+            color: #475569;
+
+            font-size: 24px;
+
+            display: grid;
+            place-items: center;
+        }
+
+
+        .exam-modal-close:hover {
+
+            background: #fef2f2;
+
+            color: #dc2626;
+        }
+
+
+        .exam-form {
+
+            padding: 20px;
+        }
+
+
+        .exam-form-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap: 15px;
+        }
+
+
+        .exam-form-grid .full {
+            grid-column: 1 / -1;
+        }
+
+
+        .exam-form-actions {
+
+            display: flex;
+
+            justify-content: flex-end;
+
+            gap: 10px;
+
+            padding-top: 8px;
+        }
+
+
+        .exam-required {
+            color: #dc2626;
+        }
+
+
+        .exam-view-content {
+
+            padding: 20px;
+        }
+
+
+        .exam-view-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap: 12px;
+        }
+
+
+        .exam-view-item {
+
+            padding: 13px;
+
+            border:
+                1px solid #e2e8f0;
+
+            border-radius: 12px;
+
+            background: #f8fafc;
+        }
+
+
+        .exam-view-item span {
+
+            display: block;
+
+            margin-bottom: 4px;
+
+            color: #64748b;
+
+            font-size: 11px;
+        }
+
+
+        .exam-view-item strong {
+
+            display: block;
+
+            color: #0f172a;
+
+            font-size: 13px;
+        }
+
+
+        .exam-modal-footer {
+
+            display: flex;
+
+            justify-content: flex-end;
+
+            padding: 0 20px 20px;
+        }
+
+
+        /* =====================================================
+           TOAST
+           ===================================================== */
+
+        .exam-toast {
+
+            position: fixed;
+
+            right: 18px;
+            bottom: 18px;
+
+            z-index: 2000;
+
+            max-width: 360px;
+
+            padding: 13px 16px;
+
+            border-radius: 12px;
+
+            background: #0f172a;
+
+            color: #fff;
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+            box-shadow:
+                0 15px 40px
+                rgba(15,23,42,.22);
+
+            opacity: 0;
+
+            transform:
+                translateY(12px);
+
+            pointer-events: none;
+
+            transition:
+                .25s ease;
+        }
+
+
+        .exam-toast.show {
+
+            opacity: 1;
+
+            transform:
+                translateY(0);
+        }
+
+
+        .exam-toast.success {
+            background: #047857;
+        }
+
+
+        .exam-toast.error {
+            background: #b91c1c;
+        }
+
+
+        /* =====================================================
+           FOOTER
+           ===================================================== */
+
+        .exam-footer {
+
+            width: min(
+                1400px,
+                calc(100% - 28px)
+            );
+
+            margin: 0 auto;
+
+            padding: 22px 0 30px;
+
+            text-align: center;
+
+            color: #94a3b8;
+
+            font-size: 11px;
+        }
+
+
+        .exam-footer strong {
+
+            display: block;
+
+            margin-bottom: 4px;
+
+            color: #475569;
+
+            font-size: 12px;
+        }
+
+
+        /* =====================================================
+           MOBILE
+           ===================================================== */
+
+        @media (max-width: 1050px) {
+
+            .exams-kpi-grid {
+
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+            }
+
+
+            .exam-filters {
+
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+            }
+
+
+            .exam-filter-actions {
+
+                grid-column: 1 / -1;
+
+                justify-content: flex-start;
+            }
+
+        }
+
+
+        @media (max-width: 700px) {
+
+            .exams-page-header {
+
+                padding:
+                    12px 14px;
+            }
+
+
+            .exams-header-icon {
+
+                width: 40px;
+                height: 40px;
+
+                border-radius: 11px;
+            }
+
+
+            .exams-header-title h1 {
+                font-size: 17px;
+            }
+
+
+            .exams-header-title p {
+                font-size: 11px;
+            }
+
+
+            .exams-refresh-btn {
+
+                padding:
+                    9px 10px;
+
+                font-size: 12px;
+            }
+
+
+            .exams-container {
+
+                width:
+                    calc(100% - 20px);
+
+                margin-top: 14px;
+            }
+
+
+            .exams-kpi-grid {
+
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+
+                gap: 9px;
+            }
+
+
+            .exam-kpi {
+
+                padding: 12px;
+
+                border-radius: 13px;
+
+                gap: 9px;
+            }
+
+
+            .exam-kpi-icon {
+
+                width: 37px;
+                height: 37px;
+
+                flex-basis: 37px;
+
+                border-radius: 10px;
+
+                font-size: 16px;
+            }
+
+
+            .exam-kpi-value {
+                font-size: 18px;
+            }
+
+
+            .exam-kpi-label {
+                font-size: 10px;
+            }
+
+
+            .exam-kpi-note {
+                font-size: 9px;
+            }
+
+
+            .exams-card {
+                border-radius: 14px;
+            }
+
+
+            .exams-card-header {
+
+                align-items: flex-start;
+
+                padding:
+                    16px 14px 13px;
+            }
+
+
+            .exams-card-header h2 {
+                font-size: 16px;
+            }
+
+
+            .exam-primary-btn {
+
+                padding:
+                    9px 11px;
+
+                font-size: 12px;
+            }
+
+
+            .exam-filters {
+
+                grid-template-columns:
+                    1fr;
+
+                padding:
+                    0 14px 15px;
+            }
+
+
+            .exam-filter-actions {
+
+                grid-column: auto;
+
+                width: 100%;
+            }
+
+
+            .exam-filter-actions button {
+                flex: 1;
+            }
+
+
+            .exam-table {
+
+                min-width: 1000px;
+            }
+
+
+            .exam-table th,
+            .exam-table td {
+
+                padding:
+                    12px 11px;
+            }
+
+
+            .exam-info-card {
+
+                padding:
+                    14px;
+            }
+
+
+            .exam-form-grid {
+
+                grid-template-columns: 1fr;
+            }
+
+
+            .exam-form-grid .full {
+                grid-column: auto;
+            }
+
+
+            .exam-view-grid {
+
+                grid-template-columns: 1fr;
+            }
+
+
+            .exam-modal-overlay {
+
+                align-items: flex-end;
+
+                padding: 0;
+            }
+
+
+            .exam-modal {
+
+                width: 100%;
+
+                max-height: 94vh;
+
+                border-radius:
+                    20px 20px 0 0;
+            }
+
+
+            .exam-modal-header,
+            .exam-form {
+
+                padding:
+                    16px 14px;
+            }
+
+
+            .exam-form-actions {
+
+                flex-direction: column-reverse;
+            }
+
+
+            .exam-form-actions button {
+                width: 100%;
+            }
+
+
+            .exam-modal-footer {
+                padding:
+                    0 14px 16px;
+            }
+
+
+            .exam-toast {
+
+                left: 12px;
+                right: 12px;
+                bottom: 12px;
+
+                max-width: none;
+            }
+
+        }
+
+
+        @media (max-width: 390px) {
+
+            .exams-header-title p {
+                display: none;
+            }
+
+
+            .exams-refresh-btn {
+                font-size: 11px;
+            }
+
+
+            .exam-kpi {
+                padding: 10px;
+            }
+
+
+            .exam-kpi-icon {
+                display: none;
+            }
+
+        }
+
+
+        @media print {
+
+            .exams-page-header,
+            .exam-filters,
+            .exam-actions,
+            .exam-primary-btn,
+            .exam-secondary-btn,
+            .exam-refresh-btn {
+                display: none !important;
+            }
+
+
+            body {
+                background: #fff;
+            }
+
+
+            .exams-container {
+                width: 100%;
+                margin: 0;
+            }
+
+
+            .exams-card {
+                box-shadow: none;
+                border: 1px solid #ddd;
+            }
+
+
+            .exam-footer {
+                width: 100%;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         HEADER
+         ===================================================== -->
+
+    <header class="exams-page-header">
+
+        <div class="exams-header-left">
+
+            <a
+                href="../../index.html"
+                class="exams-back-btn"
+                aria-label="Back to dashboard"
+            >
+                ←
+            </a>
+
+
+            <div class="exams-header-icon">
+                📝
+            </div>
+
+
+            <div class="exams-header-title">
+
+                <h1>
+                    Exams Management
+                </h1>
+
+                <p>
+                    Create and manage examinations
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <button
+            type="button"
+            class="exams-refresh-btn"
+            id="refreshExamsBtn"
+        >
+            ↻ Refresh
+        </button>
+
+    </header>
+
+
+
+    <!-- =====================================================
+         MAIN
+         ===================================================== -->
+
+    <main class="exams-container">
+
+
+        <!-- =================================================
+             KPI CARDS
+             ================================================= -->
+
+        <section class="exams-kpi-grid">
+
+
+            <article class="exam-kpi">
+
+                <div class="exam-kpi-icon">
+                    📝
+                </div>
+
+                <div class="exam-kpi-content">
+
+                    <span class="exam-kpi-label">
+                        Total Exams
+                    </span>
+
+                    <strong
+                        class="exam-kpi-value"
+                        id="totalExams"
+                    >
+                        0
+                    </strong>
+
+                    <span class="exam-kpi-note">
+                        All exam records
+                    </span>
+
+                </div>
+
+            </article>
+
+
+
+            <article class="exam-kpi">
+
+                <div class="exam-kpi-icon">
+                    📅
+                </div>
+
+                <div class="exam-kpi-content">
+
+                    <span class="exam-kpi-label">
+                        Upcoming
+                    </span>
+
+                    <strong
+                        class="exam-kpi-value"
+                        id="upcomingExams"
+                    >
+                        0
+                    </strong>
+
+                    <span class="exam-kpi-note">
+                        Future examinations
+                    </span>
+
+                </div>
+
+            </article>
+
+
+
+            <article class="exam-kpi">
+
+                <div class="exam-kpi-icon">
+                    ⚡
+                </div>
+
+                <div class="exam-kpi-content">
+
+                    <span class="exam-kpi-label">
+                        Active
+                    </span>
+
+                    <strong
+                        class="exam-kpi-value"
+                        id="activeExams"
+                    >
+                        0
+                    </strong>
+
+                    <span class="exam-kpi-note">
+                        Currently running
+                    </span>
+
+                </div>
+
+            </article>
+
+
+
+            <article class="exam-kpi">
+
+                <div class="exam-kpi-icon">
+                    ✅
+                </div>
+
+                <div class="exam-kpi-content">
+
+                    <span class="exam-kpi-label">
+                        Completed
+                    </span>
+
+                    <strong
+                        class="exam-kpi-value"
+                        id="completedExams"
+                    >
+                        0
+                    </strong>
+
+                    <span class="exam-kpi-note">
+                        Finished exams
+                    </span>
+
+                </div>
+
+            </article>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             EXAMS LIST
+             ================================================= -->
+
+        <section class="exams-card">
+
+
+            <div class="exams-card-header">
+
+                <div>
+
+                    <span class="exam-eyebrow">
+                        EXAMINATION
+                    </span>
+
+                    <h2>
+                        Exam Schedule
+                    </h2>
+
+                    <p>
+                        Create, edit and manage school
+                        examinations.
+                    </p>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="exam-primary-btn"
+                    id="createExamBtn"
+                >
+                    + Create Exam
+                </button>
+
+            </div>
+
+
+
+            <!-- FILTERS -->
+
+            <div class="exam-filters">
+
+
+                <div class="exam-form-group">
+
+                    <label for="examSearch">
+                        Search
+                    </label>
+
+                    <input
+                        type="search"
+                        id="examSearch"
+                        placeholder="Search exam name..."
+                        autocomplete="off"
+                    >
+
+                </div>
+
+
+
+                <div class="exam-form-group">
+
+                    <label for="examClassFilter">
+                        Class
+                    </label>
+
+                    <select id="examClassFilter">
+
+                        <option value="">
+                            All Classes
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <div class="exam-form-group">
+
+                    <label for="examSectionFilter">
+                        Section
+                    </label>
+
+                    <select id="examSectionFilter">
+
+                        <option value="">
+                            All Sections
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <div class="exam-form-group">
+
+                    <label for="examStatusFilter">
+                        Status
+                    </label>
+
+                    <select id="examStatusFilter">
+
+                        <option value="">
+                            All Status
+                        </option>
+
+                        <option value="Draft">
+                            Draft
+                        </option>
+
+                        <option value="Upcoming">
+                            Upcoming
+                        </option>
+
+                        <option value="Active">
+                            Active
+                        </option>
+
+                        <option value="Completed">
+                            Completed
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <div class="exam-filter-actions">
+
+                    <button
+                        type="button"
+                        class="exam-secondary-btn"
+                        id="clearExamFiltersBtn"
+                    >
+                        Clear
+                    </button>
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- TABLE -->
+
+            <div class="exam-table-wrap">
+
+                <table class="exam-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Exam
+                            </th>
+
+                            <th>
+                                Class
+                            </th>
+
+                            <th>
+                                Section
+                            </th>
+
+                            <th>
+                                Start Date
+                            </th>
+
+                            <th>
+                                End Date
+                            </th>
+
+                            <th>
+                                Subjects
+                            </th>
+
+                            <th>
+                                Max Marks
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Actions
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="examsTableBody">
+
+                        <tr>
+
+                            <td
+                                colspan="9"
+                                class="exam-empty"
+                            >
+
+                                <div class="exam-empty-icon">
+                                    📝
+                                </div>
+
+                                <strong>
+                                    No exams created yet
+                                </strong>
+
+                                <span>
+                                    Click "Create Exam" to
+                                    create your first exam.
+                                </span>
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             INFORMATION
+             ================================================= -->
+
+        <section class="exams-card exam-info-card">
+
+            <div class="exam-info-icon">
+                💡
+            </div>
+
+            <div>
+
+                <h3>
+                    Exams & Results Roadmap
+                </h3>
+
+                <p>
+                    This module will support exam creation,
+                    subject-wise marks entry, automatic
+                    percentage and grade calculation,
+                    student results, report cards and
+                    printable result documents.
+                </p>
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+
+
+    <!-- =====================================================
+         CREATE / EDIT EXAM MODAL
+         ===================================================== -->
+
+    <div
+        class="exam-modal-overlay"
+        id="examModal"
+        aria-hidden="true"
+    >
+
+        <div
+            class="exam-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="examModalTitle"
+        >
+
+
+            <div class="exam-modal-header">
+
+                <div>
+
+                    <span class="exam-eyebrow">
+                        EXAM CONFIGURATION
+                    </span>
+
+                    <h2 id="examModalTitle">
+                        Create Exam
+                    </h2>
+
+                    <p>
+                        Configure examination details.
+                    </p>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="exam-modal-close"
+                    id="closeExamModal"
+                    aria-label="Close"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+
+            <form
+                id="examForm"
+                class="exam-form"
+            >
+
+
+                <input
+                    type="hidden"
+                    id="examId"
+                >
+
+
+                <div class="exam-form-grid">
+
+
+                    <!-- EXAM NAME -->
+
+                    <div class="exam-form-group full">
+
+                        <label for="examName">
+
+                            Exam Name
+
+                            <span class="exam-required">
+                                *
+                            </span>
+
+                        </label>
+
+                        <input
+                            type="text"
+                            id="examName"
+                            placeholder="e.g. Mid Term Examination"
+                            maxlength="100"
+                            required
+                        >
+
+                    </div>
+
+
+
+                    <!-- EXAM TYPE -->
+
+                    <div class="exam-form-group">
+
+                        <label for="examType">
+
+                            Exam Type
+
+                            <span class="exam-required">
+                                *
+                            </span>
+
+                        </label>
+
+                        <select
+                            id="examType"
+                            required
+                        >
+
+                            <option value="">
+                                Select Type
+                            </option>
+
+                            <option value="Unit Test">
+                                Unit Test
+                            </option>
+
+                            <option value="Monthly Test">
+                                Monthly Test
+                            </option>
+
+                            <option value="Mid Term">
+                                Mid Term
+                            </option>
+
+                            <option value="Half Yearly">
+                                Half Yearly
+                            </option>
+
+                            <option value="Pre Board">
+                                Pre Board
+                            </option>
+
+                            <option value="Annual">
+                                Annual Examination
+                            </option>
+
+                            <option value="Final">
+                                Final Examination
+                            </option>
+
+                            <option value="Other">
+                                Other
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+
+                    <!-- ACADEMIC YEAR -->
+
+                    <div class="exam-form-group">
+
+                        <label for="examAcademicYear">
+
+                            Academic Year
+
+                            <span class="exam-required">
+                                *
+                            </span>
+
+                        </label>
+
+                        <input
+                            type="text"
+                            id="examAcademicYear"
+                            value="2026-27"
+                            placeholder="2026-27"
+                            maxlength="20"
+                            required
+                        >
+
+                    </div>
+
+
+
+                    <!-- CLASS -->
+
+                    <div class="exam-form-group">
+
+                        <label for="examClass">
+
+                            Class
+
+                            <span class="exam-required">
+                                *
+                            </span>
+
+                        </label>
+
+                        <select
+                            id="examClass"
+                            required
+                        >
+
+                            <option value="">
+                                Select Class
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+
+                    <!-- SECTION -->
+
+                    <div class="exam-form-group">
+
+                        <label for="examSection">
+
+                            Section
+
+                            <span class="exam-required">
+                                *
+                            </span>
+
+                        </label>
+
+                        <select
+                            id="examSection"
+                            required
+                        >
+
+                            <option value="">
+                                Select Section
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+
+                    <!-- START DATE -->
+
+                    <div class="exam-form-group">
+
+                        <label for="examStartDate">
+
+                            Start Date
+
+                            <span class="exam-required">
+                                *
+                            </span>
+
+                        </label>
+
+                        <input
+                            type="date"
+                            id="examStartDate"
+                            required
+                        >
+
+                    </div>
+
+
+
+                    <!-- END DATE -->
+
+                    <div class="exam-form-group">
+
+                        <label for="examEndDate">
+
+                            End Date
+
+                            <span class="exam-required">
+                                *
+                            </span>
+
+                        </label>
+
+                        <input
+                            type="date"
+                            id="examEndDate"
+                            required
+                        >
+
+                    </div>
+
+
+
+                    <!-- MAX MARKS -->
+
+                    <div class="exam-form-group">
+
+                        <label for="examMaxMarks">
+
+                            Maximum Marks
+
+                            <span class="exam-required">
+                                *
+                            </span>
+
+                        </label>
+
+                        <input
+                            type="number"
+                            id="examMaxMarks"
+                            min="1"
+                            step="1"
+                            placeholder="100"
+                            value="100"
+                            required
+                        >
+
+                    </div>
+
+
+
+                    <!-- PASS MARKS -->
+
+                    <div class="exam-form-group">
+
+                        <label for="examPassMarks">
+
+                            Pass Marks
+
+                            <span class="exam-required">
+                                *
+                            </span>
+
+                        </label>
+
+                        <input
+                            type="number"
+                            id="examPassMarks"
+                            min="0"
+                            step="1"
+                            placeholder="33"
+                            value="33"
+                            required
+                        >
+
+                    </div>
+
+
+
+                    <!-- SUBJECTS -->
+
+                    <div class="exam-form-group full">
+
+                        <label for="examSubjects">
+
+                            Subjects
+
+                        </label>
+
+                        <input
+                            type="text"
+                            id="examSubjects"
+                            placeholder="Mathematics, Science, English..."
+                        >
+
+                    </div>
+
+
+
+                    <!-- DESCRIPTION -->
+
+                    <div class="exam-form-group full">
+
+                        <label for="examDescription">
+                            Description
+                        </label>
+
+                        <textarea
+                            id="examDescription"
+                            rows="3"
+                            maxlength="500"
+                            placeholder="Add exam instructions or notes..."
+                        ></textarea>
+
+                    </div>
+
+
+
+                    <!-- STATUS -->
+
+                    <div class="exam-form-group">
+
+                        <label for="examStatus">
+
+                            Status
+
+                            <span class="exam-required">
+                                *
+                            </span>
+
+                        </label>
+
+                        <select
+                            id="examStatus"
+                            required
+                        >
+
+                            <option value="Draft">
+                                Draft
+                            </option>
+
+                            <option value="Upcoming">
+                                Upcoming
+                            </option>
+
+                            <option value="Active">
+                                Active
+                            </option>
+
+                            <option value="Completed">
+                                Completed
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <div class="exam-form-actions">
+
+                    <button
+                        type="button"
+                        class="exam-secondary-btn"
+                        id="cancelExamBtn"
+                    >
+                        Cancel
+                    </button>
+
+
+                    <button
+                        type="submit"
+                        class="exam-primary-btn"
+                    >
+                        💾 Save Exam
+                    </button>
+
+                </div>
+
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         VIEW EXAM MODAL
+         ===================================================== -->
+
+    <div
+        class="exam-modal-overlay"
+        id="viewExamModal"
+        aria-hidden="true"
+    >
+
+        <div
+            class="exam-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="viewExamTitle"
+        >
+
+
+            <div class="exam-modal-header">
+
+                <div>
+
+                    <span class="exam-eyebrow">
+                        EXAM DETAILS
+                    </span>
+
+                    <h2 id="viewExamTitle">
+                        Exam Details
+                    </h2>
+
+                    <p>
+                        Examination configuration
+                        and schedule.
+                    </p>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="exam-modal-close"
+                    id="closeViewExamModal"
+                    aria-label="Close"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+
+            <div
+                class="exam-view-content"
+                id="viewExamContent"
+            >
+
+                <div class="exam-view-grid">
+
+
+                    <div class="exam-view-item">
+
+                        <span>
+                            Exam Name
+                        </span>
+
+                        <strong id="viewExamName">
+                            —
+                        </strong>
+
+                    </div>
+
+
+                    <div class="exam-view-item">
+
+                        <span>
+                            Exam Type
+                        </span>
+
+                        <strong id="viewExamType">
+                            —
+                        </strong>
+
+                    </div>
+
+
+                    <div class="exam-view-item">
+
+                        <span>
+                            Academic Year
+                        </span>
+
+                        <strong id="viewExamAcademicYear">
+                            —
+                        </strong>
+
+                    </div>
+
+
+                    <div class="exam-view-item">
+
+                        <span>
+                            Class
+                        </span>
+
+                        <strong id="viewExamClass">
+                            —
+                        </strong>
+
+                    </div>
+
+
+                    <div class="exam-view-item">
+
+                        <span>
+                            Section
+                        </span>
+
+                        <strong id="viewExamSection">
+                            —
+                        </strong>
+
+                    </div>
+
+
+                    <div class="exam-view-item">
+
+                        <span>
+                            Start Date
+                        </span>
+
+                        <strong id="viewExamStartDate">
+                            —
+                        </strong>
+
+                    </div>
+
+
+                    <div class="exam-view-item">
+
+                        <span>
+                            End Date
+                        </span>
+
+                        <strong id="viewExamEndDate">
+                            —
+                        </strong>
+
+                    </div>
+
+
+                    <div class="exam-view-item">
+
+                        <span>
+                            Maximum Marks
+                        </span>
+
+                        <strong id="viewExamMaxMarks">
+                            —
+                        </strong>
+
+                    </div>
+
+
+                    <div class="exam-view-item">
+
+                        <span>
+                            Pass Marks
+                        </span>
+
+                        <strong id="viewExamPassMarks">
+                            —
+                        </strong>
+
+                    </div>
+
+
+                    <div class="exam-view-item">
+
+                        <span>
+                            Subjects
+                        </span>
+
+                        <strong id="viewExamSubjects">
+                            —
+                        </strong>
+
+                    </div>
+
+
+                    <div class="exam-view-item">
+
+                        <span>
+                            Status
+                        </span>
+
+                        <strong id="viewExamStatus">
+                            —
+                        </strong>
+
+                    </div>
+
+
+                    <div class="exam-view-item">
+
+                        <span>
+                            Created
+                        </span>
+
+                        <strong id="viewExamCreatedAt">
+                            —
+                        </strong>
+
+                    </div>
+
+
+                </div>
+
+
+                <div
+                    class="exam-view-item"
+                    style="margin-top:12px;"
+                >
+
+                    <span>
+                        Description
+                    </span>
+
+                    <strong id="viewExamDescription">
+                        —
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="exam-modal-footer">
+
+                <button
+                    type="button"
+                    class="exam-secondary-btn"
+                    id="closeViewExamBtn"
+                >
+                    Close
+                </button>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         TOAST
+         ===================================================== -->
+
+    <div
+        class="exam-toast"
+        id="examToast"
+        role="status"
+        aria-live="polite"
+    ></div>
+
+
+
+    <!-- =====================================================
+         FOOTER
+         ===================================================== -->
+
+    <footer class="exam-footer">
+
+        <strong>
+            SmartSchool360
+        </strong>
+
+        <span>
+            Exams & Results Management
+        </span>
+
+        <br>
+
+        <span>
+            © 2026 SmartSchool360 · Built by Priyanshu Kumar
+        </span>
+
+    </footer>
+
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+         ===================================================== -->
+
+    <script>
+
+        (() => {
+
+            "use strict";
+
+
+            const STORAGE_KEY =
+                "smartschool_exams";
+
+
+            const STUDENTS_KEY =
+                "smartschool_students";
+
+
+            let exams = [];
+
+            let students = [];
+
+            let editingExamId = null;
+
+
+
+            /* =================================================
+               SAFE STORAGE
+               ================================================= */
+
+            function readStorage(key) {
+
+                try {
+
+                    const raw =
+                        localStorage.getItem(key);
+
+                    if (!raw) {
+                        return [];
+                    }
+
+                    const parsed =
+                        JSON.parse(raw);
+
+                    return Array.isArray(parsed)
+                        ? parsed
+                        : [];
+
+                } catch (error) {
+
+                    console.error(
+                        "Storage read error:",
+                        error
+                    );
+
+                    return [];
+
+                }
+
+            }
+
+
+
+            function saveExams() {
+
+                localStorage.setItem(
+                    STORAGE_KEY,
+                    JSON.stringify(exams)
+                );
+
+            }
+
+
+
+            /* =================================================
+               HELPERS
+               ================================================= */
+
+            function escapeHTML(value) {
+
+                return String(
+                    value ?? ""
+                )
+                    .replaceAll("&", "&amp;")
+                    .replaceAll("<", "&lt;")
+                    .replaceAll(">", "&gt;")
+                    .replaceAll('"', "&quot;")
+                    .replaceAll("'", "&#039;");
+
+            }
+
+
+
+            function todayISO() {
+
+                const date =
+                    new Date();
+
+                const year =
+                    date.getFullYear();
+
+                const month =
+                    String(
+                        date.getMonth() + 1
+                    ).padStart(2, "0");
+
+                const day =
+                    String(
+                        date.getDate()
+                    ).padStart(2, "0");
+
+                return `${year}-${month}-${day}`;
+
+            }
+
+
+
+            function formatDate(value) {
+
+                if (!value) {
+                    return "—";
+                }
+
+                const date =
+                    new Date(
+                        `${value}T00:00:00`
+                    );
+
+                if (
+                    Number.isNaN(
+                        date.getTime()
+                    )
+                ) {
+                    return value;
+                }
+
+                return date.toLocaleDateString(
+                    "en-IN",
+                    {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric"
+                    }
+                );
+
+            }
+
+
+
+            function normalizeText(value) {
+
+                return String(
+                    value ?? ""
+                )
+                    .trim()
+                    .toLowerCase();
+
+            }
+
+
+
+            function generateExamId() {
+
+                return (
+                    "EXAM" +
+                    Date.now().toString(36).toUpperCase()
+                );
+
+            }
+
+
+
+            function getStatusClass(status) {
+
+                const normalized =
+                    normalizeText(status);
+
+                if (normalized === "active") {
+                    return "active";
+                }
+
+                if (
+                    normalized ===
+                    "completed"
+                ) {
+                    return "completed";
+                }
+
+                if (
+                    normalized ===
+                    "upcoming"
+                ) {
+                    return "upcoming";
+                }
+
+                return "draft";
+
+            }
+
+
+
+            function calculateStatus(exam) {
+
+                if (
+                    exam.status ===
+                    "Draft"
+                ) {
+                    return "Draft";
+                }
+
+                if (
+                    exam.status ===
+                    "Completed"
+                ) {
+                    return "Completed";
+                }
+
+                const today =
+                    todayISO();
+
+
+                if (
+                    exam.startDate &&
+                    exam.endDate
+                ) {
+
+                    if (
+                        today <
+                        exam.startDate
+                    ) {
+                        return "Upcoming";
+                    }
+
+                    if (
+                        today >=
+                            exam.startDate &&
+                        today <=
+                            exam.endDate
+                    ) {
+                        return "Active";
+                    }
+
+                    if (
+                        today >
+                        exam.endDate
+                    ) {
+                        return "Completed";
+                    }
+
+                }
+
+                return exam.status || "Draft";
+
+            }
+
+
+
+            /* =================================================
+               TOAST
+               ================================================= */
+
+            let toastTimer = null;
+
+
+            function showToast(
+                message,
+                type = "success"
+            ) {
+
+                const toast =
+                    document.getElementById(
+                        "examToast"
+                    );
+
+                if (!toast) {
+                    return;
+                }
+
+                toast.textContent =
+                    message;
+
+                toast.className =
+                    "exam-toast show " +
+                    type;
+
+                clearTimeout(
+                    toastTimer
+                );
+
+                toastTimer =
+                    setTimeout(
+                        () => {
+
+                            toast.className =
+                                "exam-toast";
+
+                        },
+                        2600
+                    );
+
+            }
+
+
+
+            /* =================================================
+               FILTER OPTIONS
+               ================================================= */
+
+            function cleanValue(value) {
+
+                return String(
+                    value ?? ""
+                ).trim();
+
+            }
+
+
+
+            function getStudentClass(student) {
+
+                return cleanValue(
+                    student.className ||
+                    student.class ||
+                    student.standard ||
+                    ""
+                );
+
+            }
+
+
+
+            function getStudentSection(student) {
+
+                return cleanValue(
+                    student.section ||
+                    ""
+                );
+
+            }
+
+
+
+            function populateFilters() {
+
+                const classFilter =
+                    document.getElementById(
+                        "examClassFilter"
+                    );
+
+                const sectionFilter =
+                    document.getElementById(
+                        "examSectionFilter"
+                    );
+
+                const examClass =
+                    document.getElementById(
+                        "examClass"
+                    );
+
+                const examSection =
+                    document.getElementById(
+                        "examSection"
+                    );
+
+
+                const classes =
+                    new Set();
+
+                const sections =
+                    new Set();
+
+
+                students.forEach(
+                    student => {
+
+                        const className =
+                            getStudentClass(
+                                student
+                            );
+
+                        const section =
+                            getStudentSection(
+                                student
+                            );
+
+                        if (className) {
+                            classes.add(
+                                className
+                            );
+                        }
+
+                        if (section) {
+                            sections.add(
+                                section
+                            );
+                        }
+
+                    }
+                );
+
+
+                const sortedClasses =
+                    Array.from(classes)
+                        .sort(
+                            (a, b) =>
+                                a.localeCompare(
+                                    b,
+                                    undefined,
+                                    {
+                                        numeric: true
+                                    }
+                                )
+                        );
+
+
+                const sortedSections =
+                    Array.from(sections)
+                        .sort();
+
+
+                if (classFilter) {
+
+                    const current =
+                        classFilter.value;
+
+                    classFilter.innerHTML =
+                        `<option value="">
+                            All Classes
+                        </option>` +
+                        sortedClasses
+                            .map(
+                                item =>
+                                    `<option value="${escapeHTML(item)}">
+                                        ${escapeHTML(item)}
+                                    </option>`
+                            )
+                            .join("");
+
+                    if (
+                        sortedClasses.includes(
+                            current
+                        )
+                    ) {
+                        classFilter.value =
+                            current;
+                    }
+
+                }
+
+
+
+                if (examClass) {
+
+                    const current =
+                        examClass.value;
+
+                    examClass.innerHTML =
+                        `<option value="">
+                            Select Class
+                        </option>` +
+                        sortedClasses
+                            .map(
+                                item =>
+                                    `<option value="${escapeHTML(item)}">
+                                        ${escapeHTML(item)}
+                                    </option>`
+                            )
+                            .join("");
+
+                    if (
+                        sortedClasses.includes(
+                            current
+                        )
+                    ) {
+                        examClass.value =
+                            current;
+                    }
+
+                }
+
+
+
+                if (sectionFilter) {
+
+                    const current =
+                        sectionFilter.value;
+
+                    sectionFilter.innerHTML =
+                        `<option value="">
+                            All Sections
+                        </option>` +
+                        sortedSections
+                            .map(
+                                item =>
+                                    `<option value="${escapeHTML(item)}">
+                                        ${escapeHTML(item)}
+                                    </option>`
+                            )
+                            .join("");
+
+                    if (
+                        sortedSections.includes(
+                            current
+                        )
+                    ) {
+                        sectionFilter.value =
+                            current;
+                    }
+
+                }
+
+
+
+                if (examSection) {
+
+                    const current =
+                        examSection.value;
+
+                    examSection.innerHTML =
+                        `<option value="">
+                            Select Section
+                        </option>` +
+                        sortedSections
+                            .map(
+                                item =>
+                                    `<option value="${escapeHTML(item)}">
+                                        ${escapeHTML(item)}
+                                    </option>`
+                            )
+                            .join("");
+
+                    if (
+                        sortedSections.includes(
+                            current
+                        )
+                    ) {
+                        examSection.value =
+                            current;
+                    }
+
+                }
+
+            }
+
+
+
+            /* =================================================
+               LOAD
+               ================================================= */
+
+            function loadData() {
+
+                exams =
+                    readStorage(
+                        STORAGE_KEY
+                    );
+
+                students =
+                    readStorage(
+                        STUDENTS_KEY
+                    );
+
+                exams =
+                    exams.map(
+                        exam => ({
+                            ...exam,
+                            id:
+                                exam.id ||
+                                generateExamId()
+                        })
+                    );
+
+                render();
+
+            }
+
+
+
+            /* =================================================
+               KPI
+               ================================================= */
+
+            function renderKPIs(
+                visibleExams
+            ) {
+
+                const total =
+                    visibleExams.length;
+
+                const upcoming =
+                    visibleExams.filter(
+                        exam =>
+                            calculateStatus(
+                                exam
+                            ) ===
+                            "Upcoming"
+                    ).length;
+
+                const active =
+                    visibleExams.filter(
+                        exam =>
+                            calculateStatus(
+                                exam
+                            ) ===
+                            "Active"
+                    ).length;
+
+                const completed =
+                    visibleExams.filter(
+                        exam =>
+                            calculateStatus(
+                                exam
+                            ) ===
+                            "Completed"
+                    ).length;
+
+
+                document.getElementById(
+                    "totalExams"
+                ).textContent =
+                    total;
+
+
+                document.getElementById(
+                    "upcomingExams"
+                ).textContent =
+                    upcoming;
+
+
+                document.getElementById(
+                    "activeExams"
+                ).textContent =
+                    active;
+
+
+                document.getElementById(
+                    "completedExams"
+                ).textContent =
+                    completed;
+
+            }
+
+
+
+            /* =================================================
+               FILTERED EXAMS
+               ================================================= */
+
+            function getFilteredExams() {
+
+                const search =
+                    normalizeText(
+                        document.getElementById(
+                            "examSearch"
+                        )?.value
+                    );
+
+
+                const classFilter =
+                    normalizeText(
+                        document.getElementById(
+                            "examClassFilter"
+                        )?.value
+                    );
+
+
+                const sectionFilter =
+                    normalizeText(
+                        document.getElementById(
+                            "examSectionFilter"
+                        )?.value
+                    );
+
+
+                const statusFilter =
+                    normalizeText(
+                        document.getElementById(
+                            "examStatusFilter"
+                        )?.value
+                    );
+
+
+                return exams.filter(
+                    exam => {
+
+                        const name =
+                            normalizeText(
+                                exam.name
+                            );
+
+                        const type =
+                            normalizeText(
+                                exam.type
+                            );
+
+                        const className =
+                            normalizeText(
+                                exam.className
+                            );
+
+                        const section =
+                            normalizeText(
+                                exam.section
+                            );
+
+                        const status =
+                            normalizeText(
+                                calculateStatus(
+                                    exam
+                                )
+                            );
+
+
+                        if (
+                            search &&
+                            !(
+                                name.includes(
+                                    search
+                                ) ||
+                                type.includes(
+                                    search
+                                ) ||
+                                className.includes(
+                                    search
+                                )
+                            )
+                        ) {
+                            return false;
+                        }
+
+
+                        if (
+                            classFilter &&
+                            className !==
+                                classFilter
+                        ) {
+                            return false;
+                        }
+
+
+                        if (
+                            sectionFilter &&
+                            section !==
+                                sectionFilter
+                        ) {
+                            return false;
+                        }
+
+
+                        if (
+                            statusFilter &&
+                            status !==
+                                statusFilter
+                        ) {
+                            return false;
+                        }
+
+
+                        return true;
+
+                    }
+                );
+
+            }
+
+
+
+            /* =================================================
+               TABLE
+               ================================================= */
+
+            function renderTable() {
+
+                const body =
+                    document.getElementById(
+                        "examsTableBody"
+                    );
+
+                if (!body) {
+                    return;
+                }
+
+
+                const filtered =
+                    getFilteredExams();
+
+
+                renderKPIs(
+                    filtered
+                );
+
+
+                if (!filtered.length) {
+
+                    body.innerHTML = `
+
+                        <tr>
+
+                            <td
+                                colspan="9"
+                                class="exam-empty"
+                            >
+
+                                <div class="exam-empty-icon">
+                                    📝
+                                </div>
+
+                                <strong>
+                                    No exams found
+                                </strong>
+
+                                <span>
+                                    Create an exam or
+                                    change your filters.
+                                </span>
+
+                            </td>
+
+                        </tr>
+
+                    `;
+
+                    return;
+
+                }
+
+
+                const sorted =
+                    [...filtered]
+                        .sort(
+                            (a, b) =>
+                                String(
+                                    a.startDate ||
+                                    ""
+                                ).localeCompare(
+                                    String(
+                                        b.startDate ||
+                                        ""
+                                    )
+                                )
+                        );
+
+
+                body.innerHTML =
+                    sorted.map(
+                        exam => {
+
+                            const status =
+                                calculateStatus(
+                                    exam
+                                );
+
+                            const statusClass =
+                                getStatusClass(
+                                    status
+                                );
+
+
+                            const subjects =
+                                Array.isArray(
+                                    exam.subjects
+                                )
+                                    ? exam.subjects.length
+                                    : String(
+                                        exam.subjects ||
+                                        ""
+                                    )
+                                        .split(",")
+                                        .map(
+                                            item =>
+                                                item.trim()
+                                        )
+                                        .filter(
+                                            Boolean
+                                        )
+                                        .length;
+
+
+                            return `
+
+                                <tr>
+
+                                    <td>
+
+                                        <div class="exam-name-cell">
+
+                                            <div class="exam-icon-small">
+                                                📝
+                                            </div>
+
+                                            <div class="exam-name-info">
+
+                                                <strong>
+                                                    ${escapeHTML(
+                                                        exam.name ||
+                                                        "Untitled Exam"
+                                                    )}
+                                                </strong>
+
+                                                <span>
+                                                    ${escapeHTML(
+                                                        exam.type ||
+                                                        "Examination"
+                                                    )}
+                                                </span>
+
+                                            </div>
+
+                                        </div>
+
+                                    </td>
+
+
+                                    <td>
+                                        ${escapeHTML(
+                                            exam.className ||
+                                            "—"
+                                        )}
+                                    </td>
+
+
+                                    <td>
+                                        ${escapeHTML(
+                                            exam.section ||
+                                            "All"
+                                        )}
+                                    </td>
+
+
+                                    <td>
+                                        ${formatDate(
+                                            exam.startDate
+                                        )}
+                                    </td>
+
+
+                                    <td>
+                                        ${formatDate(
+                                            exam.endDate
+                                        )}
+                                    </td>
+
+
+                                    <td>
+                                        ${subjects}
+                                    </td>
+
+
+                                    <td>
+                                        ${escapeHTML(
+                                            exam.maxMarks ||
+                                            0
+                                        )}
+                                    </td>
+
+
+                                    <td>
+
+                                        <span
+                                            class="
+                                                exam-status
+                                                ${statusClass}
+                                            "
+                                        >
+
+                                            ${status === "Active"
+                                                ? "●"
+                                                : status === "Completed"
+                                                    ? "✓"
+                                                    : status === "Upcoming"
+                                                        ? "◷"
+                                                        : "•"
+                                            }
+
+                                            ${escapeHTML(
+                                                status
+                                            )}
+
+                                        </span>
+
+                                    </td>
+
+
+                                    <td>
+
+                                        <div class="exam-actions">
+
+                                            <button
+                                                type="button"
+                                                class="
+                                                    exam-action-btn
+                                                    view
+                                                "
+                                                data-action="view"
+                                                data-id="${escapeHTML(
+                                                    exam.id
+                                                )}"
+                                                title="View Exam"
+                                                aria-label="View Exam"
+                                            >
+                                                👁️
+                                            </button>
+
+
+                                            <button
+                                                type="button"
+                                                class="
+                                                    exam-action-btn
+                                                    edit
+                                                "
+                                                data-action="edit"
+                                                data-id="${escapeHTML(
+                                                    exam.id
+                                                )}"
+                                                title="Edit Exam"
+                                                aria-label="Edit Exam"
+                                            >
+                                                ✏️
+                                            </button>
+
+
+                                            <button
+                                                type="button"
+                                                class="
+                                                    exam-action-btn
+                                                    delete
+                                                "
+                                                data-action="delete"
+                                                data-id="${escapeHTML(
+                                                    exam.id
+                                                )}"
+                                                title="Delete Exam"
+                                                aria-label="Delete Exam"
+                                            >
+                                                🗑️
+                                            </button>
+
+                                        </div>
+
+                                    </td>
+
+                                </tr>
+
+                            `;
+
+                        }
+                    ).join("");
+
+            }
+
+
+
+            function render() {
+
+                populateFilters();
+
+                renderTable();
+
+            }
+
+
+
+            /* =================================================
+               MODAL
+               ================================================= */
+
+            function openExamModal(
+                exam = null
+            ) {
+
+                const modal =
+                    document.getElementById(
+                        "examModal"
+                    );
+
+                const title =
+                    document.getElementById(
+                        "examModalTitle"
+                    );
+
+                const form =
+                    document.getElementById(
+                        "examForm"
+                    );
+
+
+                if (!modal) {
+                    return;
+                }
+
+
+                form.reset();
+
+
+                editingExamId =
+                    exam?.id ||
+                    null;
+
+
+                document.getElementById(
+                    "examId"
+                ).value =
+                    exam?.id || "";
+
+
+                title.textContent =
+                    exam
+                        ? "Edit Exam"
+                        : "Create Exam";
+
+
+                document.getElementById(
+                    "examAcademicYear"
+                ).value =
+                    exam?.academicYear ||
+                    "2026-27";
+
+
+                document.getElementById(
+                    "examStatus"
+                ).value =
+                    exam?.status ||
+                    "Draft";
+
+
+                if (exam) {
+
+                    document.getElementById(
+                        "examName"
+                    ).value =
+                        exam.name || "";
+
+
+                    document.getElementById(
+                        "examType"
+                    ).value =
+                        exam.type || "";
+
+
+                    document.getElementById(
+                        "examClass"
+                    ).value =
+                        exam.className || "";
+
+
+                    document.getElementById(
+                        "examSection"
+                    ).value =
+                        exam.section || "";
+
+
+                    document.getElementById(
+                        "examStartDate"
+                    ).value =
+                        exam.startDate || "";
+
+
+                    document.getElementById(
+                        "examEndDate"
+                    ).value =
+                        exam.endDate || "";
+
+
+                    document.getElementById(
+                        "examMaxMarks"
+                    ).value =
+                        exam.maxMarks ??
+                        100;
+
+
+                    document.getElementById(
+                        "examPassMarks"
+                    ).value =
+                        exam.passMarks ??
+                        33;
+
+
+                    document.getElementById(
+                        "examSubjects"
+                    ).value =
+                        Array.isArray(
+                            exam.subjects
+                        )
+                            ? exam.subjects.join(
+                                ", "
+                            )
+                            : (
+                                exam.subjects ||
+                                ""
+                            );
+
+
+                    document.getElementById(
+                        "examDescription"
+                    ).value =
+                        exam.description ||
+                        "";
+
+                }
+
+
+                modal.classList.add(
+                    "show"
+                );
+
+                modal.setAttribute(
+                    "aria-hidden",
+                    "false"
+                );
+
+                document.body.style.overflow =
+                    "hidden";
+
+
+                setTimeout(
+                    () => {
+
+                        document.getElementById(
+                            "examName"
+                        )?.focus();
+
+                    },
+                    50
+                );
+
+            }
+
+
+
+            function closeExamModal() {
+
+                const modal =
+                    document.getElementById(
+                        "examModal"
+                    );
+
+                if (!modal) {
+                    return;
+                }
+
+                modal.classList.remove(
+                    "show"
+                );
+
+                modal.setAttribute(
+                    "aria-hidden",
+                    "true"
+                );
+
+                document.body.style.overflow =
+                    "";
+
+                editingExamId =
+                    null;
+
+            }
+
+
+
+            function openViewModal(
+                exam
+            ) {
+
+                if (!exam) {
+                    return;
+                }
+
+
+                document.getElementById(
+                    "viewExamTitle"
+                ).textContent =
+                    exam.name ||
+                    "Exam Details";
+
+
+                document.getElementById(
+                    "viewExamName"
+                ).textContent =
+                    exam.name ||
+                    "—";
+
+
+                document.getElementById(
+                    "viewExamType"
+                ).textContent =
+                    exam.type ||
+                    "—";
+
+
+                document.getElementById(
+                    "viewExamAcademicYear"
+                ).textContent =
+                    exam.academicYear ||
+                    "—";
+
+
+                document.getElementById(
+                    "viewExamClass"
+                ).textContent =
+                    exam.className ||
+                    "—";
+
+
+                document.getElementById(
+                    "viewExamSection"
+                ).textContent =
+                    exam.section ||
+                    "—";
+
+
+                document.getElementById(
+                    "viewExamStartDate"
+                ).textContent =
+                    formatDate(
+                        exam.startDate
+                    );
+
+
+                document.getElementById(
+                    "viewExamEndDate"
+                ).textContent =
+                    formatDate(
+                        exam.endDate
+                    );
+
+
+                document.getElementById(
+                    "viewExamMaxMarks"
+                ).textContent =
+                    exam.maxMarks ??
+                    "—";
+
+
+                document.getElementById(
+                    "viewExamPassMarks"
+                ).textContent =
+                    exam.passMarks ??
+                    "—";
+
+
+                document.getElementById(
+                    "viewExamSubjects"
+                ).textContent =
+                    Array.isArray(
+                        exam.subjects
+                    )
+                        ? exam.subjects.join(
+                            ", "
+                        ) || "—"
+                        : (
+                            exam.subjects ||
+                            "—"
+                        );
+
+
+                document.getElementById(
+                    "viewExamStatus"
+                ).textContent =
+                    calculateStatus(
+                        exam
+                    );
+
+
+                document.getElementById(
+                    "viewExamCreatedAt"
+                ).textContent =
+                    exam.createdAt
+                        ? new Date(
+                            exam.createdAt
+                        ).toLocaleString(
+                            "en-IN"
+                        )
+                        : "—";
+
+
+                document.getElementById(
+                    "viewExamDescription"
+                ).textContent =
+                    exam.description ||
+                    "No description added.";
+
+
+                const modal =
+                    document.getElementById(
+                        "viewExamModal"
+                    );
+
+
+                modal.classList.add(
+                    "show"
+                );
+
+                modal.setAttribute(
+                    "aria-hidden",
+                    "false"
+                );
+
+                document.body.style.overflow =
+                    "hidden";
+
+            }
+
+
+
+            function closeViewModal() {
+
+                const modal =
+                    document.getElementById(
+                        "viewExamModal"
+                    );
+
+                modal.classList.remove(
+                    "show"
+                );
+
+                modal.setAttribute(
+                    "aria-hidden",
+                    "true"
+                );
+
+                document.body.style.overflow =
+                    "";
+
+            }
+
+
+
+            /* =================================================
+               SAVE EXAM
+               ================================================= */
+
+            function handleExamSubmit(
+                event
+            ) {
+
+                event.preventDefault();
+
+
+                const name =
+                    document.getElementById(
+                        "examName"
+                    ).value.trim();
+
+
+                const type =
+                    document.getElementById(
+                        "examType"
+                    ).value;
+
+
+                const academicYear =
+                    document.getElementById(
+                        "examAcademicYear"
+                    ).value.trim();
+
+
+                const className =
+                    document.getElementById(
+                        "examClass"
+                    ).value;
+
+
+                const section =
+                    document.getElementById(
+                        "examSection"
+                    ).value;
+
+
+                const startDate =
+                    document.getElementById(
+                        "examStartDate"
+                    ).value;
+
+
+                const endDate =
+                    document.getElementById(
+                        "examEndDate"
+                    ).value;
+
+
+                const maxMarks =
+                    Number(
+                        document.getElementById(
+                            "examMaxMarks"
+                        ).value
+                    );
+
+
+                const passMarks =
+                    Number(
+                        document.getElementById(
+                            "examPassMarks"
+                        ).value
+                    );
+
+
+                const subjectsRaw =
+                    document.getElementById(
+                        "examSubjects"
+                    ).value;
+
+
+                const description =
+                    document.getElementById(
+                        "examDescription"
+                    ).value.trim();
+
+
+                const status =
+                    document.getElementById(
+                        "examStatus"
+                    ).value;
+
+
+
+                if (!name) {
+
+                    showToast(
+                        "Please enter exam name.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                if (!type) {
+
+                    showToast(
+                        "Please select exam type.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                if (!academicYear) {
+
+                    showToast(
+                        "Please enter academic year.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                if (!className) {
+
+                    showToast(
+                        "Please select class.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                if (!section) {
+
+                    showToast(
+                        "Please select section.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                if (!startDate || !endDate) {
+
+                    showToast(
+                        "Please select exam dates.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                if (
+                    endDate <
+                    startDate
+                ) {
+
+                    showToast(
+                        "End date cannot be before start date.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                if (
+                    !Number.isFinite(
+                        maxMarks
+                    ) ||
+                    maxMarks <= 0
+                ) {
+
+                    showToast(
+                        "Maximum marks must be greater than 0.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                if (
+                    !Number.isFinite(
+                        passMarks
+                    ) ||
+                    passMarks < 0 ||
+                    passMarks > maxMarks
+                ) {
+
+                    showToast(
+                        "Pass marks must be between 0 and maximum marks.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                const subjects =
+                    subjectsRaw
+                        .split(",")
+                        .map(
+                            item =>
+                                item.trim()
+                        )
+                        .filter(
+                            Boolean
+                        );
+
+
+                const duplicate =
+                    exams.some(
+                        exam => {
+
+                            if (
+                                editingExamId &&
+                                exam.id ===
+                                    editingExamId
+                            ) {
+                                return false;
+                            }
+
+                            return (
+                                normalizeText(
+                                    exam.name
+                                ) ===
+                                normalizeText(
+                                    name
+                                ) &&
+                                normalizeText(
+                                    exam.className
+                                ) ===
+                                normalizeText(
+                                    className
+                                ) &&
+                                normalizeText(
+                                    exam.academicYear
+                                ) ===
+                                normalizeText(
+                                    academicYear
+                                )
+                            );
+
+                        }
+                    );
+
+
+                if (duplicate) {
+
+                    const confirmed =
+                        window.confirm(
+                            "A similar exam already exists. Do you want to create another one?"
+                        );
+
+                    if (!confirmed) {
+                        return;
+                    }
+
+                }
+
+
+
+                const now =
+                    new Date().toISOString();
+
+
+                const examData = {
+
+                    id:
+                        editingExamId ||
+                        generateExamId(),
+
+                    name,
+
+                    type,
+
+                    academicYear,
+
+                    className,
+
+                    section,
+
+                    startDate,
+
+                    endDate,
+
+                    subjects,
+
+                    maxMarks,
+
+                    passMarks,
+
+                    description,
+
+                    status,
+
+                    createdAt:
+                        editingExamId
+                            ? (
+                                exams.find(
+                                    exam =>
+                                        exam.id ===
+                                        editingExamId
+                                )?.createdAt ||
+                                now
+                            )
+                            : now,
+
+                    updatedAt:
+                        now
+
+                };
+
+
+
+                if (editingExamId) {
+
+                    exams =
+                        exams.map(
+                            exam =>
+                                exam.id ===
+                                editingExamId
+                                    ? examData
+                                    : exam
+                        );
+
+                    showToast(
+                        "Exam updated successfully."
+                    );
+
+                } else {
+
+                    exams.push(
+                        examData
+                    );
+
+                    showToast(
+                        "Exam created successfully."
+                    );
+
+                }
+
+
+                saveExams();
+
+                closeExamModal();
+
+                render();
+
+            }
+
+
+
+            /* =================================================
+               DELETE
+               ================================================= */
+
+            function deleteExam(
+                exam
+            ) {
+
+                if (!exam) {
+                    return;
+                }
+
+
+                const confirmed =
+                    window.confirm(
+                        `Delete "${exam.name}"?\n\nThis exam record will be permanently removed from this browser.`
+                    );
+
+
+                if (!confirmed) {
+                    return;
+                }
+
+
+                exams =
+                    exams.filter(
+                        item =>
+                            item.id !==
+                            exam.id
+                    );
+
+
+                saveExams();
+
+                render();
+
+
+                showToast(
+                    "Exam deleted successfully."
+                );
+
+            }
+
+
+
+            /* =================================================
+               EVENTS
+               ================================================= */
+
+            document.addEventListener(
+                "DOMContentLoaded",
+                () => {
+
+                    loadData();
+
+
+
+                    document.getElementById(
+                        "createExamBtn"
+                    )?.addEventListener(
+                        "click",
+                        () =>
+                            openExamModal()
+                    );
+
+
+
+                    document.getElementById(
+                        "closeExamModal"
+                    )?.addEventListener(
+                        "click",
+                        closeExamModal
+                    );
+
+
+
+                    document.getElementById(
+                        "cancelExamBtn"
+                    )?.addEventListener(
+                        "click",
+                        closeExamModal
+                    );
+
+
+
+                    document.getElementById(
+                        "closeViewExamModal"
+                    )?.addEventListener(
+                        "click",
+                        closeViewModal
+                    );
+
+
+
+                    document.getElementById(
+                        "closeViewExamBtn"
+                    )?.addEventListener(
+                        "click",
+                        closeViewModal
+                    );
+
+
+
+                    document.getElementById(
+                        "examForm"
+                    )?.addEventListener(
+                        "submit",
+                        handleExamSubmit
+                    );
+
+
+
+                    document.getElementById(
+                        "refreshExamsBtn"
+                    )?.addEventListener(
+                        "click",
+                        () => {
+
+                            loadData();
+
+                            showToast(
+                                "Exam data refreshed."
+                            );
+
+                        }
+                    );
+
+
+
+                    document.getElementById(
+                        "clearExamFiltersBtn"
+                    )?.addEventListener(
+                        "click",
+                        () => {
+
+                            document.getElementById(
+                                "examSearch"
+                            ).value = "";
+
+
+                            document.getElementById(
+                                "examClassFilter"
+                            ).value = "";
+
+
+                            document.getElementById(
+                                "examSectionFilter"
+                            ).value = "";
+
+
+                            document.getElementById(
+                                "examStatusFilter"
+                            ).value = "";
+
+
+                            render();
+
+                        }
+                    );
+
+
+
+                    [
+                        "examSearch",
+                        "examClassFilter",
+                        "examSectionFilter",
+                        "examStatusFilter"
+                    ].forEach(
+                        id => {
+
+                            document.getElementById(
+                                id
+                            )?.addEventListener(
+                                "input",
+                                renderTable
+                            );
+
+                            document.getElementById(
+                                id
+                            )?.addEventListener(
+                                "change",
+                                renderTable
+                            );
+
+                        }
+                    );
+
+
+
+                    document.getElementById(
+                        "examsTableBody"
+                    )?.addEventListener(
+                        "click",
+                        event => {
+
+                            const button =
+                                event.target.closest(
+                                    "[data-action]"
+                                );
+
+
+                            if (!button) {
+                                return;
+                            }
+
+
+                            const id =
+                                button.dataset.id;
+
+
+                            const exam =
+                                exams.find(
+                                    item =>
+                                        String(
+                                            item.id
+                                        ) ===
+                                        String(id)
+                                );
+
+
+                            if (!exam) {
+                                return;
+                            }
+
+
+                            const action =
+                                button.dataset.action;
+
+
+                            if (
+                                action ===
+                                "view"
+                            ) {
+
+                                openViewModal(
+                                    exam
+                                );
+
+                            }
+
+
+                            if (
+                                action ===
+                                "edit"
+                            ) {
+
+                                openExamModal(
+                                    exam
+                                );
+
+                            }
+
+
+                            if (
+                                action ===
+                                "delete"
+                            ) {
+
+                                deleteExam(
+                                    exam
+                                );
+
+                            }
+
+                        }
+                    );
+
+
+
+                    [
+                        "examModal",
+                        "viewExamModal"
+                    ].forEach(
+                        id => {
+
+                            document.getElementById(
+                                id
+                            )?.addEventListener(
+                                "click",
+                                event => {
+
+                                    if (
+                                        event.target ===
+                                        event.currentTarget
+                                    ) {
+
+                                        if (
+                                            id ===
+                                            "examModal"
+                                        ) {
+
+                                            closeExamModal();
+
+                                        } else {
+
+                                            closeViewModal();
+
+                                        }
+
+                                    }
+
+                                }
+                            );
+
+                        }
+                    );
+
+
+
+                    document.addEventListener(
+                        "keydown",
+                        event => {
+
+                            if (
+                                event.key !==
+                                "Escape"
+                            ) {
+                                return;
+                            }
+
+
+                            closeExamModal();
+
+                            closeViewModal();
+
+                        }
+                    );
+
+
+
+                    window.addEventListener(
+                        "storage",
+                        event => {
+
+                            if (
+                                event.key ===
+                                STORAGE_KEY ||
+                                event.key ===
+                                STUDENTS_KEY
+                            ) {
+
+                                loadData();
+
+                            }
+
+                        }
+                    );
+
+
+
+                    /*
+                     * Public API for future
+                     * modules.
+                     */
+
+                    window.SmartSchoolExams = {
+
+                        getExams: () =>
+                            [...exams],
+
+                        getExamById: id =>
+                            exams.find(
+                                exam =>
+                                    String(
+                                        exam.id
+                                    ) ===
+                                    String(id)
+                            ) || null,
+
+                        refresh: () =>
+                            loadData()
+
+                    };
+
+                }
+            );
+
+        })();
+
+    </script>
+
+
+</body>
+
+</html>
