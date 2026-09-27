@@ -1,0 +1,5002 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Subjects Management | SmartSchool360</title>
+
+    <meta
+        name="description"
+        content="SmartSchool360 Subject Management"
+    >
+
+    <style>
+
+        :root {
+
+            --primary: #4f46e5;
+            --primary-dark: #3730a3;
+
+            --success: #059669;
+            --warning: #d97706;
+            --danger: #dc2626;
+
+            --text: #0f172a;
+            --muted: #64748b;
+
+            --border: #e2e8f0;
+
+            --bg: #f8fafc;
+            --card: #ffffff;
+
+        }
+
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+
+            margin: 0;
+
+            background: var(--bg);
+
+            color: var(--text);
+
+            font-family:
+                Inter,
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+
+        }
+
+
+        button,
+        input,
+        select,
+        textarea {
+            font: inherit;
+        }
+
+
+        button {
+            cursor: pointer;
+        }
+
+
+        /* =====================================================
+           HEADER
+           ===================================================== */
+
+        .subject-header {
+
+            position: sticky;
+
+            top: 0;
+
+            z-index: 50;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 15px;
+
+            padding: 14px 22px;
+
+            background:
+                rgba(255,255,255,.96);
+
+            border-bottom:
+                1px solid var(--border);
+
+            backdrop-filter:
+                blur(14px);
+
+        }
+
+
+        .subject-header-left {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            min-width: 0;
+
+        }
+
+
+        .back-btn {
+
+            width: 42px;
+            height: 42px;
+
+            flex: 0 0 42px;
+
+            display: grid;
+
+            place-items: center;
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 12px;
+
+            background: #fff;
+
+            color: var(--text);
+
+            font-size: 20px;
+
+            text-decoration: none;
+
+        }
+
+
+        .back-btn:hover {
+            background: #f1f5f9;
+        }
+
+
+        .subject-header-icon {
+
+            width: 46px;
+            height: 46px;
+
+            flex: 0 0 46px;
+
+            display: grid;
+
+            place-items: center;
+
+            border-radius: 14px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #4f46e5,
+                    #7c3aed
+                );
+
+            color: #fff;
+
+            font-size: 22px;
+
+            box-shadow:
+                0 8px 22px
+                rgba(79,70,229,.22);
+
+        }
+
+
+        .subject-header-title {
+            min-width: 0;
+        }
+
+
+        .subject-header-title h1 {
+
+            margin: 0;
+
+            font-size: 21px;
+
+            line-height: 1.25;
+
+        }
+
+
+        .subject-header-title p {
+
+            margin: 3px 0 0;
+
+            color: var(--muted);
+
+            font-size: 13px;
+
+        }
+
+
+        .refresh-btn {
+
+            border: 0;
+
+            border-radius: 10px;
+
+            padding: 10px 14px;
+
+            background: #f1f5f9;
+
+            color: #334155;
+
+            font-weight: 700;
+
+        }
+
+
+        /* =====================================================
+           CONTAINER
+           ===================================================== */
+
+        .subjects-container {
+
+            width:
+                min(
+                    1400px,
+                    calc(100% - 28px)
+                );
+
+            margin:
+                22px auto 40px;
+
+        }
+
+
+        /* =====================================================
+           KPI
+           ===================================================== */
+
+        .subject-kpis {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, minmax(0,1fr));
+
+            gap: 16px;
+
+            margin-bottom: 18px;
+
+        }
+
+
+        .kpi-card {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 13px;
+
+            padding: 18px;
+
+            background: var(--card);
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 16px;
+
+            box-shadow:
+                0 5px 18px
+                rgba(15,23,42,.04);
+
+        }
+
+
+        .kpi-icon {
+
+            width: 48px;
+            height: 48px;
+
+            flex: 0 0 48px;
+
+            display: grid;
+
+            place-items: center;
+
+            border-radius: 14px;
+
+            font-size: 21px;
+
+            background: #eef2ff;
+
+        }
+
+
+        .kpi-card:nth-child(2)
+        .kpi-icon {
+            background: #ecfdf5;
+        }
+
+
+        .kpi-card:nth-child(3)
+        .kpi-icon {
+            background: #fff7ed;
+        }
+
+
+        .kpi-card:nth-child(4)
+        .kpi-icon {
+            background: #eff6ff;
+        }
+
+
+        .kpi-label {
+
+            display: block;
+
+            color: var(--muted);
+
+            font-size: 12px;
+
+            margin-bottom: 4px;
+
+        }
+
+
+        .kpi-value {
+
+            display: block;
+
+            font-size: 23px;
+
+            font-weight: 800;
+
+        }
+
+
+        .kpi-note {
+
+            display: block;
+
+            margin-top: 3px;
+
+            color: #94a3b8;
+
+            font-size: 11px;
+
+        }
+
+
+        /* =====================================================
+           CARD
+           ===================================================== */
+
+        .subject-card {
+
+            margin-bottom: 18px;
+
+            background: var(--card);
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 18px;
+
+            box-shadow:
+                0 5px 20px
+                rgba(15,23,42,.04);
+
+            overflow: hidden;
+
+        }
+
+
+        .card-header {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 15px;
+
+            padding: 20px;
+
+        }
+
+
+        .eyebrow {
+
+            display: block;
+
+            margin-bottom: 5px;
+
+            color: var(--primary);
+
+            font-size: 10px;
+
+            font-weight: 800;
+
+            letter-spacing: .12em;
+
+        }
+
+
+        .card-header h2 {
+
+            margin: 0;
+
+            font-size: 18px;
+
+        }
+
+
+        .card-header p {
+
+            margin: 5px 0 0;
+
+            color: var(--muted);
+
+            font-size: 13px;
+
+        }
+
+
+        .primary-btn {
+
+            border: 0;
+
+            border-radius: 11px;
+
+            padding: 11px 16px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--primary),
+                    #7c3aed
+                );
+
+            color: #fff;
+
+            font-weight: 800;
+
+            box-shadow:
+                0 7px 18px
+                rgba(79,70,229,.20);
+
+            white-space: nowrap;
+
+        }
+
+
+        .secondary-btn {
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 10px;
+
+            padding: 10px 14px;
+
+            background: #fff;
+
+            color: #334155;
+
+            font-weight: 700;
+
+        }
+
+
+        /* =====================================================
+           FILTERS
+           ===================================================== */
+
+        .subject-filters {
+
+            display: grid;
+
+            grid-template-columns:
+                minmax(200px,1.5fr)
+                repeat(3,minmax(140px,1fr))
+                auto;
+
+            gap: 12px;
+
+            padding:
+                0 20px 20px;
+
+        }
+
+
+        .form-group {
+            min-width: 0;
+        }
+
+
+        .form-group label {
+
+            display: block;
+
+            margin-bottom: 6px;
+
+            color: #475569;
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+        }
+
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+
+            width: 100%;
+
+            min-height: 42px;
+
+            padding: 9px 11px;
+
+            border:
+                1px solid #dbe3ec;
+
+            border-radius: 10px;
+
+            background: #fff;
+
+            color: var(--text);
+
+            outline: none;
+
+        }
+
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+
+            border-color:
+                var(--primary);
+
+            box-shadow:
+                0 0 0 3px
+                rgba(79,70,229,.10);
+
+        }
+
+
+        .filter-actions {
+
+            display: flex;
+
+            align-items: end;
+
+        }
+
+
+        /* =====================================================
+           TABLE
+           ===================================================== */
+
+        .table-wrap {
+
+            width: 100%;
+
+            overflow-x: auto;
+
+            -webkit-overflow-scrolling: touch;
+
+        }
+
+
+        .subject-table {
+
+            width: 100%;
+
+            min-width: 1100px;
+
+            border-collapse: collapse;
+
+        }
+
+
+        .subject-table th {
+
+            padding: 13px 15px;
+
+            background: #f8fafc;
+
+            border-top:
+                1px solid var(--border);
+
+            border-bottom:
+                1px solid var(--border);
+
+            color: #64748b;
+
+            font-size: 11px;
+
+            text-align: left;
+
+            text-transform: uppercase;
+
+            letter-spacing: .04em;
+
+            white-space: nowrap;
+
+        }
+
+
+        .subject-table td {
+
+            padding: 14px 15px;
+
+            border-bottom:
+                1px solid #eef2f7;
+
+            color: #334155;
+
+            font-size: 13px;
+
+            vertical-align: middle;
+
+        }
+
+
+        .subject-table tbody tr:hover {
+            background: #fafbff;
+        }
+
+
+        .subject-cell {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+        }
+
+
+        .subject-icon {
+
+            width: 38px;
+            height: 38px;
+
+            flex: 0 0 38px;
+
+            display: grid;
+
+            place-items: center;
+
+            border-radius: 11px;
+
+            background: #eef2ff;
+
+            font-size: 18px;
+
+        }
+
+
+        .subject-info strong {
+
+            display: block;
+
+            color: #0f172a;
+
+            font-size: 13px;
+
+        }
+
+
+        .subject-info span {
+
+            display: block;
+
+            margin-top: 3px;
+
+            color: #94a3b8;
+
+            font-size: 11px;
+
+        }
+
+
+        .exam-badge {
+
+            display: inline-flex;
+
+            padding: 5px 9px;
+
+            border-radius: 999px;
+
+            background: #f1f5ff;
+
+            color: #4338ca;
+
+            font-size: 11px;
+
+            font-weight: 800;
+
+            white-space: nowrap;
+
+        }
+
+
+        .marks-badge {
+
+            display: inline-flex;
+
+            padding: 5px 9px;
+
+            border-radius: 8px;
+
+            background: #f8fafc;
+
+            border:
+                1px solid #e2e8f0;
+
+            color: #334155;
+
+            font-weight: 700;
+
+        }
+
+
+        .action-buttons {
+
+            display: flex;
+
+            gap: 6px;
+
+            white-space: nowrap;
+
+        }
+
+
+        .action-btn {
+
+            width: 35px;
+            height: 35px;
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 9px;
+
+            background: #fff;
+
+            display: grid;
+
+            place-items: center;
+
+            font-size: 15px;
+
+        }
+
+
+        .action-btn.view:hover {
+            color: #2563eb;
+        }
+
+
+        .action-btn.edit:hover {
+            color: #7c3aed;
+        }
+
+
+        .action-btn.delete:hover {
+            color: #dc2626;
+        }
+
+
+        .empty-state {
+
+            padding: 50px 20px !important;
+
+            text-align: center;
+
+            color: #94a3b8;
+
+        }
+
+
+        .empty-icon {
+
+            font-size: 36px;
+
+            margin-bottom: 10px;
+
+        }
+
+
+        .empty-state strong {
+
+            display: block;
+
+            margin-bottom: 5px;
+
+            color: #475569;
+
+        }
+
+
+        .empty-state span {
+
+            display: block;
+
+            font-size: 12px;
+
+        }
+
+
+        /* =====================================================
+           INFO
+           ===================================================== */
+
+        .info-card {
+
+            display: flex;
+
+            gap: 13px;
+
+            padding: 17px 20px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #eef2ff,
+                    #f8fafc
+                );
+
+            border:
+                1px solid #e0e7ff;
+
+        }
+
+
+        .info-icon {
+
+            width: 40px;
+            height: 40px;
+
+            flex: 0 0 40px;
+
+            display: grid;
+
+            place-items: center;
+
+            border-radius: 12px;
+
+            background: #fff;
+
+            font-size: 18px;
+
+        }
+
+
+        .info-card h3 {
+
+            margin: 0 0 4px;
+
+            font-size: 14px;
+
+        }
+
+
+        .info-card p {
+
+            margin: 0;
+
+            color: #64748b;
+
+            font-size: 12px;
+
+            line-height: 1.6;
+
+        }
+
+
+        /* =====================================================
+           MODAL
+           ===================================================== */
+
+        .modal-overlay {
+
+            position: fixed;
+
+            inset: 0;
+
+            z-index: 1000;
+
+            display: none;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 18px;
+
+            background:
+                rgba(15,23,42,.58);
+
+            backdrop-filter:
+                blur(5px);
+
+        }
+
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+
+        .modal {
+
+            width:
+                min(
+                    720px,
+                    100%
+                );
+
+            max-height: 92vh;
+
+            overflow-y: auto;
+
+            background: #fff;
+
+            border-radius: 20px;
+
+            box-shadow:
+                0 25px 80px
+                rgba(15,23,42,.25);
+
+        }
+
+
+        .modal-header {
+
+            display: flex;
+
+            align-items: flex-start;
+
+            justify-content: space-between;
+
+            gap: 16px;
+
+            padding: 20px;
+
+            border-bottom:
+                1px solid var(--border);
+
+        }
+
+
+        .modal-header h2 {
+
+            margin: 0;
+
+            font-size: 19px;
+
+        }
+
+
+        .modal-header p {
+
+            margin: 5px 0 0;
+
+            color: var(--muted);
+
+            font-size: 12px;
+
+        }
+
+
+        .modal-close {
+
+            width: 40px;
+            height: 40px;
+
+            flex: 0 0 40px;
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 10px;
+
+            background: #fff;
+
+            color: #475569;
+
+            font-size: 24px;
+
+            display: grid;
+
+            place-items: center;
+
+        }
+
+
+        .modal-close:hover {
+
+            background: #fef2f2;
+
+            color: #dc2626;
+
+        }
+
+
+        .subject-form {
+
+            padding: 20px;
+
+        }
+
+
+        .form-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2,minmax(0,1fr));
+
+            gap: 15px;
+
+        }
+
+
+        .full {
+            grid-column: 1 / -1;
+        }
+
+
+        .required {
+            color: #dc2626;
+        }
+
+
+        .modal-actions {
+
+            display: flex;
+
+            justify-content: flex-end;
+
+            gap: 10px;
+
+            padding-top: 8px;
+
+        }
+
+
+        /* =====================================================
+           VIEW MODAL
+           ===================================================== */
+
+        .view-content {
+
+            padding: 20px;
+
+        }
+
+
+        .view-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2,minmax(0,1fr));
+
+            gap: 12px;
+
+        }
+
+
+        .view-item {
+
+            padding: 13px;
+
+            border:
+                1px solid #e2e8f0;
+
+            border-radius: 12px;
+
+            background: #f8fafc;
+
+        }
+
+
+        .view-item span {
+
+            display: block;
+
+            margin-bottom: 4px;
+
+            color: #64748b;
+
+            font-size: 11px;
+
+        }
+
+
+        .view-item strong {
+
+            display: block;
+
+            color: #0f172a;
+
+            font-size: 13px;
+
+        }
+
+
+        /* =====================================================
+           TOAST
+           ===================================================== */
+
+        .toast {
+
+            position: fixed;
+
+            right: 18px;
+
+            bottom: 18px;
+
+            z-index: 2000;
+
+            max-width: 360px;
+
+            padding: 13px 16px;
+
+            border-radius: 12px;
+
+            background: #0f172a;
+
+            color: #fff;
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+            box-shadow:
+                0 15px 40px
+                rgba(15,23,42,.22);
+
+            opacity: 0;
+
+            transform:
+                translateY(12px);
+
+            pointer-events: none;
+
+            transition: .25s ease;
+
+        }
+
+
+        .toast.show {
+
+            opacity: 1;
+
+            transform:
+                translateY(0);
+
+        }
+
+
+        .toast.success {
+            background: #047857;
+        }
+
+
+        .toast.error {
+            background: #b91c1c;
+        }
+
+
+        /* =====================================================
+           FOOTER
+           ===================================================== */
+
+        .site-footer {
+
+            width:
+                min(
+                    1400px,
+                    calc(100% - 28px)
+                );
+
+            margin: 0 auto;
+
+            padding: 22px 0 30px;
+
+            text-align: center;
+
+            color: #94a3b8;
+
+            font-size: 11px;
+
+        }
+
+
+        .site-footer strong {
+
+            display: block;
+
+            margin-bottom: 4px;
+
+            color: #475569;
+
+            font-size: 12px;
+
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+           ===================================================== */
+
+        @media (max-width: 1050px) {
+
+            .subject-kpis {
+
+                grid-template-columns:
+                    repeat(2,minmax(0,1fr));
+
+            }
+
+
+            .subject-filters {
+
+                grid-template-columns:
+                    repeat(2,minmax(0,1fr));
+
+            }
+
+
+            .filter-actions {
+
+                grid-column: 1 / -1;
+
+            }
+
+        }
+
+
+        @media (max-width: 700px) {
+
+            .subject-header {
+
+                padding:
+                    12px 14px;
+
+            }
+
+
+            .subject-header-icon {
+
+                width: 40px;
+                height: 40px;
+
+                flex-basis: 40px;
+
+                border-radius: 11px;
+
+            }
+
+
+            .subject-header-title h1 {
+                font-size: 17px;
+            }
+
+
+            .subject-header-title p {
+                font-size: 11px;
+            }
+
+
+            .refresh-btn {
+
+                padding:
+                    9px 10px;
+
+                font-size: 12px;
+
+            }
+
+
+            .subjects-container {
+
+                width:
+                    calc(100% - 20px);
+
+                margin-top: 14px;
+
+            }
+
+
+            .subject-kpis {
+
+                gap: 9px;
+
+            }
+
+
+            .kpi-card {
+
+                padding: 12px;
+
+                gap: 9px;
+
+                border-radius: 13px;
+
+            }
+
+
+            .kpi-icon {
+
+                width: 37px;
+                height: 37px;
+
+                flex-basis: 37px;
+
+                border-radius: 10px;
+
+                font-size: 16px;
+
+            }
+
+
+            .kpi-value {
+                font-size: 18px;
+            }
+
+
+            .kpi-label {
+                font-size: 10px;
+            }
+
+
+            .kpi-note {
+                font-size: 9px;
+            }
+
+
+            .subject-card {
+                border-radius: 14px;
+            }
+
+
+            .card-header {
+
+                align-items: flex-start;
+
+                padding:
+                    16px 14px 13px;
+
+            }
+
+
+            .card-header h2 {
+                font-size: 16px;
+            }
+
+
+            .primary-btn {
+
+                padding:
+                    9px 11px;
+
+                font-size: 12px;
+
+            }
+
+
+            .subject-filters {
+
+                grid-template-columns: 1fr;
+
+                padding:
+                    0 14px 15px;
+
+            }
+
+
+            .filter-actions {
+
+                grid-column: auto;
+
+                width: 100%;
+
+            }
+
+
+            .filter-actions button {
+                width: 100%;
+            }
+
+
+            .subject-table {
+
+                min-width: 1100px;
+
+            }
+
+
+            .info-card {
+
+                padding: 14px;
+
+            }
+
+
+            .form-grid {
+
+                grid-template-columns: 1fr;
+
+            }
+
+
+            .full {
+                grid-column: auto;
+            }
+
+
+            .view-grid {
+
+                grid-template-columns: 1fr;
+
+            }
+
+
+            .modal-overlay {
+
+                align-items: flex-end;
+
+                padding: 0;
+
+            }
+
+
+            .modal {
+
+                width: 100%;
+
+                max-height: 94vh;
+
+                border-radius:
+                    20px 20px 0 0;
+
+            }
+
+
+            .modal-header,
+            .subject-form {
+
+                padding:
+                    16px 14px;
+
+            }
+
+
+            .modal-actions {
+
+                flex-direction:
+                    column-reverse;
+
+            }
+
+
+            .modal-actions button {
+                width: 100%;
+            }
+
+
+            .toast {
+
+                left: 12px;
+                right: 12px;
+                bottom: 12px;
+
+                max-width: none;
+
+            }
+
+        }
+
+
+        @media (max-width: 390px) {
+
+            .subject-header-title p {
+                display: none;
+            }
+
+
+            .kpi-icon {
+                display: none;
+            }
+
+        }
+
+
+        @media print {
+
+            .subject-header,
+            .subject-filters,
+            .action-buttons,
+            .primary-btn,
+            .secondary-btn,
+            .refresh-btn {
+
+                display: none !important;
+
+            }
+
+
+            body {
+                background: #fff;
+            }
+
+
+            .subjects-container {
+
+                width: 100%;
+
+                margin: 0;
+
+            }
+
+
+            .subject-card {
+
+                box-shadow: none;
+
+                border: 1px solid #ddd;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         HEADER
+         ===================================================== -->
+
+    <header class="subject-header">
+
+        <div class="subject-header-left">
+
+            <a
+                href="exams.html"
+                class="back-btn"
+                aria-label="Back to Exams"
+            >
+                ←
+            </a>
+
+
+            <div class="subject-header-icon">
+                📚
+            </div>
+
+
+            <div class="subject-header-title">
+
+                <h1>
+                    Subjects Management
+                </h1>
+
+                <p>
+                    Manage subjects for examinations
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <button
+            type="button"
+            class="refresh-btn"
+            id="refreshSubjectsBtn"
+        >
+            ↻ Refresh
+        </button>
+
+    </header>
+
+
+
+    <!-- =====================================================
+         MAIN
+         ===================================================== -->
+
+    <main class="subjects-container">
+
+
+        <!-- =================================================
+             KPI
+             ================================================= -->
+
+        <section class="subject-kpis">
+
+
+            <article class="kpi-card">
+
+                <div class="kpi-icon">
+                    📚
+                </div>
+
+                <div>
+
+                    <span class="kpi-label">
+                        Total Subjects
+                    </span>
+
+                    <strong
+                        class="kpi-value"
+                        id="totalSubjects"
+                    >
+                        0
+                    </strong>
+
+                    <span class="kpi-note">
+                        All subject records
+                    </span>
+
+                </div>
+
+            </article>
+
+
+            <article class="kpi-card">
+
+                <div class="kpi-icon">
+                    📝
+                </div>
+
+                <div>
+
+                    <span class="kpi-label">
+                        Exams Linked
+                    </span>
+
+                    <strong
+                        class="kpi-value"
+                        id="linkedExams"
+                    >
+                        0
+                    </strong>
+
+                    <span class="kpi-note">
+                        Exams with subjects
+                    </span>
+
+                </div>
+
+            </article>
+
+
+            <article class="kpi-card">
+
+                <div class="kpi-icon">
+                    🎯
+                </div>
+
+                <div>
+
+                    <span class="kpi-label">
+                        Total Marks
+                    </span>
+
+                    <strong
+                        class="kpi-value"
+                        id="totalMarks"
+                    >
+                        0
+                    </strong>
+
+                    <span class="kpi-note">
+                        Combined maximum marks
+                    </span>
+
+                </div>
+
+            </article>
+
+
+            <article class="kpi-card">
+
+                <div class="kpi-icon">
+                    🏫
+                </div>
+
+                <div>
+
+                    <span class="kpi-label">
+                        Classes
+                    </span>
+
+                    <strong
+                        class="kpi-value"
+                        id="subjectClasses"
+                    >
+                        0
+                    </strong>
+
+                    <span class="kpi-note">
+                        Classes covered
+                    </span>
+
+                </div>
+
+            </article>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             SUBJECT LIST
+             ================================================= -->
+
+        <section class="subject-card">
+
+
+            <div class="card-header">
+
+                <div>
+
+                    <span class="eyebrow">
+                        ACADEMICS
+                    </span>
+
+                    <h2>
+                        Subject Directory
+                    </h2>
+
+                    <p>
+                        Add and manage examination
+                        subjects.
+                    </p>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="primary-btn"
+                    id="addSubjectBtn"
+                >
+                    + Add Subject
+                </button>
+
+            </div>
+
+
+
+            <!-- FILTERS -->
+
+            <div class="subject-filters">
+
+
+                <div class="form-group">
+
+                    <label for="subjectSearch">
+                        Search
+                    </label>
+
+                    <input
+                        type="search"
+                        id="subjectSearch"
+                        placeholder="Subject name or code..."
+                        autocomplete="off"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="subjectExamFilter">
+                        Exam
+                    </label>
+
+                    <select id="subjectExamFilter">
+
+                        <option value="">
+                            All Exams
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="subjectClassFilter">
+                        Class
+                    </label>
+
+                    <select id="subjectClassFilter">
+
+                        <option value="">
+                            All Classes
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="subjectStatusFilter">
+                        Status
+                    </label>
+
+                    <select id="subjectStatusFilter">
+
+                        <option value="">
+                            All Subjects
+                        </option>
+
+                        <option value="Active">
+                            Active
+                        </option>
+
+                        <option value="Inactive">
+                            Inactive
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="filter-actions">
+
+                    <button
+                        type="button"
+                        class="secondary-btn"
+                        id="clearSubjectFiltersBtn"
+                    >
+                        Clear
+                    </button>
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- TABLE -->
+
+            <div class="table-wrap">
+
+                <table class="subject-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Subject
+                            </th>
+
+                            <th>
+                                Code
+                            </th>
+
+                            <th>
+                                Exam
+                            </th>
+
+                            <th>
+                                Class
+                            </th>
+
+                            <th>
+                                Exam Date
+                            </th>
+
+                            <th>
+                                Max Marks
+                            </th>
+
+                            <th>
+                                Pass Marks
+                            </th>
+
+                            <th>
+                                Duration
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Actions
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="subjectsTableBody">
+
+                        <tr>
+
+                            <td
+                                colspan="10"
+                                class="empty-state"
+                            >
+
+                                <div class="empty-icon">
+                                    📚
+                                </div>
+
+                                <strong>
+                                    No subjects added yet
+                                </strong>
+
+                                <span>
+                                    Click "Add Subject"
+                                    to create your first
+                                    subject.
+                                </span>
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             INFO
+             ================================================= -->
+
+        <section class="subject-card info-card">
+
+            <div class="info-icon">
+                💡
+            </div>
+
+            <div>
+
+                <h3>
+                    Subjects & Results
+                </h3>
+
+                <p>
+                    Each subject is linked to an exam
+                    and stores maximum marks, pass marks,
+                    exam date and duration. These records
+                    will be used by the upcoming Marks Entry,
+                    Grade Calculation and Report Card modules.
+                </p>
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+
+
+    <!-- =====================================================
+         ADD / EDIT SUBJECT MODAL
+         ===================================================== -->
+
+    <div
+        class="modal-overlay"
+        id="subjectModal"
+        aria-hidden="true"
+    >
+
+        <div
+            class="modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="subjectModalTitle"
+        >
+
+
+            <div class="modal-header">
+
+                <div>
+
+                    <span class="eyebrow">
+                        SUBJECT CONFIGURATION
+                    </span>
+
+                    <h2 id="subjectModalTitle">
+                        Add Subject
+                    </h2>
+
+                    <p>
+                        Configure subject details
+                        for an examination.
+                    </p>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="modal-close"
+                    id="closeSubjectModal"
+                    aria-label="Close"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+
+            <form
+                id="subjectForm"
+                class="subject-form"
+            >
+
+
+                <input
+                    type="hidden"
+                    id="subjectId"
+                >
+
+
+                <div class="form-grid">
+
+
+                    <!-- EXAM -->
+
+                    <div class="form-group full">
+
+                        <label for="subjectExam">
+
+                            Exam
+
+                            <span class="required">
+                                *
+                            </span>
+
+                        </label>
+
+                        <select
+                            id="subjectExam"
+                            required
+                        >
+
+                            <option value="">
+                                Select Exam
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+
+                    <!-- SUBJECT NAME -->
+
+                    <div class="form-group">
+
+                        <label for="subjectName">
+
+                            Subject Name
+
+                            <span class="required">
+                                *
+                            </span>
+
+                        </label>
+
+                        <input
+                            type="text"
+                            id="subjectName"
+                            placeholder="e.g. Mathematics"
+                            maxlength="100"
+                            required
+                        >
+
+                    </div>
+
+
+
+                    <!-- SUBJECT CODE -->
+
+                    <div class="form-group">
+
+                        <label for="subjectCode">
+
+                            Subject Code
+
+                        </label>
+
+                        <input
+                            type="text"
+                            id="subjectCode"
+                            placeholder="e.g. MATH101"
+                            maxlength="30"
+                        >
+
+                    </div>
+
+
+
+                    <!-- CLASS -->
+
+                    <div class="form-group">
+
+                        <label for="subjectClass">
+
+                            Class
+
+                            <span class="required">
+                                *
+                            </span>
+
+                        </label>
+
+                        <select
+                            id="subjectClass"
+                            required
+                        >
+
+                            <option value="">
+                                Select Class
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+
+                    <!-- SECTION -->
+
+                    <div class="form-group">
+
+                        <label for="subjectSection">
+
+                            Section
+
+                        </label>
+
+                        <select
+                            id="subjectSection"
+                        >
+
+                            <option value="">
+                                All Sections
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+
+                    <!-- EXAM DATE -->
+
+                    <div class="form-group">
+
+                        <label for="subjectDate">
+
+                            Exam Date
+
+                            <span class="required">
+                                *
+                            </span>
+
+                        </label>
+
+                        <input
+                            type="date"
+                            id="subjectDate"
+                            required
+                        >
+
+                    </div>
+
+
+
+                    <!-- DURATION -->
+
+                    <div class="form-group">
+
+                        <label for="subjectDuration">
+
+                            Duration
+
+                        </label>
+
+                        <select
+                            id="subjectDuration"
+                        >
+
+                            <option value="60">
+                                60 Minutes
+                            </option>
+
+                            <option value="90">
+                                90 Minutes
+                            </option>
+
+                            <option
+                                value="120"
+                                selected
+                            >
+                                120 Minutes
+                            </option>
+
+                            <option value="150">
+                                150 Minutes
+                            </option>
+
+                            <option value="180">
+                                180 Minutes
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+
+                    <!-- MAX MARKS -->
+
+                    <div class="form-group">
+
+                        <label for="subjectMaxMarks">
+
+                            Maximum Marks
+
+                            <span class="required">
+                                *
+                            </span>
+
+                        </label>
+
+                        <input
+                            type="number"
+                            id="subjectMaxMarks"
+                            min="1"
+                            step="1"
+                            value="100"
+                            required
+                        >
+
+                    </div>
+
+
+
+                    <!-- PASS MARKS -->
+
+                    <div class="form-group">
+
+                        <label for="subjectPassMarks">
+
+                            Pass Marks
+
+                            <span class="required">
+                                *
+                            </span>
+
+                        </label>
+
+                        <input
+                            type="number"
+                            id="subjectPassMarks"
+                            min="0"
+                            step="1"
+                            value="33"
+                            required
+                        >
+
+                    </div>
+
+
+
+                    <!-- STATUS -->
+
+                    <div class="form-group">
+
+                        <label for="subjectStatus">
+
+                            Status
+
+                            <span class="required">
+                                *
+                            </span>
+
+                        </label>
+
+                        <select
+                            id="subjectStatus"
+                            required
+                        >
+
+                            <option value="Active">
+                                Active
+                            </option>
+
+                            <option value="Inactive">
+                                Inactive
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+
+                    <!-- DESCRIPTION -->
+
+                    <div class="form-group full">
+
+                        <label for="subjectDescription">
+                            Description
+                        </label>
+
+                        <textarea
+                            id="subjectDescription"
+                            rows="3"
+                            maxlength="500"
+                            placeholder="Optional subject notes..."
+                        ></textarea>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <div class="modal-actions">
+
+                    <button
+                        type="button"
+                        class="secondary-btn"
+                        id="cancelSubjectBtn"
+                    >
+                        Cancel
+                    </button>
+
+
+                    <button
+                        type="submit"
+                        class="primary-btn"
+                    >
+                        💾 Save Subject
+                    </button>
+
+                </div>
+
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         VIEW SUBJECT MODAL
+         ===================================================== -->
+
+    <div
+        class="modal-overlay"
+        id="viewSubjectModal"
+        aria-hidden="true"
+    >
+
+        <div
+            class="modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="viewSubjectTitle"
+        >
+
+
+            <div class="modal-header">
+
+                <div>
+
+                    <span class="eyebrow">
+                        SUBJECT DETAILS
+                    </span>
+
+                    <h2 id="viewSubjectTitle">
+                        Subject Details
+                    </h2>
+
+                    <p>
+                        Subject configuration and
+                        examination information.
+                    </p>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="modal-close"
+                    id="closeViewSubjectModal"
+                    aria-label="Close"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+
+            <div class="view-content">
+
+                <div class="view-grid">
+
+
+                    <div class="view-item">
+
+                        <span>
+                            Subject Name
+                        </span>
+
+                        <strong id="viewSubjectName">
+                            —
+                        </strong>
+
+                    </div>
+
+
+                    <div class="view-item">
+
+                        <span>
+                            Subject Code
+                        </span>
+
+                        <strong id="viewSubjectCode">
+                            —
+                        </strong>
+
+                    </div>
+
+
+                    <div class="view-item">
+
+                        <span>
+                            Exam
+                        </span>
+
+                        <strong id="viewSubjectExam">
+                            —
+                        </strong>
+
+                    </div>
+
+
+                    <div class="view-item">
+
+                        <span>
+                            Class
+                        </span>
+
+                        <strong id="viewSubjectClass">
+                            —
+                        </strong>
+
+                    </div>
+
+
+                    <div class="view-item">
+
+                        <span>
+                            Section
+                        </span>
+
+                        <strong id="viewSubjectSection">
+                            —
+                        </strong>
+
+                    </div>
+
+
+                    <div class="view-item">
+
+                        <span>
+                            Exam Date
+                        </span>
+
+                        <strong id="viewSubjectDate">
+                            —
+                        </strong>
+
+                    </div>
+
+
+                    <div class="view-item">
+
+                        <span>
+                            Maximum Marks
+                        </span>
+
+                        <strong id="viewSubjectMaxMarks">
+                            —
+                        </strong>
+
+                    </div>
+
+
+                    <div class="view-item">
+
+                        <span>
+                            Pass Marks
+                        </span>
+
+                        <strong id="viewSubjectPassMarks">
+                            —
+                        </strong>
+
+                    </div>
+
+
+                    <div class="view-item">
+
+                        <span>
+                            Duration
+                        </span>
+
+                        <strong id="viewSubjectDuration">
+                            —
+                        </strong>
+
+                    </div>
+
+
+                    <div class="view-item">
+
+                        <span>
+                            Status
+                        </span>
+
+                        <strong id="viewSubjectStatus">
+                            —
+                        </strong>
+
+                    </div>
+
+
+                </div>
+
+
+                <div
+                    class="view-item"
+                    style="margin-top:12px;"
+                >
+
+                    <span>
+                        Description
+                    </span>
+
+                    <strong id="viewSubjectDescription">
+                        —
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div
+                class="modal-actions"
+                style="
+                    padding:
+                        0 20px 20px;
+                "
+            >
+
+                <button
+                    type="button"
+                    class="secondary-btn"
+                    id="closeViewSubjectBtn"
+                >
+                    Close
+                </button>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         TOAST
+         ===================================================== -->
+
+    <div
+        class="toast"
+        id="subjectToast"
+        role="status"
+        aria-live="polite"
+    ></div>
+
+
+
+    <!-- =====================================================
+         FOOTER
+         ===================================================== -->
+
+    <footer class="site-footer">
+
+        <strong>
+            SmartSchool360
+        </strong>
+
+        <span>
+            Subjects & Academic Management
+        </span>
+
+        <br>
+
+        <span>
+            © 2026 SmartSchool360 · Built by Priyanshu Kumar
+        </span>
+
+    </footer>
+
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+         ===================================================== -->
+
+    <script>
+
+        (() => {
+
+            "use strict";
+
+
+            const SUBJECTS_KEY =
+                "smartschool_subjects";
+
+            const EXAMS_KEY =
+                "smartschool_exams";
+
+
+            let subjects = [];
+
+            let exams = [];
+
+            let editingSubjectId = null;
+
+
+
+            /* =================================================
+               STORAGE
+               ================================================= */
+
+            function readArray(key) {
+
+                try {
+
+                    const raw =
+                        localStorage.getItem(key);
+
+                    if (!raw) {
+                        return [];
+                    }
+
+                    const data =
+                        JSON.parse(raw);
+
+                    return Array.isArray(data)
+                        ? data
+                        : [];
+
+                } catch (error) {
+
+                    console.error(
+                        "Storage error:",
+                        error
+                    );
+
+                    return [];
+
+                }
+
+            }
+
+
+            function saveSubjects() {
+
+                localStorage.setItem(
+                    SUBJECTS_KEY,
+                    JSON.stringify(subjects)
+                );
+
+            }
+
+
+
+            /* =================================================
+               HELPERS
+               ================================================= */
+
+            function escapeHTML(value) {
+
+                return String(
+                    value ?? ""
+                )
+                    .replaceAll("&", "&amp;")
+                    .replaceAll("<", "&lt;")
+                    .replaceAll(">", "&gt;")
+                    .replaceAll('"', "&quot;")
+                    .replaceAll("'", "&#039;");
+
+            }
+
+
+            function normalize(value) {
+
+                return String(
+                    value ?? ""
+                )
+                    .trim()
+                    .toLowerCase();
+
+            }
+
+
+            function generateId() {
+
+                return (
+                    "SUB" +
+                    Date.now()
+                        .toString(36)
+                        .toUpperCase()
+                );
+
+            }
+
+
+            function formatDate(value) {
+
+                if (!value) {
+                    return "—";
+                }
+
+                const date =
+                    new Date(
+                        `${value}T00:00:00`
+                    );
+
+                if (
+                    Number.isNaN(
+                        date.getTime()
+                    )
+                ) {
+                    return value;
+                }
+
+                return date.toLocaleDateString(
+                    "en-IN",
+                    {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric"
+                    }
+                );
+
+            }
+
+
+            function today() {
+
+                const date =
+                    new Date();
+
+                return (
+                    date.getFullYear() +
+                    "-" +
+                    String(
+                        date.getMonth() + 1
+                    ).padStart(2, "0") +
+                    "-" +
+                    String(
+                        date.getDate()
+                    ).padStart(2, "0")
+                );
+
+            }
+
+
+
+            /* =================================================
+               TOAST
+               ================================================= */
+
+            let toastTimer;
+
+
+            function toast(
+                message,
+                type = "success"
+            ) {
+
+                const element =
+                    document.getElementById(
+                        "subjectToast"
+                    );
+
+                if (!element) {
+                    return;
+                }
+
+                element.textContent =
+                    message;
+
+                element.className =
+                    `toast show ${type}`;
+
+                clearTimeout(
+                    toastTimer
+                );
+
+                toastTimer =
+                    setTimeout(
+                        () => {
+
+                            element.className =
+                                "toast";
+
+                        },
+                        2600
+                    );
+
+            }
+
+
+
+            /* =================================================
+               EXAM HELPERS
+               ================================================= */
+
+            function getExamById(id) {
+
+                return exams.find(
+                    exam =>
+                        String(
+                            exam.id
+                        ) ===
+                        String(id)
+                ) || null;
+
+            }
+
+
+            function getExamName(id) {
+
+                const exam =
+                    getExamById(id);
+
+                return (
+                    exam?.name ||
+                    "No Exam"
+                );
+
+            }
+
+
+            function getExamClass(id) {
+
+                const exam =
+                    getExamById(id);
+
+                return (
+                    exam?.className ||
+                    ""
+                );
+
+            }
+
+
+            function getExamSection(id) {
+
+                const exam =
+                    getExamById(id);
+
+                return (
+                    exam?.section ||
+                    ""
+                );
+
+            }
+
+
+            function getExamDate(id) {
+
+                const exam =
+                    getExamById(id);
+
+                return (
+                    exam?.startDate ||
+                    ""
+                );
+
+            }
+
+
+
+            /* =================================================
+               POPULATE EXAM OPTIONS
+               ================================================= */
+
+            function populateExamOptions() {
+
+                const filter =
+                    document.getElementById(
+                        "subjectExamFilter"
+                    );
+
+                const select =
+                    document.getElementById(
+                        "subjectExam"
+                    );
+
+
+                const currentFilter =
+                    filter?.value ||
+                    "";
+
+                const currentSelect =
+                    select?.value ||
+                    "";
+
+
+                const options =
+                    exams
+                        .slice()
+                        .sort(
+                            (a,b) =>
+                                String(
+                                    a.name || ""
+                                ).localeCompare(
+                                    String(
+                                        b.name || ""
+                                    )
+                                )
+                        )
+                        .map(
+                            exam =>
+                                `
+                                <option
+                                    value="${escapeHTML(exam.id)}"
+                                >
+                                    ${escapeHTML(
+                                        exam.name ||
+                                        "Untitled Exam"
+                                    )}
+                                    ${
+                                        exam.className
+                                            ? ` — Class ${escapeHTML(
+                                                exam.className
+                                            )}`
+                                            : ""
+                                    }
+                                </option>
+                                `
+                        )
+                        .join("");
+
+
+                if (filter) {
+
+                    filter.innerHTML =
+                        `
+                        <option value="">
+                            All Exams
+                        </option>
+                        ` +
+                        options;
+
+                    filter.value =
+                        currentFilter;
+
+                }
+
+
+                if (select) {
+
+                    select.innerHTML =
+                        `
+                        <option value="">
+                            Select Exam
+                        </option>
+                        ` +
+                        options;
+
+                    select.value =
+                        currentSelect;
+
+                }
+
+            }
+
+
+
+            /* =================================================
+               CLASS / SECTION OPTIONS
+               ================================================= */
+
+            function getClasses() {
+
+                const values =
+                    new Set();
+
+                exams.forEach(
+                    exam => {
+
+                        if (
+                            exam.className
+                        ) {
+                            values.add(
+                                String(
+                                    exam.className
+                                ).trim()
+                            );
+                        }
+
+                    }
+                );
+
+                subjects.forEach(
+                    subject => {
+
+                        if (
+                            subject.className
+                        ) {
+                            values.add(
+                                String(
+                                    subject.className
+                                ).trim()
+                            );
+                        }
+
+                    }
+                );
+
+
+                return Array.from(values)
+                    .filter(Boolean)
+                    .sort(
+                        (a,b) =>
+                            a.localeCompare(
+                                b,
+                                undefined,
+                                {
+                                    numeric: true
+                                }
+                            )
+                    );
+
+            }
+
+
+            function populateClassOptions() {
+
+                const filter =
+                    document.getElementById(
+                        "subjectClassFilter"
+                    );
+
+                const select =
+                    document.getElementById(
+                        "subjectClass"
+                    );
+
+
+                const classes =
+                    getClasses();
+
+
+                const filterCurrent =
+                    filter?.value ||
+                    "";
+
+                const selectCurrent =
+                    select?.value ||
+                    "";
+
+
+                const options =
+                    classes
+                        .map(
+                            item =>
+                                `
+                                <option
+                                    value="${escapeHTML(item)}"
+                                >
+                                    ${escapeHTML(item)}
+                                </option>
+                                `
+                        )
+                        .join("");
+
+
+                if (filter) {
+
+                    filter.innerHTML =
+                        `
+                        <option value="">
+                            All Classes
+                        </option>
+                        ` +
+                        options;
+
+                    filter.value =
+                        filterCurrent;
+
+                }
+
+
+                if (select) {
+
+                    select.innerHTML =
+                        `
+                        <option value="">
+                            Select Class
+                        </option>
+                        ` +
+                        options;
+
+                    select.value =
+                        selectCurrent;
+
+                }
+
+            }
+
+
+            function populateSectionOptions(
+                selectedClass = ""
+            ) {
+
+                const select =
+                    document.getElementById(
+                        "subjectSection"
+                    );
+
+                if (!select) {
+                    return;
+                }
+
+
+                const sections =
+                    new Set();
+
+
+                exams.forEach(
+                    exam => {
+
+                        if (
+                            selectedClass &&
+                            normalize(
+                                exam.className
+                            ) !==
+                            normalize(
+                                selectedClass
+                            )
+                        ) {
+                            return;
+                        }
+
+                        if (
+                            exam.section
+                        ) {
+                            sections.add(
+                                String(
+                                    exam.section
+                                ).trim()
+                            );
+                        }
+
+                    }
+                );
+
+
+                subjects.forEach(
+                    subject => {
+
+                        if (
+                            selectedClass &&
+                            normalize(
+                                subject.className
+                            ) !==
+                            normalize(
+                                selectedClass
+                            )
+                        ) {
+                            return;
+                        }
+
+                        if (
+                            subject.section
+                        ) {
+                            sections.add(
+                                String(
+                                    subject.section
+                                ).trim()
+                            );
+                        }
+
+                    }
+                );
+
+
+                const current =
+                    select.value;
+
+
+                select.innerHTML =
+                    `
+                    <option value="">
+                        All Sections
+                    </option>
+                    ` +
+                    Array.from(sections)
+                        .sort()
+                        .map(
+                            item =>
+                                `
+                                <option
+                                    value="${escapeHTML(item)}"
+                                >
+                                    ${escapeHTML(item)}
+                                </option>
+                                `
+                        )
+                        .join("");
+
+
+                if (
+                    Array.from(
+                        sections
+                    ).includes(
+                        current
+                    )
+                ) {
+
+                    select.value =
+                        current;
+
+                }
+
+            }
+
+
+
+            /* =================================================
+               AUTO-FILL FROM EXAM
+               ================================================= */
+
+            function syncExamDetails() {
+
+                const examId =
+                    document.getElementById(
+                        "subjectExam"
+                    )?.value;
+
+
+                if (!examId) {
+                    return;
+                }
+
+
+                const exam =
+                    getExamById(
+                        examId
+                    );
+
+
+                if (!exam) {
+                    return;
+                }
+
+
+                const classField =
+                    document.getElementById(
+                        "subjectClass"
+                    );
+
+                const sectionField =
+                    document.getElementById(
+                        "subjectSection"
+                    );
+
+                const dateField =
+                    document.getElementById(
+                        "subjectDate"
+                    );
+
+
+                if (
+                    classField &&
+                    exam.className
+                ) {
+
+                    classField.value =
+                        exam.className;
+
+                }
+
+
+                populateSectionOptions(
+                    exam.className ||
+                    ""
+                );
+
+
+                if (
+                    sectionField &&
+                    exam.section
+                ) {
+
+                    sectionField.value =
+                        exam.section;
+
+                }
+
+
+                if (
+                    dateField &&
+                    exam.startDate
+                ) {
+
+                    dateField.value =
+                        exam.startDate;
+
+                }
+
+
+                const maxMarks =
+                    document.getElementById(
+                        "subjectMaxMarks"
+                    );
+
+                const passMarks =
+                    document.getElementById(
+                        "subjectPassMarks"
+                    );
+
+
+                if (
+                    maxMarks &&
+                    exam.maxMarks
+                ) {
+
+                    maxMarks.value =
+                        exam.maxMarks;
+
+                }
+
+
+                if (
+                    passMarks &&
+                    exam.passMarks !==
+                    undefined
+                ) {
+
+                    passMarks.value =
+                        exam.passMarks;
+
+                }
+
+            }
+
+
+
+            /* =================================================
+               FILTERED SUBJECTS
+               ================================================= */
+
+            function filteredSubjects() {
+
+                const search =
+                    normalize(
+                        document.getElementById(
+                            "subjectSearch"
+                        )?.value
+                    );
+
+
+                const examFilter =
+                    document.getElementById(
+                        "subjectExamFilter"
+                    )?.value ||
+                    "";
+
+
+                const classFilter =
+                    normalize(
+                        document.getElementById(
+                            "subjectClassFilter"
+                        )?.value
+                    );
+
+
+                const statusFilter =
+                    normalize(
+                        document.getElementById(
+                            "subjectStatusFilter"
+                        )?.value
+                    );
+
+
+                return subjects.filter(
+                    subject => {
+
+                        const subjectName =
+                            normalize(
+                                subject.name
+                            );
+
+                        const code =
+                            normalize(
+                                subject.code
+                            );
+
+                        const examName =
+                            normalize(
+                                getExamName(
+                                    subject.examId
+                                )
+                            );
+
+                        const className =
+                            normalize(
+                                subject.className
+                            );
+
+                        const status =
+                            normalize(
+                                subject.status
+                            );
+
+
+                        if (
+                            search &&
+                            !(
+                                subjectName.includes(
+                                    search
+                                ) ||
+                                code.includes(
+                                    search
+                                ) ||
+                                examName.includes(
+                                    search
+                                )
+                            )
+                        ) {
+                            return false;
+                        }
+
+
+                        if (
+                            examFilter &&
+                            String(
+                                subject.examId
+                            ) !==
+                            String(
+                                examFilter
+                            )
+                        ) {
+                            return false;
+                        }
+
+
+                        if (
+                            classFilter &&
+                            className !==
+                            classFilter
+                        ) {
+                            return false;
+                        }
+
+
+                        if (
+                            statusFilter &&
+                            status !==
+                            statusFilter
+                        ) {
+                            return false;
+                        }
+
+
+                        return true;
+
+                    }
+                );
+
+            }
+
+
+
+            /* =================================================
+               KPIs
+               ================================================= */
+
+            function renderKPIs(
+                list
+            ) {
+
+                const total =
+                    list.length;
+
+
+                const linkedExams =
+                    new Set(
+                        list
+                            .map(
+                                item =>
+                                    item.examId
+                            )
+                            .filter(Boolean)
+                    ).size;
+
+
+                const totalMarks =
+                    list.reduce(
+                        (
+                            total,
+                            item
+                        ) =>
+                            total +
+                            Number(
+                                item.maxMarks
+                            || 0
+                            ),
+                        0
+                    );
+
+
+                const classes =
+                    new Set(
+                        list
+                            .map(
+                                item =>
+                                    item.className
+                            )
+                            .filter(Boolean)
+                    ).size;
+
+
+                document.getElementById(
+                    "totalSubjects"
+                ).textContent =
+                    total;
+
+
+                document.getElementById(
+                    "linkedExams"
+                ).textContent =
+                    linkedExams;
+
+
+                document.getElementById(
+                    "totalMarks"
+                ).textContent =
+                    totalMarks;
+
+
+                document.getElementById(
+                    "subjectClasses"
+                ).textContent =
+                    classes;
+
+            }
+
+
+
+            /* =================================================
+               RENDER TABLE
+               ================================================= */
+
+            function renderTable() {
+
+                const body =
+                    document.getElementById(
+                        "subjectsTableBody"
+                    );
+
+
+                const list =
+                    filteredSubjects();
+
+
+                renderKPIs(
+                    list
+                );
+
+
+                if (!list.length) {
+
+                    body.innerHTML = `
+
+                        <tr>
+
+                            <td
+                                colspan="10"
+                                class="empty-state"
+                            >
+
+                                <div class="empty-icon">
+                                    📚
+                                </div>
+
+                                <strong>
+                                    No subjects found
+                                </strong>
+
+                                <span>
+                                    Add a subject or
+                                    change your filters.
+                                </span>
+
+                            </td>
+
+                        </tr>
+
+                    `;
+
+                    return;
+
+                }
+
+
+                body.innerHTML =
+                    list.map(
+                        subject => {
+
+                            const exam =
+                                getExamById(
+                                    subject.examId
+                                );
+
+
+                            return `
+
+                                <tr>
+
+                                    <td>
+
+                                        <div class="subject-cell">
+
+                                            <div class="subject-icon">
+                                                📚
+                                            </div>
+
+                                            <div class="subject-info">
+
+                                                <strong>
+                                                    ${escapeHTML(
+                                                        subject.name ||
+                                                        "Unnamed Subject"
+                                                    )}
+                                                </strong>
+
+                                                <span>
+                                                    ${escapeHTML(
+                                                        subject.description ||
+                                                        "Academic subject"
+                                                    )}
+                                                </span>
+
+                                            </div>
+
+                                        </div>
+
+                                    </td>
+
+
+                                    <td>
+                                        ${escapeHTML(
+                                            subject.code ||
+                                            "—"
+                                        )}
+                                    </td>
+
+
+                                    <td>
+
+                                        <span class="exam-badge">
+
+                                            ${escapeHTML(
+                                                exam?.name ||
+                                                "No Exam"
+                                            )}
+
+                                        </span>
+
+                                    </td>
+
+
+                                    <td>
+                                        ${escapeHTML(
+                                            subject.className ||
+                                            "—"
+                                        )}
+                                    </td>
+
+
+                                    <td>
+                                        ${formatDate(
+                                            subject.examDate
+                                        )}
+                                    </td>
+
+
+                                    <td>
+
+                                        <span class="marks-badge">
+
+                                            ${escapeHTML(
+                                                subject.maxMarks ||
+                                                0
+                                            )}
+
+                                        </span>
+
+                                    </td>
+
+
+                                    <td>
+                                        ${escapeHTML(
+                                            subject.passMarks ||
+                                            0
+                                        )}
+                                    </td>
+
+
+                                    <td>
+                                        ${escapeHTML(
+                                            subject.duration ||
+                                            0
+                                        )} min
+                                    </td>
+
+
+                                    <td>
+
+                                        <span
+                                            class="exam-badge"
+                                            style="
+                                                background:
+                                                    ${
+                                                        subject.status ===
+                                                        "Active"
+                                                            ? "#ecfdf5"
+                                                            : "#f1f5f9"
+                                                    };
+                                                color:
+                                                    ${
+                                                        subject.status ===
+                                                        "Active"
+                                                            ? "#047857"
+                                                            : "#64748b"
+                                                    };
+                                            "
+                                        >
+
+                                            ${escapeHTML(
+                                                subject.status ||
+                                                "Active"
+                                            )}
+
+                                        </span>
+
+                                    </td>
+
+
+                                    <td>
+
+                                        <div
+                                            class="action-buttons"
+                                        >
+
+                                            <button
+                                                type="button"
+                                                class="action-btn view"
+                                                data-action="view"
+                                                data-id="${escapeHTML(
+                                                    subject.id
+                                                )}"
+                                                title="View"
+                                            >
+                                                👁️
+                                            </button>
+
+
+                                            <button
+                                                type="button"
+                                                class="action-btn edit"
+                                                data-action="edit"
+                                                data-id="${escapeHTML(
+                                                    subject.id
+                                                )}"
+                                                title="Edit"
+                                            >
+                                                ✏️
+                                            </button>
+
+
+                                            <button
+                                                type="button"
+                                                class="action-btn delete"
+                                                data-action="delete"
+                                                data-id="${escapeHTML(
+                                                    subject.id
+                                                )}"
+                                                title="Delete"
+                                            >
+                                                🗑️
+                                            </button>
+
+                                        </div>
+
+                                    </td>
+
+                                </tr>
+
+                            `;
+
+                        }
+                    ).join("");
+
+            }
+
+
+
+            /* =================================================
+               OPEN MODAL
+               ================================================= */
+
+            function openSubjectModal(
+                subject = null
+            ) {
+
+                const modal =
+                    document.getElementById(
+                        "subjectModal"
+                    );
+
+                const form =
+                    document.getElementById(
+                        "subjectForm"
+                    );
+
+
+                editingSubjectId =
+                    subject?.id ||
+                    null;
+
+
+                form.reset();
+
+
+                document.getElementById(
+                    "subjectModalTitle"
+                ).textContent =
+                    subject
+                        ? "Edit Subject"
+                        : "Add Subject";
+
+
+                populateExamOptions();
+
+                populateClassOptions();
+
+
+                if (subject) {
+
+                    document.getElementById(
+                        "subjectId"
+                    ).value =
+                        subject.id || "";
+
+
+                    document.getElementById(
+                        "subjectExam"
+                    ).value =
+                        subject.examId || "";
+
+
+                    document.getElementById(
+                        "subjectName"
+                    ).value =
+                        subject.name || "";
+
+
+                    document.getElementById(
+                        "subjectCode"
+                    ).value =
+                        subject.code || "";
+
+
+                    document.getElementById(
+                        "subjectClass"
+                    ).value =
+                        subject.className || "";
+
+
+                    populateSectionOptions(
+                        subject.className ||
+                        ""
+                    );
+
+
+                    document.getElementById(
+                        "subjectSection"
+                    ).value =
+                        subject.section || "";
+
+
+                    document.getElementById(
+                        "subjectDate"
+                    ).value =
+                        subject.examDate || "";
+
+
+                    document.getElementById(
+                        "subjectDuration"
+                    ).value =
+                        subject.duration ||
+                        "120";
+
+
+                    document.getElementById(
+                        "subjectMaxMarks"
+                    ).value =
+                        subject.maxMarks ??
+                        100;
+
+
+                    document.getElementById(
+                        "subjectPassMarks"
+                    ).value =
+                        subject.passMarks ??
+                        33;
+
+
+                    document.getElementById(
+                        "subjectStatus"
+                    ).value =
+                        subject.status ||
+                        "Active";
+
+
+                    document.getElementById(
+                        "subjectDescription"
+                    ).value =
+                        subject.description ||
+                        "";
+
+                } else {
+
+                    document.getElementById(
+                        "subjectDate"
+                    ).value =
+                        today();
+
+                }
+
+
+                modal.classList.add(
+                    "show"
+                );
+
+                modal.setAttribute(
+                    "aria-hidden",
+                    "false"
+                );
+
+                document.body.style.overflow =
+                    "hidden";
+
+            }
+
+
+
+            function closeSubjectModal() {
+
+                const modal =
+                    document.getElementById(
+                        "subjectModal"
+                    );
+
+
+                modal.classList.remove(
+                    "show"
+                );
+
+
+                modal.setAttribute(
+                    "aria-hidden",
+                    "true"
+                );
+
+
+                document.body.style.overflow =
+                    "";
+
+
+                editingSubjectId =
+                    null;
+
+            }
+
+
+
+            /* =================================================
+               VIEW
+               ================================================= */
+
+            function openViewModal(
+                subject
+            ) {
+
+                const exam =
+                    getExamById(
+                        subject.examId
+                    );
+
+
+                document.getElementById(
+                    "viewSubjectTitle"
+                ).textContent =
+                    subject.name ||
+                    "Subject Details";
+
+
+                document.getElementById(
+                    "viewSubjectName"
+                ).textContent =
+                    subject.name ||
+                    "—";
+
+
+                document.getElementById(
+                    "viewSubjectCode"
+                ).textContent =
+                    subject.code ||
+                    "—";
+
+
+                document.getElementById(
+                    "viewSubjectExam"
+                ).textContent =
+                    exam?.name ||
+                    "—";
+
+
+                document.getElementById(
+                    "viewSubjectClass"
+                ).textContent =
+                    subject.className ||
+                    "—";
+
+
+                document.getElementById(
+                    "viewSubjectSection"
+                ).textContent =
+                    subject.section ||
+                    "All Sections";
+
+
+                document.getElementById(
+                    "viewSubjectDate"
+                ).textContent =
+                    formatDate(
+                        subject.examDate
+                    );
+
+
+                document.getElementById(
+                    "viewSubjectMaxMarks"
+                ).textContent =
+                    subject.maxMarks ??
+                    "—";
+
+
+                document.getElementById(
+                    "viewSubjectPassMarks"
+                ).textContent =
+                    subject.passMarks ??
+                    "—";
+
+
+                document.getElementById(
+                    "viewSubjectDuration"
+                ).textContent =
+                    `${subject.duration || 0} Minutes`;
+
+
+                document.getElementById(
+                    "viewSubjectStatus"
+                ).textContent =
+                    subject.status ||
+                    "Active";
+
+
+                document.getElementById(
+                    "viewSubjectDescription"
+                ).textContent =
+                    subject.description ||
+                    "No description added.";
+
+
+                const modal =
+                    document.getElementById(
+                        "viewSubjectModal"
+                    );
+
+
+                modal.classList.add(
+                    "show"
+                );
+
+
+                modal.setAttribute(
+                    "aria-hidden",
+                    "false"
+                );
+
+
+                document.body.style.overflow =
+                    "hidden";
+
+            }
+
+
+
+            function closeViewModal() {
+
+                const modal =
+                    document.getElementById(
+                        "viewSubjectModal"
+                    );
+
+
+                modal.classList.remove(
+                    "show"
+                );
+
+
+                modal.setAttribute(
+                    "aria-hidden",
+                    "true"
+                );
+
+
+                document.body.style.overflow =
+                    "";
+
+            }
+
+
+
+            /* =================================================
+               SAVE SUBJECT
+               ================================================= */
+
+            function saveSubject(
+                event
+            ) {
+
+                event.preventDefault();
+
+
+                const examId =
+                    document.getElementById(
+                        "subjectExam"
+                    ).value;
+
+
+                const name =
+                    document.getElementById(
+                        "subjectName"
+                    ).value.trim();
+
+
+                const code =
+                    document.getElementById(
+                        "subjectCode"
+                    ).value.trim();
+
+
+                const className =
+                    document.getElementById(
+                        "subjectClass"
+                    ).value;
+
+
+                const section =
+                    document.getElementById(
+                        "subjectSection"
+                    ).value;
+
+
+                const examDate =
+                    document.getElementById(
+                        "subjectDate"
+                    ).value;
+
+
+                const duration =
+                    Number(
+                        document.getElementById(
+                            "subjectDuration"
+                        ).value
+                    );
+
+
+                const maxMarks =
+                    Number(
+                        document.getElementById(
+                            "subjectMaxMarks"
+                        ).value
+                    );
+
+
+                const passMarks =
+                    Number(
+                        document.getElementById(
+                            "subjectPassMarks"
+                        ).value
+                    );
+
+
+                const status =
+                    document.getElementById(
+                        "subjectStatus"
+                    ).value;
+
+
+                const description =
+                    document.getElementById(
+                        "subjectDescription"
+                    ).value.trim();
+
+
+
+                if (!examId) {
+
+                    toast(
+                        "Please select an exam.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                if (!name) {
+
+                    toast(
+                        "Please enter subject name.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                if (!className) {
+
+                    toast(
+                        "Please select class.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                if (!examDate) {
+
+                    toast(
+                        "Please select exam date.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                if (
+                    !Number.isFinite(
+                        maxMarks
+                    ) ||
+                    maxMarks <= 0
+                ) {
+
+                    toast(
+                        "Maximum marks must be greater than 0.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                if (
+                    !Number.isFinite(
+                        passMarks
+                    ) ||
+                    passMarks < 0 ||
+                    passMarks > maxMarks
+                ) {
+
+                    toast(
+                        "Pass marks must be between 0 and maximum marks.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                if (
+                    !Number.isFinite(
+                        duration
+                    ) ||
+                    duration <= 0
+                ) {
+
+                    toast(
+                        "Please select a valid duration.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+
+                /*
+                 * Prevent duplicate subject
+                 * in the same exam.
+                 */
+
+                const duplicate =
+                    subjects.some(
+                        item => {
+
+                            if (
+                                editingSubjectId &&
+                                item.id ===
+                                    editingSubjectId
+                            ) {
+                                return false;
+                            }
+
+
+                            return (
+                                String(
+                                    item.examId
+                                ) ===
+                                String(
+                                    examId
+                                ) &&
+                                normalize(
+                                    item.name
+                                ) ===
+                                normalize(
+                                    name
+                                )
+                            );
+
+                        }
+                    );
+
+
+                if (duplicate) {
+
+                    toast(
+                        "This subject already exists in the selected exam.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+
+                const now =
+                    new Date().toISOString();
+
+
+                const subject = {
+
+                    id:
+                        editingSubjectId ||
+                        generateId(),
+
+                    examId,
+
+                    name,
+
+                    code,
+
+                    className,
+
+                    section,
+
+                    examDate,
+
+                    duration,
+
+                    maxMarks,
+
+                    passMarks,
+
+                    status,
+
+                    description,
+
+                    createdAt:
+                        editingSubjectId
+                            ? (
+                                subjects.find(
+                                    item =>
+                                        item.id ===
+                                        editingSubjectId
+                                )?.createdAt ||
+                                now
+                            )
+                            : now,
+
+                    updatedAt:
+                        now
+
+                };
+
+
+
+                if (editingSubjectId) {
+
+                    subjects =
+                        subjects.map(
+                            item =>
+                                item.id ===
+                                editingSubjectId
+                                    ? subject
+                                    : item
+                        );
+
+
+                    toast(
+                        "Subject updated successfully."
+                    );
+
+                } else {
+
+                    subjects.push(
+                        subject
+                    );
+
+
+                    toast(
+                        "Subject added successfully."
+                    );
+
+                }
+
+
+                saveSubjects();
+
+                closeSubjectModal();
+
+                render();
+
+            }
+
+
+
+            /* =================================================
+               DELETE
+               ================================================= */
+
+            function deleteSubject(
+                subject
+            ) {
+
+                if (!subject) {
+                    return;
+                }
+
+
+                const confirmed =
+                    window.confirm(
+                        `Delete "${subject.name}"?\n\nThis subject record will be permanently removed.`
+                    );
+
+
+                if (!confirmed) {
+                    return;
+                }
+
+
+                subjects =
+                    subjects.filter(
+                        item =>
+                            item.id !==
+                            subject.id
+                    );
+
+
+                saveSubjects();
+
+                render();
+
+
+                toast(
+                    "Subject deleted successfully."
+                );
+
+            }
+
+
+
+            /* =================================================
+               LOAD
+               ================================================= */
+
+            function load() {
+
+                subjects =
+                    readArray(
+                        SUBJECTS_KEY
+                    );
+
+
+                exams =
+                    readArray(
+                        EXAMS_KEY
+                    );
+
+
+                populateExamOptions();
+
+                populateClassOptions();
+
+                populateSectionOptions();
+
+                render();
+
+            }
+
+
+
+            /* =================================================
+               RENDER
+               ================================================= */
+
+            function render() {
+
+                renderTable();
+
+            }
+
+
+
+            /* =================================================
+               EVENTS
+               ================================================= */
+
+            document.addEventListener(
+                "DOMContentLoaded",
+                () => {
+
+                    load();
+
+
+
+                    document.getElementById(
+                        "addSubjectBtn"
+                    )?.addEventListener(
+                        "click",
+                        () =>
+                            openSubjectModal()
+                    );
+
+
+
+                    document.getElementById(
+                        "closeSubjectModal"
+                    )?.addEventListener(
+                        "click",
+                        closeSubjectModal
+                    );
+
+
+
+                    document.getElementById(
+                        "cancelSubjectBtn"
+                    )?.addEventListener(
+                        "click",
+                        closeSubjectModal
+                    );
+
+
+
+                    document.getElementById(
+                        "closeViewSubjectModal"
+                    )?.addEventListener(
+                        "click",
+                        closeViewModal
+                    );
+
+
+
+                    document.getElementById(
+                        "closeViewSubjectBtn"
+                    )?.addEventListener(
+                        "click",
+                        closeViewModal
+                    );
+
+
+
+                    document.getElementById(
+                        "subjectForm"
+                    )?.addEventListener(
+                        "submit",
+                        saveSubject
+                    );
+
+
+
+                    document.getElementById(
+                        "subjectExam"
+                    )?.addEventListener(
+                        "change",
+                        syncExamDetails
+                    );
+
+
+
+                    document.getElementById(
+                        "subjectClass"
+                    )?.addEventListener(
+                        "change",
+                        event =>
+                            populateSectionOptions(
+                                event.target.value
+                            )
+                    );
+
+
+
+                    document.getElementById(
+                        "refreshSubjectsBtn"
+                    )?.addEventListener(
+                        "click",
+                        () => {
+
+                            load();
+
+                            toast(
+                                "Subject data refreshed."
+                            );
+
+                        }
+                    );
+
+
+
+                    [
+                        "subjectSearch",
+                        "subjectExamFilter",
+                        "subjectClassFilter",
+                        "subjectStatusFilter"
+                    ].forEach(
+                        id => {
+
+                            document.getElementById(
+                                id
+                            )?.addEventListener(
+                                "input",
+                                renderTable
+                            );
+
+
+                            document.getElementById(
+                                id
+                            )?.addEventListener(
+                                "change",
+                                renderTable
+                            );
+
+                        }
+                    );
+
+
+
+                    document.getElementById(
+                        "clearSubjectFiltersBtn"
+                    )?.addEventListener(
+                        "click",
+                        () => {
+
+                            document.getElementById(
+                                "subjectSearch"
+                            ).value = "";
+
+
+                            document.getElementById(
+                                "subjectExamFilter"
+                            ).value = "";
+
+
+                            document.getElementById(
+                                "subjectClassFilter"
+                            ).value = "";
+
+
+                            document.getElementById(
+                                "subjectStatusFilter"
+                            ).value = "";
+
+
+                            renderTable();
+
+                        }
+                    );
+
+
+
+                    document.getElementById(
+                        "subjectsTableBody"
+                    )?.addEventListener(
+                        "click",
+                        event => {
+
+                            const button =
+                                event.target.closest(
+                                    "[data-action]"
+                                );
+
+
+                            if (!button) {
+                                return;
+                            }
+
+
+                            const id =
+                                button.dataset.id;
+
+
+                            const subject =
+                                subjects.find(
+                                    item =>
+                                        String(
+                                            item.id
+                                        ) ===
+                                        String(id)
+                                );
+
+
+                            if (!subject) {
+                                return;
+                            }
+
+
+                            const action =
+                                button.dataset.action;
+
+
+                            if (
+                                action ===
+                                "view"
+                            ) {
+
+                                openViewModal(
+                                    subject
+                                );
+
+                            }
+
+
+                            if (
+                                action ===
+                                "edit"
+                            ) {
+
+                                openSubjectModal(
+                                    subject
+                                );
+
+                            }
+
+
+                            if (
+                                action ===
+                                "delete"
+                            ) {
+
+                                deleteSubject(
+                                    subject
+                                );
+
+                            }
+
+                        }
+                    );
+
+
+
+                    [
+                        "subjectModal",
+                        "viewSubjectModal"
+                    ].forEach(
+                        id => {
+
+                            document.getElementById(
+                                id
+                            )?.addEventListener(
+                                "click",
+                                event => {
+
+                                    if (
+                                        event.target !==
+                                        event.currentTarget
+                                    ) {
+                                        return;
+                                    }
+
+
+                                    if (
+                                        id ===
+                                        "subjectModal"
+                                    ) {
+
+                                        closeSubjectModal();
+
+                                    } else {
+
+                                        closeViewModal();
+
+                                    }
+
+                                }
+                            );
+
+                        }
+                    );
+
+
+
+                    document.addEventListener(
+                        "keydown",
+                        event => {
+
+                            if (
+                                event.key !==
+                                "Escape"
+                            ) {
+                                return;
+                            }
+
+
+                            closeSubjectModal();
+
+                            closeViewModal();
+
+                        }
+                    );
+
+
+
+                    window.addEventListener(
+                        "storage",
+                        event => {
+
+                            if (
+                                event.key ===
+                                    SUBJECTS_KEY ||
+                                event.key ===
+                                    EXAMS_KEY
+                            ) {
+
+                                load();
+
+                            }
+
+                        }
+                    );
+
+
+
+                    /*
+                     * Public API for upcoming
+                     * Marks Entry module.
+                     */
+
+                    window.SmartSchoolSubjects = {
+
+                        getSubjects: () =>
+                            [...subjects],
+
+                        getSubjectById: id =>
+                            subjects.find(
+                                item =>
+                                    String(
+                                        item.id
+                                    ) ===
+                                    String(id)
+                            ) || null,
+
+                        getSubjectsByExam: examId =>
+                            subjects.filter(
+                                item =>
+                                    String(
+                                        item.examId
+                                    ) ===
+                                    String(examId)
+                            ),
+
+                        refresh: () =>
+                            load()
+
+                    };
+
+                }
+            );
+
+        })();
+
+    </script>
+
+
+</body>
+
+</html>
