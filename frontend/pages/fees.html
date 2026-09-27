@@ -1,23 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
     <meta
         name="viewport"
         content="width=device-width, initial-scale=1.0"
     >
 
-    <meta
-        name="theme-color"
-        content="#4f46e5"
-    >
+    <title>Fees Management | SmartSchool360</title>
 
-    <title>
-        Fees Management | SmartSchool360
-    </title>
+    <meta
+        name="description"
+        content="SmartSchool360 School Fees Management"
+    >
 
     <link
         rel="stylesheet"
@@ -28,193 +23,172 @@
         rel="stylesheet"
         href="../assets/css/fees.css"
     >
-
 </head>
 
-
 <body>
-
 
     <!-- =====================================================
          HEADER
          ===================================================== -->
 
-    <header class="fees-header">
+    <header class="page-header">
 
-        <div class="fees-header-left">
+        <div class="header-left">
 
             <button
                 type="button"
                 class="back-btn"
-                id="backToDashboardBtn"
+                onclick="window.location.href='../../index.html'"
                 aria-label="Back"
             >
                 ←
             </button>
 
+            <div class="header-icon">
+                💰
+            </div>
 
-            <div class="fees-title-area">
-
-                <div class="fees-icon">
-                    💰
-                </div>
-
-                <div>
-
-                    <h1>
-                        Fees Management
-                    </h1>
-
-                    <p>
-                        Manage student fees, payments and dues
-                    </p>
-
-                </div>
-
+            <div class="header-title">
+                <h1>Fees Management</h1>
+                <p>Manage student fees and payments</p>
             </div>
 
         </div>
-
 
         <button
             type="button"
             class="refresh-btn"
             id="refreshFeesBtn"
         >
-            🔄 Refresh
+            ↻ Refresh
         </button>
 
     </header>
-
 
 
     <!-- =====================================================
          MAIN
          ===================================================== -->
 
-    <main class="fees-container">
-
+    <main class="fees-page">
 
         <!-- =================================================
              KPI CARDS
              ================================================= -->
 
-        <section class="fees-summary-grid">
+        <section class="fees-kpi-grid">
 
+            <article class="fees-kpi-card total">
 
-            <div class="fee-summary-card">
-
-                <div class="fee-summary-icon">
+                <div class="kpi-icon">
                     💰
                 </div>
 
-                <div>
+                <div class="kpi-content">
 
-                    <span>
+                    <span class="kpi-label">
                         Total Fees
                     </span>
 
                     <strong id="totalFeesAmount">
-                        ₹0
+                        ₹0.00
                     </strong>
+
+                    <small>
+                        Overall fee value
+                    </small>
 
                 </div>
 
-            </div>
+            </article>
 
 
+            <article class="fees-kpi-card collected">
 
-            <div class="fee-summary-card">
-
-                <div class="fee-summary-icon collected">
+                <div class="kpi-icon">
                     ✅
                 </div>
 
-                <div>
+                <div class="kpi-content">
 
-                    <span>
+                    <span class="kpi-label">
                         Collected
                     </span>
 
                     <strong id="collectedFeesAmount">
-                        ₹0
+                        ₹0.00
                     </strong>
 
                     <small id="collectedFeesCount">
-                        0 payments
+                        0 payment records
                     </small>
 
                 </div>
 
-            </div>
+            </article>
 
 
+            <article class="fees-kpi-card pending">
 
-            <div class="fee-summary-card">
-
-                <div class="fee-summary-icon pending">
+                <div class="kpi-icon">
                     ⏳
                 </div>
 
-                <div>
+                <div class="kpi-content">
 
-                    <span>
+                    <span class="kpi-label">
                         Pending
                     </span>
 
                     <strong id="pendingFeesAmount">
-                        ₹0
+                        ₹0.00
                     </strong>
 
                     <small id="pendingFeesCount">
-                        0 students
+                        0 due records
                     </small>
 
                 </div>
 
-            </div>
+            </article>
 
 
+            <article class="fees-kpi-card overdue">
 
-            <div class="fee-summary-card">
-
-                <div class="fee-summary-icon overdue">
+                <div class="kpi-icon">
                     ⚠️
                 </div>
 
-                <div>
+                <div class="kpi-content">
 
-                    <span>
+                    <span class="kpi-label">
                         Overdue
                     </span>
 
                     <strong id="overdueFeesAmount">
-                        ₹0
+                        ₹0.00
                     </strong>
 
                     <small id="overdueFeesCount">
-                        0 students
+                        0 overdue records
                     </small>
 
                 </div>
 
-            </div>
-
+            </article>
 
         </section>
 
 
-
         <!-- =================================================
-             FEE ACTIONS
+             QUICK ACTIONS
              ================================================= -->
 
-        <section class="fees-card fee-actions-card">
+        <section class="fees-card quick-actions-card">
 
             <div class="section-heading">
 
                 <div>
-
                     <span class="section-eyebrow">
                         FEE MANAGEMENT
                     </span>
@@ -224,28 +198,60 @@
                     </h2>
 
                     <p>
-                        Manage student fee payments and receipts.
+                        Create fee records, collect payments and manage receipts.
                     </p>
-
                 </div>
 
             </div>
 
 
-            <div class="fee-action-grid">
+            <div class="quick-actions-grid">
 
+                <!-- CREATE FEE RECORD -->
 
                 <button
                     type="button"
-                    class="fee-action-btn payment"
+                    class="quick-action create-fee-action"
+                    id="createFeeRecordBtn"
+                >
+
+                    <span class="quick-action-icon">
+                        ➕
+                    </span>
+
+                    <span class="quick-action-content">
+
+                        <strong>
+                            Create Fee Record
+                        </strong>
+
+                        <small>
+                            Add a new student fee
+                        </small>
+
+                    </span>
+
+                    <span class="quick-action-arrow">
+                        →
+                    </span>
+
+                </button>
+
+
+                <!-- RECORD PAYMENT -->
+
+                <button
+                    type="button"
+                    class="quick-action"
                     id="recordPaymentBtn"
                 >
 
-                    <span class="action-icon">
+                    <span class="quick-action-icon">
                         💳
                     </span>
 
-                    <span>
+                    <span class="quick-action-content">
+
                         <strong>
                             Record Payment
                         </strong>
@@ -253,23 +259,30 @@
                         <small>
                             Add a new fee payment
                         </small>
+
+                    </span>
+
+                    <span class="quick-action-arrow">
+                        →
                     </span>
 
                 </button>
 
 
+                <!-- RECEIPTS -->
 
                 <button
                     type="button"
-                    class="fee-action-btn receipt"
+                    class="quick-action"
                     id="viewReceiptsBtn"
                 >
 
-                    <span class="action-icon">
+                    <span class="quick-action-icon">
                         🧾
                     </span>
 
-                    <span>
+                    <span class="quick-action-content">
+
                         <strong>
                             Fee Receipts
                         </strong>
@@ -277,23 +290,30 @@
                         <small>
                             View generated receipts
                         </small>
+
+                    </span>
+
+                    <span class="quick-action-arrow">
+                        →
                     </span>
 
                 </button>
 
 
+                <!-- DUES -->
 
                 <button
                     type="button"
-                    class="fee-action-btn dues"
+                    class="quick-action"
                     id="viewDuesBtn"
                 >
 
-                    <span class="action-icon">
+                    <span class="quick-action-icon">
                         📋
                     </span>
 
-                    <span>
+                    <span class="quick-action-content">
+
                         <strong>
                             Pending Dues
                         </strong>
@@ -304,6 +324,10 @@
 
                     </span>
 
+                    <span class="quick-action-arrow">
+                        →
+                    </span>
+
                 </button>
 
             </div>
@@ -311,9 +335,8 @@
         </section>
 
 
-
         <!-- =================================================
-             FILTERS
+             FEE FILTERS
              ================================================= -->
 
         <section class="fees-card">
@@ -331,8 +354,7 @@
                     </h2>
 
                     <p>
-                        Filter student fee records by class,
-                        section and payment status.
+                        Filter student fees by class, section and payment status.
                     </p>
 
                 </div>
@@ -340,35 +362,25 @@
             </div>
 
 
-            <div class="fees-filters">
+            <div class="fee-filters-grid">
 
-
-                <div class="filter-field">
+                <div class="form-group">
 
                     <label for="feeSearch">
                         Search Student
                     </label>
 
-                    <div class="input-with-icon">
-
-                        <span>
-                            🔍
-                        </span>
-
-                        <input
-                            type="search"
-                            id="feeSearch"
-                            placeholder="Name or Student ID..."
-                            autocomplete="off"
-                        >
-
-                    </div>
+                    <input
+                        type="search"
+                        id="feeSearch"
+                        placeholder="Search student name or ID..."
+                        autocomplete="off"
+                    >
 
                 </div>
 
 
-
-                <div class="filter-field">
+                <div class="form-group">
 
                     <label for="feeClass">
                         Class
@@ -385,8 +397,7 @@
                 </div>
 
 
-
-                <div class="filter-field">
+                <div class="form-group">
 
                     <label for="feeSection">
                         Section
@@ -403,8 +414,7 @@
                 </div>
 
 
-
-                <div class="filter-field">
+                <div class="form-group">
 
                     <label for="feeStatus">
                         Payment Status
@@ -421,7 +431,7 @@
                         </option>
 
                         <option value="partial">
-                            Partially Paid
+                            Partial
                         </option>
 
                         <option value="pending">
@@ -462,15 +472,13 @@
         </section>
 
 
-
         <!-- =================================================
              FEE RECORDS
              ================================================= -->
 
-        <section class="fees-card fee-records-card">
+        <section class="fees-card">
 
-
-            <div class="table-header">
+            <div class="section-heading heading-with-meta">
 
                 <div>
 
@@ -483,24 +491,22 @@
                     </h2>
 
                     <p id="feeTableSubtitle">
-                        Student fee records will appear here.
+                        Manage student fee records and outstanding balances.
                     </p>
 
                 </div>
 
-
-                <div
+                <span
                     class="record-count"
                     id="feeRecordCount"
                 >
-                    0 Records
-                </div>
+                    0 records
+                </span>
 
             </div>
 
 
-
-            <div class="fee-table-wrapper">
+            <div class="table-wrapper">
 
                 <table class="fees-table">
 
@@ -521,7 +527,11 @@
                             </th>
 
                             <th>
-                                Total Fee
+                                Fee Type
+                            </th>
+
+                            <th>
+                                Total
                             </th>
 
                             <th>
@@ -544,28 +554,27 @@
 
                     </thead>
 
-
                     <tbody id="feesTableBody">
 
                         <tr>
 
-                            <td
-                                colspan="8"
-                                class="table-empty"
-                            >
+                            <td colspan="9">
 
-                                <div class="empty-icon">
-                                    💰
+                                <div class="fees-empty-state">
+
+                                    <div class="empty-icon">
+                                        💰
+                                    </div>
+
+                                    <h3>
+                                        No fee records found
+                                    </h3>
+
+                                    <p>
+                                        Create a fee record to get started.
+                                    </p>
+
                                 </div>
-
-                                <h3>
-                                    No Fee Records
-                                </h3>
-
-                                <p>
-                                    Fee records will appear here
-                                    after the fee structure is configured.
-                                </p>
 
                             </td>
 
@@ -580,15 +589,13 @@
         </section>
 
 
-
         <!-- =================================================
-             RECENT PAYMENTS
+             PAYMENT HISTORY
              ================================================= -->
 
-        <section class="fees-card recent-payments-card">
+        <section class="fees-card">
 
-
-            <div class="table-header">
+            <div class="section-heading heading-with-meta">
 
                 <div>
 
@@ -601,16 +608,14 @@
                     </h2>
 
                     <p>
-                        Latest fee transactions recorded in
-                        SmartSchool360.
+                        Latest fee transactions recorded in SmartSchool360.
                     </p>
 
                 </div>
 
-
                 <button
                     type="button"
-                    class="small-outline-btn"
+                    class="text-btn"
                     id="viewAllPaymentsBtn"
                 >
                     View All
@@ -619,10 +624,9 @@
             </div>
 
 
+            <div class="table-wrapper">
 
-            <div class="fee-table-wrapper">
-
-                <table class="fees-table">
+                <table class="fees-table payment-history-table">
 
                     <thead>
 
@@ -637,10 +641,6 @@
                             </th>
 
                             <th>
-                                Date
-                            </th>
-
-                            <th>
                                 Amount
                             </th>
 
@@ -649,35 +649,42 @@
                             </th>
 
                             <th>
-                                Status
+                                Date
+                            </th>
+
+                            <th>
+                                Fee Type
+                            </th>
+
+                            <th>
+                                Action
                             </th>
 
                         </tr>
 
                     </thead>
 
-
                     <tbody id="recentPaymentsBody">
 
                         <tr>
 
-                            <td
-                                colspan="6"
-                                class="table-empty"
-                            >
+                            <td colspan="7">
 
-                                <div class="empty-icon">
-                                    🧾
+                                <div class="fees-empty-state compact">
+
+                                    <div class="empty-icon">
+                                        🧾
+                                    </div>
+
+                                    <h3>
+                                        No payments yet
+                                    </h3>
+
+                                    <p>
+                                        Recorded payments will appear here.
+                                    </p>
+
                                 </div>
-
-                                <h3>
-                                    No Payments Yet
-                                </h3>
-
-                                <p>
-                                    Recorded payments will appear
-                                    here.
-                                </p>
 
                             </td>
 
@@ -690,7 +697,6 @@
             </div>
 
         </section>
-
 
 
         <!-- =================================================
@@ -710,25 +716,784 @@
                 </h3>
 
                 <p>
-                    SmartSchool360 will maintain student-wise
-                    fee structures, payment history, pending
-                    balances and receipts. Payment data will
-                    remain connected with the student record.
+                    SmartSchool360 will maintain student-wise fee structures,
+                    payment history, pending balances and receipts.
+                    Payment data will remain connected with the student
+                    fee record.
                 </p>
 
                 <p>
-                    Fee calculations shown on this dashboard
-                    will be based on actual stored fee data,
-                    not dummy values.
+                    Fee calculations on this dashboard are based on actual
+                    stored fee data.
                 </p>
 
             </div>
 
         </section>
 
-
     </main>
 
+
+    <!-- =====================================================
+         CREATE FEE RECORD MODAL
+         ===================================================== -->
+
+    <div
+        class="fee-modal-overlay"
+        id="createFeeModal"
+        aria-hidden="true"
+    >
+
+        <div
+            class="fee-modal create-fee-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="createFeeModalTitle"
+        >
+
+            <div class="fee-modal-header">
+
+                <div>
+
+                    <span class="section-eyebrow">
+                        FEE MANAGEMENT
+                    </span>
+
+                    <h2 id="createFeeModalTitle">
+                        Create Fee Record
+                    </h2>
+
+                    <p>
+                        Create a fee structure for a student.
+                    </p>
+
+                </div>
+
+                <button
+                    type="button"
+                    class="modal-close-btn"
+                    id="closeCreateFeeModal"
+                    aria-label="Close"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <form
+                id="createFeeForm"
+                class="fee-modal-form"
+            >
+
+                <!-- Student -->
+
+                <div class="form-group">
+
+                    <label for="createFeeStudent">
+                        Student *
+                    </label>
+
+                    <select
+                        id="createFeeStudent"
+                        required
+                    >
+
+                        <option value="">
+                            Select Student
+                        </option>
+
+                    </select>
+
+                    <small>
+                        Select the student for whom this fee record will be created.
+                    </small>
+
+                </div>
+
+
+                <!-- Student Preview -->
+
+                <div
+                    class="fee-student-preview"
+                    id="createFeeStudentPreview"
+                >
+
+                    <div
+                        class="fee-avatar fee-avatar-initials"
+                        id="createFeeStudentAvatar"
+                    >
+                        ST
+                    </div>
+
+                    <div>
+
+                        <strong id="createFeeStudentName">
+                            Select a student
+                        </strong>
+
+                        <span id="createFeeStudentDetails">
+                            Student details will appear here.
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Fee Type -->
+
+                <div class="form-group">
+
+                    <label for="createFeeType">
+                        Fee Type *
+                    </label>
+
+                    <select
+                        id="createFeeType"
+                        required
+                    >
+
+                        <option value="">
+                            Select Fee Type
+                        </option>
+
+                        <option value="Tuition Fee">
+                            Tuition Fee
+                        </option>
+
+                        <option value="Admission Fee">
+                            Admission Fee
+                        </option>
+
+                        <option value="Annual Fee">
+                            Annual Fee
+                        </option>
+
+                        <option value="Examination Fee">
+                            Examination Fee
+                        </option>
+
+                        <option value="Transport Fee">
+                            Transport Fee
+                        </option>
+
+                        <option value="Library Fee">
+                            Library Fee
+                        </option>
+
+                        <option value="Computer Fee">
+                            Computer Fee
+                        </option>
+
+                        <option value="Development Fee">
+                            Development Fee
+                        </option>
+
+                        <option value="Hostel Fee">
+                            Hostel Fee
+                        </option>
+
+                        <option value="Other">
+                            Other
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- Custom Fee Type -->
+
+                <div
+                    class="form-group"
+                    id="customFeeTypeGroup"
+                    style="display:none;"
+                >
+
+                    <label for="createFeeCustomType">
+                        Custom Fee Type
+                    </label>
+
+                    <input
+                        type="text"
+                        id="createFeeCustomType"
+                        placeholder="Enter fee type..."
+                        maxlength="100"
+                    >
+
+                </div>
+
+
+                <!-- Academic Year -->
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label for="createFeeAcademicYear">
+                            Academic Year *
+                        </label>
+
+                        <input
+                            type="text"
+                            id="createFeeAcademicYear"
+                            placeholder="2026-27"
+                            value="2026-27"
+                            maxlength="20"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="createFeeDueDate">
+                            Due Date *
+                        </label>
+
+                        <input
+                            type="date"
+                            id="createFeeDueDate"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- Amount -->
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label for="createFeeTotal">
+                            Total Fee Amount *
+                        </label>
+
+                        <div class="money-input">
+
+                            <span>
+                                ₹
+                            </span>
+
+                            <input
+                                type="number"
+                                id="createFeeTotal"
+                                min="0"
+                                step="0.01"
+                                placeholder="0.00"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="createFeeInitialPayment">
+                            Initial Payment
+                        </label>
+
+                        <div class="money-input">
+
+                            <span>
+                                ₹
+                            </span>
+
+                            <input
+                                type="number"
+                                id="createFeeInitialPayment"
+                                min="0"
+                                step="0.01"
+                                placeholder="0.00"
+                                value="0"
+                            >
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Live Summary -->
+
+                <div class="payment-summary create-fee-summary">
+
+                    <div class="summary-row">
+
+                        <span>
+                            Total Fee
+                        </span>
+
+                        <strong id="createFeeSummaryTotal">
+                            ₹0.00
+                        </strong>
+
+                    </div>
+
+                    <div class="summary-row">
+
+                        <span>
+                            Initial Payment
+                        </span>
+
+                        <strong id="createFeeSummaryPaid">
+                            ₹0.00
+                        </strong>
+
+                    </div>
+
+                    <div class="summary-row highlight">
+
+                        <span>
+                            Opening Due
+                        </span>
+
+                        <strong id="createFeeSummaryDue">
+                            ₹0.00
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Description -->
+
+                <div class="form-group">
+
+                    <label for="createFeeDescription">
+                        Description
+                    </label>
+
+                    <textarea
+                        id="createFeeDescription"
+                        rows="3"
+                        maxlength="500"
+                        placeholder="Add fee details or description..."
+                    ></textarea>
+
+                </div>
+
+
+                <!-- Hidden -->
+
+                <input
+                    type="hidden"
+                    id="createFeeGeneratedId"
+                >
+
+
+                <!-- Actions -->
+
+                <div class="fee-modal-actions">
+
+                    <button
+                        type="button"
+                        class="secondary-btn"
+                        id="cancelCreateFeeBtn"
+                    >
+                        Cancel
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="primary-btn"
+                        id="saveFeeRecordBtn"
+                    >
+                        💾 Create Fee Record
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         PAYMENT MODAL
+         ===================================================== -->
+
+    <div
+        class="fee-modal-overlay"
+        id="feePaymentModal"
+        aria-hidden="true"
+    >
+
+        <div
+            class="fee-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="paymentModalTitle"
+        >
+
+            <div class="fee-modal-header">
+
+                <div>
+
+                    <span class="section-eyebrow">
+                        PAYMENT
+                    </span>
+
+                    <h2 id="paymentModalTitle">
+                        Record Payment
+                    </h2>
+
+                    <p>
+                        Record a payment against the selected fee.
+                    </p>
+
+                </div>
+
+                <button
+                    type="button"
+                    class="modal-close-btn"
+                    id="closeFeePaymentModal"
+                    aria-label="Close"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <form
+                id="feePaymentForm"
+                class="fee-modal-form"
+            >
+
+                <input
+                    type="hidden"
+                    id="paymentFeeId"
+                >
+
+                <input
+                    type="hidden"
+                    id="paymentStudentId"
+                >
+
+
+                <div class="fee-payment-student">
+
+                    <div class="fee-avatar fee-avatar-initials">
+                        👨‍🎓
+                    </div>
+
+                    <div>
+
+                        <strong id="paymentStudentName">
+                            Student
+                        </strong>
+
+                        <span id="paymentStudentIdDisplay">
+                            —
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="payment-summary">
+
+                    <div class="summary-row">
+
+                        <span>
+                            Fee Type
+                        </span>
+
+                        <strong id="paymentFeeType">
+                            School Fee
+                        </strong>
+
+                    </div>
+
+                    <div class="summary-row">
+
+                        <span>
+                            Total Fee
+                        </span>
+
+                        <strong id="paymentTotalFee">
+                            ₹0.00
+                        </strong>
+
+                    </div>
+
+                    <div class="summary-row">
+
+                        <span>
+                            Already Paid
+                        </span>
+
+                        <strong id="paymentAlreadyPaid">
+                            ₹0.00
+                        </strong>
+
+                    </div>
+
+                    <div class="summary-row highlight">
+
+                        <span>
+                            Current Due
+                        </span>
+
+                        <strong id="paymentDueAmount">
+                            ₹0.00
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="paymentAmount">
+                        Payment Amount *
+                    </label>
+
+                    <div class="money-input">
+
+                        <span>
+                            ₹
+                        </span>
+
+                        <input
+                            type="number"
+                            id="paymentAmount"
+                            min="0"
+                            step="0.01"
+                            placeholder="Enter amount"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label for="paymentMethod">
+                            Payment Method *
+                        </label>
+
+                        <select
+                            id="paymentMethod"
+                            required
+                        >
+
+                            <option value="Cash">
+                                Cash
+                            </option>
+
+                            <option value="UPI">
+                                UPI
+                            </option>
+
+                            <option value="Card">
+                                Card
+                            </option>
+
+                            <option value="Bank Transfer">
+                                Bank Transfer
+                            </option>
+
+                            <option value="Cheque">
+                                Cheque
+                            </option>
+
+                            <option value="Online">
+                                Online
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="paymentDate">
+                            Payment Date *
+                        </label>
+
+                        <input
+                            type="date"
+                            id="paymentDate"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="paymentNote">
+                        Note
+                    </label>
+
+                    <textarea
+                        id="paymentNote"
+                        rows="3"
+                        maxlength="500"
+                        placeholder="Optional payment note..."
+                    ></textarea>
+
+                </div>
+
+
+                <div class="fee-modal-actions">
+
+                    <button
+                        type="button"
+                        class="secondary-btn"
+                        id="cancelFeePaymentBtn"
+                    >
+                        Cancel
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="primary-btn"
+                    >
+                        💾 Save Payment
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         RECEIPTS MODAL
+         ===================================================== -->
+
+    <div
+        class="fee-modal-overlay"
+        id="feeReceiptsModal"
+        aria-hidden="true"
+    >
+
+        <div
+            class="fee-modal wide"
+            role="dialog"
+            aria-modal="true"
+        >
+
+            <div class="fee-modal-header">
+
+                <div>
+
+                    <span class="section-eyebrow">
+                        PAYMENT HISTORY
+                    </span>
+
+                    <h2>
+                        Fee Receipts
+                    </h2>
+
+                    <p>
+                        View and print generated payment receipts.
+                    </p>
+
+                </div>
+
+                <button
+                    type="button"
+                    class="modal-close-btn"
+                    id="closeFeeReceiptsModal"
+                    aria-label="Close"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <div
+                id="feeReceiptsBody"
+                class="fee-modal-list"
+            ></div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         DUES MODAL
+         ===================================================== -->
+
+    <div
+        class="fee-modal-overlay"
+        id="feeDuesModal"
+        aria-hidden="true"
+    >
+
+        <div
+            class="fee-modal wide"
+            role="dialog"
+            aria-modal="true"
+        >
+
+            <div class="fee-modal-header">
+
+                <div>
+
+                    <span class="section-eyebrow">
+                        OUTSTANDING FEES
+                    </span>
+
+                    <h2>
+                        Pending Dues
+                    </h2>
+
+                    <p>
+                        Students with outstanding fee balances.
+                    </p>
+
+                </div>
+
+                <button
+                    type="button"
+                    class="modal-close-btn"
+                    id="closeFeeDuesModal"
+                    aria-label="Close"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <div
+                id="feeDuesBody"
+                class="fee-modal-list"
+            ></div>
+
+        </div>
+
+    </div>
 
 
     <!-- =====================================================
@@ -743,31 +1508,25 @@
     ></div>
 
 
-
     <!-- =====================================================
          FOOTER
          ===================================================== -->
 
-    <footer class="fees-footer">
+    <footer class="site-footer">
 
-        <div>
+        <strong>
+            SmartSchool360
+        </strong>
 
-            <strong>
-                SmartSchool360
-            </strong>
+        <span>
+            School Management System
+        </span>
 
-            <span>
-                School Management System
-            </span>
-
-        </div>
-
-        <p>
+        <small>
             © 2026 SmartSchool360 · Built by Priyanshu Kumar
-        </p>
+        </small>
 
     </footer>
-
 
 
     <!-- =====================================================
@@ -776,9 +1535,8 @@
 
     <script
         src="../assets/js/fees.js"
+        defer
     ></script>
 
-
 </body>
-
 </html>
