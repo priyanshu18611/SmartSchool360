@@ -2,6 +2,11 @@
    SmartSchool360
    Fees Management
    File: fees.css
+   Version: 2.0
+   ========================================================= */
+
+/* =========================================================
+   ROOT
    ========================================================= */
 
 :root {
@@ -12,11 +17,11 @@
     --fees-success: #16a34a;
     --fees-success-soft: #ecfdf5;
 
-    --fees-danger: #dc2626;
-    --fees-danger-soft: #fef2f2;
-
     --fees-warning: #f59e0b;
     --fees-warning-soft: #fffbeb;
+
+    --fees-danger: #dc2626;
+    --fees-danger-soft: #fef2f2;
 
     --fees-info: #0284c7;
     --fees-info-soft: #f0f9ff;
@@ -24,11 +29,15 @@
     --fees-text: #111827;
     --fees-muted: #6b7280;
     --fees-border: #e5e7eb;
+
     --fees-bg: #f5f7fb;
     --fees-white: #ffffff;
 
     --fees-shadow:
         0 10px 30px rgba(15, 23, 42, 0.07);
+
+    --fees-shadow-lg:
+        0 25px 70px rgba(15, 23, 42, 0.22);
 
     --fees-radius: 18px;
 }
@@ -48,9 +57,7 @@ html {
 
 body {
     margin: 0;
-
     background: var(--fees-bg);
-
     color: var(--fees-text);
 
     font-family:
@@ -60,49 +67,53 @@ body {
         BlinkMacSystemFont,
         "Segoe UI",
         sans-serif;
+
+    overflow-x: hidden;
+}
+
+body.modal-open {
+    overflow: hidden !important;
 }
 
 button,
 input,
-select {
+select,
+textarea {
     font: inherit;
 }
 
 button {
     cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
 }
 
 button:focus-visible,
 input:focus-visible,
-select:focus-visible {
+select:focus-visible,
+textarea:focus-visible {
     outline: 3px solid rgba(79, 70, 229, 0.18);
-
     outline-offset: 2px;
 }
 
 
 /* =========================================================
-   HEADER
+   PAGE HEADER
    ========================================================= */
 
-.fees-header {
+.page-header {
     position: sticky;
-
     top: 0;
-
     z-index: 100;
 
     width: 100%;
 
     display: flex;
-
     align-items: center;
-
     justify-content: space-between;
 
     gap: 20px;
 
-    padding: 16px 28px;
+    padding: 15px 28px;
 
     background:
         rgba(255, 255, 255, 0.96);
@@ -114,14 +125,13 @@ select:focus-visible {
         0 4px 20px rgba(15, 23, 42, 0.05);
 
     backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
 }
 
-.fees-header-left {
+.header-left {
     display: flex;
-
     align-items: center;
-
-    gap: 14px;
+    gap: 13px;
 
     min-width: 0;
 }
@@ -132,57 +142,36 @@ select:focus-visible {
 
     flex: 0 0 42px;
 
-    border:
-        1px solid var(--fees-border);
+    display: grid;
+    place-items: center;
 
+    border: 1px solid var(--fees-border);
     border-radius: 12px;
 
-    background:
-        var(--fees-white);
-
-    color:
-        var(--fees-primary);
+    background: #ffffff;
+    color: var(--fees-primary);
 
     font-size: 22px;
-
-    font-weight: 700;
+    font-weight: 800;
 
     transition:
         transform 0.2s ease,
-        background 0.2s ease,
-        border-color 0.2s ease;
+        background 0.2s ease;
 }
 
 .back-btn:hover {
-    transform:
-        translateX(-2px);
-
-    background:
-        var(--fees-primary-soft);
-
-    border-color:
-        #c7d2fe;
+    transform: translateX(-2px);
+    background: var(--fees-primary-soft);
 }
 
-.fees-title-area {
-    display: flex;
+.header-icon {
+    width: 46px;
+    height: 46px;
 
-    align-items: center;
-
-    gap: 12px;
-
-    min-width: 0;
-}
-
-.fees-icon {
-    width: 48px;
-    height: 48px;
+    flex: 0 0 46px;
 
     display: grid;
-
     place-items: center;
-
-    flex: 0 0 48px;
 
     border-radius: 14px;
 
@@ -195,56 +184,54 @@ select:focus-visible {
 
     color: #ffffff;
 
-    font-size: 23px;
+    font-size: 22px;
 
     box-shadow:
         0 8px 18px
-        rgba(79, 70, 229, 0.24);
+        rgba(79, 70, 229, 0.22);
 }
 
-.fees-title-area h1 {
+.header-title {
+    min-width: 0;
+}
+
+.header-title h1 {
     margin: 0;
 
-    font-size: 22px;
+    color: var(--fees-text);
 
+    font-size: 21px;
     line-height: 1.2;
 
     font-weight: 800;
-
-    color:
-        var(--fees-text);
 }
 
-.fees-title-area p {
+.header-title p {
     margin: 5px 0 0;
 
-    color:
-        var(--fees-muted);
+    color: var(--fees-muted);
 
-    font-size: 13px;
-
+    font-size: 12px;
     line-height: 1.4;
 }
 
 .refresh-btn {
-    border: 0;
+    min-height: 42px;
 
-    padding: 11px 16px;
+    padding: 0 16px;
 
-    border-radius: 12px;
+    border: 1px solid var(--fees-primary);
+    border-radius: 11px;
 
-    background:
-        var(--fees-primary);
-
+    background: var(--fees-primary);
     color: #ffffff;
 
-    font-size: 13px;
-
-    font-weight: 700;
+    font-size: 12px;
+    font-weight: 800;
 
     box-shadow:
         0 7px 18px
-        rgba(79, 70, 229, 0.20);
+        rgba(79, 70, 229, 0.18);
 
     transition:
         transform 0.2s ease,
@@ -252,11 +239,8 @@ select:focus-visible {
 }
 
 .refresh-btn:hover {
-    background:
-        var(--fees-primary-dark);
-
-    transform:
-        translateY(-1px);
+    background: var(--fees-primary-dark);
+    transform: translateY(-1px);
 }
 
 
@@ -264,15 +248,127 @@ select:focus-visible {
    MAIN
    ========================================================= */
 
-.fees-container {
-    width:
-        min(1400px, calc(100% - 40px));
+.fees-page {
+    width: min(1400px, calc(100% - 40px));
 
-    margin:
-        0 auto;
+    margin: 0 auto;
 
     padding:
         28px 0 50px;
+}
+
+
+/* =========================================================
+   KPI GRID
+   ========================================================= */
+
+.fees-kpi-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 15px;
+}
+
+.fees-kpi-card {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+
+    gap: 13px;
+
+    padding: 18px;
+
+    background: #ffffff;
+
+    border:
+        1px solid var(--fees-border);
+
+    border-radius: 16px;
+
+    box-shadow: var(--fees-shadow);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.fees-kpi-card:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 14px 32px
+        rgba(15, 23, 42, 0.10);
+}
+
+.kpi-icon {
+    width: 46px;
+    height: 46px;
+
+    flex: 0 0 46px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 13px;
+
+    background: var(--fees-primary-soft);
+
+    color: var(--fees-primary);
+
+    font-size: 20px;
+}
+
+.fees-kpi-card.collected .kpi-icon {
+    background: var(--fees-success-soft);
+}
+
+.fees-kpi-card.pending .kpi-icon {
+    background: var(--fees-warning-soft);
+}
+
+.fees-kpi-card.overdue .kpi-icon {
+    background: var(--fees-danger-soft);
+}
+
+.kpi-content {
+    min-width: 0;
+}
+
+.kpi-label {
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: var(--fees-muted);
+
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.kpi-content strong {
+    display: block;
+
+    color: var(--fees-text);
+
+    font-size: 20px;
+    line-height: 1.15;
+
+    font-weight: 800;
+
+    white-space: nowrap;
+}
+
+.kpi-content small {
+    display: block;
+
+    margin-top: 5px;
+
+    color: var(--fees-muted);
+
+    font-size: 10px;
 }
 
 
@@ -281,25 +377,18 @@ select:focus-visible {
    ========================================================= */
 
 .fees-card {
-    background:
-        var(--fees-white);
+    margin-top: 20px;
+
+    background: #ffffff;
 
     border:
         1px solid var(--fees-border);
 
-    border-radius:
-        var(--fees-radius);
+    border-radius: var(--fees-radius);
 
-    box-shadow:
-        var(--fees-shadow);
+    box-shadow: var(--fees-shadow);
 
-    overflow:
-        hidden;
-}
-
-.fees-card + .fees-card {
-    margin-top:
-        20px;
+    overflow: hidden;
 }
 
 
@@ -309,203 +398,65 @@ select:focus-visible {
 
 .section-heading {
     padding:
-        24px 24px 8px;
+        23px 24px 9px;
+}
+
+.heading-with-meta {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 20px;
 }
 
 .section-eyebrow {
-    display:
-        inline-block;
+    display: inline-block;
 
-    margin-bottom:
-        6px;
+    margin-bottom: 6px;
 
-    color:
-        var(--fees-primary);
+    color: var(--fees-primary);
 
-    font-size:
-        11px;
+    font-size: 10px;
+    font-weight: 800;
 
-    font-weight:
-        800;
+    letter-spacing: 0.13em;
 
-    letter-spacing:
-        0.12em;
-
-    text-transform:
-        uppercase;
+    text-transform: uppercase;
 }
 
 .section-heading h2 {
     margin: 0;
 
-    font-size:
-        20px;
+    color: var(--fees-text);
 
-    line-height:
-        1.3;
+    font-size: 20px;
+    line-height: 1.3;
 
-    font-weight:
-        800;
+    font-weight: 800;
 }
 
 .section-heading p {
-    margin:
-        7px 0 0;
+    margin: 7px 0 0;
 
-    color:
-        var(--fees-muted);
+    color: var(--fees-muted);
 
-    font-size:
-        13px;
-
-    line-height:
-        1.6;
+    font-size: 12px;
+    line-height: 1.6;
 }
 
+.record-count {
+    flex: 0 0 auto;
 
-/* =========================================================
-   SUMMARY GRID
-   ========================================================= */
+    padding: 8px 11px;
 
-.fees-summary-grid {
-    display:
-        grid;
+    border-radius: 10px;
 
-    grid-template-columns:
-        repeat(4, minmax(0, 1fr));
+    background: var(--fees-primary-soft);
 
-    gap:
-        14px;
-}
+    color: var(--fees-primary);
 
-.fee-summary-card {
-    display:
-        flex;
-
-    align-items:
-        center;
-
-    gap:
-        13px;
-
-    min-width:
-        0;
-
-    padding:
-        18px;
-
-    background:
-        var(--fees-white);
-
-    border:
-        1px solid var(--fees-border);
-
-    border-radius:
-        16px;
-
-    box-shadow:
-        var(--fees-shadow);
-}
-
-.fee-summary-icon {
-    width:
-        44px;
-
-    height:
-        44px;
-
-    display:
-        grid;
-
-    place-items:
-        center;
-
-    flex:
-        0 0 44px;
-
-    border-radius:
-        12px;
-
-    background:
-        var(--fees-primary-soft);
-
-    color:
-        var(--fees-primary);
-
-    font-size:
-        20px;
-}
-
-.fee-summary-icon.collected {
-    background:
-        var(--fees-success-soft);
-
-    color:
-        var(--fees-success);
-}
-
-.fee-summary-icon.pending {
-    background:
-        var(--fees-warning-soft);
-
-    color:
-        #b45309;
-}
-
-.fee-summary-icon.overdue {
-    background:
-        var(--fees-danger-soft);
-
-    color:
-        var(--fees-danger);
-}
-
-.fee-summary-card span {
-    display:
-        block;
-
-    margin-bottom:
-        4px;
-
-    color:
-        var(--fees-muted);
-
-    font-size:
-        11px;
-
-    font-weight:
-        700;
-}
-
-.fee-summary-card strong {
-    display:
-        block;
-
-    color:
-        var(--fees-text);
-
-    font-size:
-        20px;
-
-    line-height:
-        1.1;
-
-    font-weight:
-        800;
-}
-
-.fee-summary-card small {
-    display:
-        block;
-
-    margin-top:
-        4px;
-
-    color:
-        var(--fees-muted);
-
-    font-size:
-        10px;
+    font-size: 11px;
+    font-weight: 800;
 }
 
 
@@ -513,52 +464,38 @@ select:focus-visible {
    QUICK ACTIONS
    ========================================================= */
 
-.fee-actions-card {
-    margin-top:
-        20px;
-}
-
-.fee-action-grid {
-    display:
-        grid;
+.quick-actions-grid {
+    display: grid;
 
     grid-template-columns:
-        repeat(3, minmax(0, 1fr));
+        repeat(4, minmax(0, 1fr));
 
-    gap:
-        12px;
+    gap: 12px;
 
     padding:
         12px 24px 24px;
 }
 
-.fee-action-btn {
-    display:
-        flex;
+.quick-action {
+    min-width: 0;
 
-    align-items:
-        center;
+    min-height: 82px;
 
-    gap:
-        12px;
+    display: flex;
+    align-items: center;
 
-    min-height:
-        74px;
+    gap: 11px;
 
-    padding:
-        14px;
+    padding: 14px;
 
     border:
         1px solid var(--fees-border);
 
-    border-radius:
-        14px;
+    border-radius: 14px;
 
-    background:
-        #ffffff;
+    background: #ffffff;
 
-    text-align:
-        left;
+    text-align: left;
 
     transition:
         transform 0.2s ease,
@@ -566,91 +503,62 @@ select:focus-visible {
         border-color 0.2s ease;
 }
 
-.fee-action-btn:hover {
-    transform:
-        translateY(-2px);
+.quick-action:hover {
+    transform: translateY(-2px);
 
     box-shadow:
-        0 9px 22px
+        0 10px 24px
         rgba(15, 23, 42, 0.08);
+
+    border-color: #c7d2fe;
 }
 
-.fee-action-btn.payment:hover {
-    border-color:
-        #c7d2fe;
+.quick-action-icon {
+    width: 43px;
+    height: 43px;
+
+    flex: 0 0 43px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 12px;
+
+    background: var(--fees-primary-soft);
+
+    font-size: 19px;
 }
 
-.fee-action-btn.receipt:hover {
-    border-color:
-        #bbf7d0;
+.quick-action-content {
+    min-width: 0;
+    flex: 1;
 }
 
-.fee-action-btn.dues:hover {
-    border-color:
-        #fed7aa;
+.quick-action-content strong {
+    display: block;
+
+    color: var(--fees-text);
+
+    font-size: 12px;
+    font-weight: 800;
 }
 
-.action-icon {
-    width:
-        44px;
+.quick-action-content small {
+    display: block;
 
-    height:
-        44px;
+    margin-top: 4px;
 
-    display:
-        grid;
+    color: var(--fees-muted);
 
-    place-items:
-        center;
-
-    flex:
-        0 0 44px;
-
-    border-radius:
-        12px;
-
-    background:
-        var(--fees-primary-soft);
-
-    font-size:
-        20px;
+    font-size: 10px;
+    line-height: 1.4;
 }
 
-.fee-action-btn.receipt
-.action-icon {
-    background:
-        var(--fees-success-soft);
-}
+.quick-action-arrow {
+    color: var(--fees-primary);
 
-.fee-action-btn.dues
-.action-icon {
-    background:
-        var(--fees-warning-soft);
-}
-
-.fee-action-btn strong {
-    display:
-        block;
-
-    margin-bottom:
-        4px;
-
-    color:
-        var(--fees-text);
-
-    font-size:
-        13px;
-}
-
-.fee-action-btn small {
-    display:
-        block;
-
-    color:
-        var(--fees-muted);
-
-    font-size:
-        10px;
+    font-size: 18px;
+    font-weight: 800;
 }
 
 
@@ -658,113 +566,76 @@ select:focus-visible {
    FILTERS
    ========================================================= */
 
-.fees-filters {
-    display:
-        grid;
+.fee-filters-grid {
+    display: grid;
 
     grid-template-columns:
         repeat(4, minmax(0, 1fr));
 
-    gap:
-        15px;
+    gap: 15px;
 
     padding:
-        15px 24px 20px;
+        15px 24px 18px;
 }
 
-.filter-field {
-    display:
-        flex;
+.form-group {
+    display: flex;
+    flex-direction: column;
 
-    flex-direction:
-        column;
+    gap: 7px;
 
-    gap:
-        7px;
+    min-width: 0;
 }
 
-.filter-field label {
-    color:
-        #374151;
+.form-group label {
+    color: #374151;
 
-    font-size:
-        12px;
-
-    font-weight:
-        700;
+    font-size: 11px;
+    font-weight: 700;
 }
 
-.filter-field input,
-.filter-field select {
-    width:
-        100%;
-
-    min-height:
-        46px;
-
-    padding:
-        0 13px;
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
 
     border:
         1px solid var(--fees-border);
 
-    border-radius:
-        11px;
+    border-radius: 11px;
 
-    background:
-        #ffffff;
+    background: #ffffff;
 
-    color:
-        var(--fees-text);
+    color: var(--fees-text);
 
-    font-size:
-        13px;
+    font-size: 13px;
 
     transition:
         border-color 0.2s ease,
         box-shadow 0.2s ease;
 }
 
-.filter-field input:focus,
-.filter-field select:focus {
-    border-color:
-        var(--fees-primary);
-
-    box-shadow:
-        0 0 0 4px
-        rgba(79, 70, 229, 0.09);
-
-    outline:
-        none;
-}
-
-.input-with-icon {
-    display:
-        flex;
-
-    align-items:
-        center;
-
-    gap:
-        8px;
-
-    min-height:
-        46px;
+.form-group input,
+.form-group select {
+    min-height: 45px;
 
     padding:
-        0 13px;
-
-    border:
-        1px solid var(--fees-border);
-
-    border-radius:
-        11px;
-
-    background:
-        #ffffff;
+        0 12px;
 }
 
-.input-with-icon:focus-within {
+.form-group textarea {
+    padding: 11px 12px;
+
+    resize: vertical;
+
+    min-height: 85px;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+
     border-color:
         var(--fees-primary);
 
@@ -773,40 +644,19 @@ select:focus-visible {
         rgba(79, 70, 229, 0.09);
 }
 
-.input-with-icon span {
-    font-size:
-        15px;
-}
+.form-group small {
+    color: var(--fees-muted);
 
-.input-with-icon input {
-    min-height:
-        auto;
+    font-size: 10px;
 
-    padding:
-        0;
-
-    border:
-        0;
-
-    outline:
-        none;
-
-    box-shadow:
-        none;
-
-    background:
-        transparent;
+    line-height: 1.45;
 }
 
 .filter-actions {
-    display:
-        flex;
+    display: flex;
+    align-items: center;
 
-    align-items:
-        center;
-
-    gap:
-        10px;
+    gap: 10px;
 
     padding:
         0 24px 24px;
@@ -814,20 +664,19 @@ select:focus-visible {
 
 .primary-btn,
 .secondary-btn {
-    min-height:
-        44px;
+    min-height: 44px;
 
     padding:
-        0 18px;
+        0 17px;
 
-    border-radius:
-        11px;
+    border-radius: 11px;
 
-    font-size:
-        13px;
+    font-size: 12px;
+    font-weight: 800;
 
-    font-weight:
-        700;
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease;
 }
 
 .primary-btn {
@@ -837,8 +686,7 @@ select:focus-visible {
     background:
         var(--fees-primary);
 
-    color:
-        #ffffff;
+    color: #ffffff;
 
     box-shadow:
         0 7px 16px
@@ -874,128 +722,23 @@ select:focus-visible {
    TABLE
    ========================================================= */
 
-.fee-records-card,
-.recent-payments-card {
-    margin-top:
-        20px;
-}
+.table-wrapper {
+    width: 100%;
 
-.table-header {
-    display:
-        flex;
+    overflow-x: auto;
 
-    align-items:
-        flex-start;
-
-    justify-content:
-        space-between;
-
-    gap:
-        20px;
-
-    padding:
-        24px 24px 15px;
-}
-
-.table-header h2 {
-    margin:
-        0;
-
-    font-size:
-        19px;
-
-    font-weight:
-        800;
-}
-
-.table-header p {
-    margin:
-        6px 0 0;
-
-    color:
-        var(--fees-muted);
-
-    font-size:
-        12px;
-}
-
-.record-count {
-    flex:
-        0 0 auto;
-
-    padding:
-        8px 11px;
-
-    border-radius:
-        10px;
-
-    background:
-        var(--fees-primary-soft);
-
-    color:
-        var(--fees-primary);
-
-    font-size:
-        12px;
-
-    font-weight:
-        800;
-}
-
-.small-outline-btn {
-    min-height:
-        38px;
-
-    padding:
-        0 13px;
-
-    border:
-        1px solid #c7d2fe;
-
-    border-radius:
-        10px;
-
-    background:
-        #ffffff;
-
-    color:
-        var(--fees-primary);
-
-    font-size:
-        11px;
-
-    font-weight:
-        800;
-}
-
-.small-outline-btn:hover {
-    background:
-        var(--fees-primary-soft);
-}
-
-.fee-table-wrapper {
-    width:
-        100%;
-
-    overflow-x:
-        auto;
-
-    -webkit-overflow-scrolling:
-        touch;
+    -webkit-overflow-scrolling: touch;
 
     border-top:
         1px solid var(--fees-border);
 }
 
 .fees-table {
-    width:
-        100%;
+    width: 100%;
 
-    min-width:
-        1050px;
+    min-width: 1050px;
 
-    border-collapse:
-        collapse;
+    border-collapse: collapse;
 }
 
 .fees-table th {
@@ -1011,23 +754,16 @@ select:focus-visible {
     color:
         #4b5563;
 
-    font-size:
-        10px;
+    font-size: 10px;
+    font-weight: 800;
 
-    font-weight:
-        800;
+    text-align: left;
 
-    text-align:
-        left;
+    white-space: nowrap;
 
-    white-space:
-        nowrap;
+    text-transform: uppercase;
 
-    text-transform:
-        uppercase;
-
-    letter-spacing:
-        0.04em;
+    letter-spacing: 0.04em;
 }
 
 .fees-table td {
@@ -1040,11 +776,9 @@ select:focus-visible {
     color:
         #374151;
 
-    font-size:
-        12px;
+    font-size: 12px;
 
-    vertical-align:
-        middle;
+    vertical-align: middle;
 }
 
 .fees-table tbody tr:hover {
@@ -1053,8 +787,7 @@ select:focus-visible {
 }
 
 .fees-table tbody tr:last-child td {
-    border-bottom:
-        0;
+    border-bottom: 0;
 }
 
 
@@ -1063,34 +796,22 @@ select:focus-visible {
    ========================================================= */
 
 .fee-student-cell {
-    display:
-        flex;
+    display: flex;
+    align-items: center;
 
-    align-items:
-        center;
-
-    gap:
-        9px;
+    gap: 9px;
 }
 
 .fee-student-avatar {
-    width:
-        36px;
+    width: 36px;
+    height: 36px;
 
-    height:
-        36px;
+    flex: 0 0 36px;
 
-    display:
-        grid;
+    display: grid;
+    place-items: center;
 
-    place-items:
-        center;
-
-    flex:
-        0 0 36px;
-
-    border-radius:
-        10px;
+    border-radius: 10px;
 
     background:
         var(--fees-primary-soft);
@@ -1098,36 +819,37 @@ select:focus-visible {
     color:
         var(--fees-primary);
 
-    font-size:
-        11px;
+    font-size: 11px;
+    font-weight: 800;
 
-    font-weight:
-        800;
+    overflow: hidden;
+}
+
+.fee-student-avatar img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
 }
 
 .fee-student-cell strong {
-    display:
-        block;
+    display: block;
 
     color:
         var(--fees-text);
 
-    font-size:
-        12px;
+    font-size: 12px;
 }
 
 .fee-student-cell small {
-    display:
-        block;
+    display: block;
 
-    margin-top:
-        2px;
+    margin-top: 2px;
 
     color:
         var(--fees-muted);
 
-    font-size:
-        10px;
+    font-size: 10px;
 }
 
 
@@ -1136,14 +858,12 @@ select:focus-visible {
    ========================================================= */
 
 .amount {
-    font-weight:
-        800;
+    font-weight: 800;
 
     color:
         var(--fees-text);
 
-    white-space:
-        nowrap;
+    white-space: nowrap;
 }
 
 .amount.paid {
@@ -1162,29 +882,20 @@ select:focus-visible {
    ========================================================= */
 
 .fee-status {
-    display:
-        inline-flex;
+    display: inline-flex;
 
-    align-items:
-        center;
+    align-items: center;
+    justify-content: center;
 
-    justify-content:
-        center;
-
-    min-width:
-        80px;
+    min-width: 78px;
 
     padding:
         6px 9px;
 
-    border-radius:
-        999px;
+    border-radius: 999px;
 
-    font-size:
-        10px;
-
-    font-weight:
-        800;
+    font-size: 10px;
+    font-weight: 800;
 }
 
 .fee-status.paid {
@@ -1197,18 +908,18 @@ select:focus-visible {
 
 .fee-status.partial {
     background:
-        #eff6ff;
-
-    color:
-        #2563eb;
-}
-
-.fee-status.pending {
-    background:
         var(--fees-warning-soft);
 
     color:
         #b45309;
+}
+
+.fee-status.pending {
+    background:
+        #fff7ed;
+
+    color:
+        #c2410c;
 }
 
 .fee-status.overdue {
@@ -1216,17 +927,16 @@ select:focus-visible {
         var(--fees-danger-soft);
 
     color:
-        #b91c1c;
+        var(--fees-danger);
 }
 
 
 /* =========================================================
-   TABLE ACTION
+   TABLE ACTIONS
    ========================================================= */
 
 .table-action {
-    min-height:
-        34px;
+    min-height: 34px;
 
     padding:
         0 10px;
@@ -1234,25 +944,21 @@ select:focus-visible {
     border:
         1px solid #c7d2fe;
 
-    border-radius:
-        9px;
+    border-radius: 9px;
 
     background:
-        var(--fees-primary-soft);
+        #ffffff;
 
     color:
         var(--fees-primary);
 
-    font-size:
-        10px;
-
-    font-weight:
-        800;
+    font-size: 10px;
+    font-weight: 800;
 }
 
 .table-action:hover {
     background:
-        #e0e7ff;
+        var(--fees-primary-soft);
 }
 
 
@@ -1260,155 +966,126 @@ select:focus-visible {
    EMPTY STATE
    ========================================================= */
 
-.table-empty {
-    padding:
-        55px 20px !important;
+.fees-empty-state {
+    min-height: 220px;
 
-    text-align:
-        center !important;
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 35px 20px;
+
+    text-align: center;
 }
 
-.table-empty .empty-icon {
-    width:
-        56px;
+.fees-empty-state.compact {
+    min-height: 170px;
+}
 
-    height:
-        56px;
+.empty-icon {
+    width: 54px;
+    height: 54px;
 
-    display:
-        grid;
+    display: grid;
+    place-items: center;
 
-    place-items:
-        center;
+    margin-bottom: 10px;
 
-    margin:
-        0 auto 12px;
-
-    border-radius:
-        16px;
+    border-radius: 15px;
 
     background:
         var(--fees-primary-soft);
 
-    font-size:
-        25px;
+    font-size: 24px;
 }
 
-.table-empty h3 {
-    margin:
-        0;
-
-    font-size:
-        15px;
+.fees-empty-state h3 {
+    margin: 0;
 
     color:
         var(--fees-text);
+
+    font-size: 15px;
 }
 
-.table-empty p {
-    max-width:
-        440px;
-
-    margin:
-        7px auto 0;
+.fees-empty-state p {
+    margin: 6px 0 0;
 
     color:
         var(--fees-muted);
 
-    font-size:
-        12px;
-
-    line-height:
-        1.6;
+    font-size: 11px;
 }
 
 
 /* =========================================================
-   INFO
+   INFO CARD
    ========================================================= */
 
 .fees-info-card {
-    display:
-        flex;
+    margin-top: 20px;
 
-    align-items:
-        flex-start;
+    display: flex;
+    align-items: flex-start;
 
-    gap:
-        14px;
+    gap: 13px;
 
-    margin-top:
-        20px;
-
-    padding:
-        20px;
-
-    border:
-        1px solid #bfdbfe;
-
-    border-radius:
-        var(--fees-radius);
+    padding: 19px;
 
     background:
-        #eff6ff;
+        linear-gradient(
+            135deg,
+            #ffffff,
+            #f8faff
+        );
+
+    border:
+        1px solid #dbe3ff;
+
+    border-radius:
+        16px;
 
     box-shadow:
-        0 7px 20px
-        rgba(30, 64, 175, 0.05);
+        var(--fees-shadow);
 }
 
 .info-icon {
-    width:
-        42px;
+    width: 40px;
+    height: 40px;
 
-    height:
-        42px;
+    flex: 0 0 40px;
 
-    display:
-        grid;
+    display: grid;
+    place-items: center;
 
-    place-items:
-        center;
-
-    flex:
-        0 0 42px;
-
-    border-radius:
-        12px;
+    border-radius: 12px;
 
     background:
-        #dbeafe;
+        var(--fees-info-soft);
 
-    font-size:
-        19px;
+    font-size: 18px;
 }
 
 .fees-info-card h3 {
-    margin:
-        0 0 6px;
+    margin: 0;
 
     color:
-        #1e3a8a;
+        var(--fees-text);
 
-    font-size:
-        14px;
-
-    font-weight:
-        800;
+    font-size: 14px;
 }
 
 .fees-info-card p {
-    margin:
-        5px 0 0;
+    margin: 6px 0 0;
 
     color:
-        #475569;
+        var(--fees-muted);
 
-    font-size:
-        12px;
+    font-size: 11px;
 
-    line-height:
-        1.7;
+    line-height: 1.6;
 }
 
 
@@ -1417,26 +1094,27 @@ select:focus-visible {
    ========================================================= */
 
 .fees-toast {
-    position:
-        fixed;
+    position: fixed;
 
-    left:
-        50%;
+    left: 50%;
+    bottom: 24px;
 
-    bottom:
-        25px;
-
-    z-index:
-        9999;
+    z-index: 10000;
 
     transform:
         translate(-50%, 20px);
 
+    min-width:
+        min(360px, calc(100% - 30px));
+
     max-width:
-        min(90vw, 420px);
+        calc(100% - 30px);
 
     padding:
         12px 16px;
+
+    border:
+        1px solid #dbe3ff;
 
     border-radius:
         12px;
@@ -1453,24 +1131,28 @@ select:focus-visible {
     font-weight:
         700;
 
-    box-shadow:
-        0 12px 30px
-        rgba(15, 23, 42, 0.20);
+    text-align:
+        center;
 
     opacity:
         0;
+
+    visibility:
+        hidden;
 
     pointer-events:
         none;
 
     transition:
-        opacity 0.25s ease,
-        transform 0.25s ease;
+        opacity 0.2s ease,
+        transform 0.2s ease,
+        visibility 0.2s ease;
 }
 
 .fees-toast.show {
-    opacity:
-        1;
+    opacity: 1;
+
+    visibility: visible;
 
     transform:
         translate(-50%, 0);
@@ -1478,507 +1160,9 @@ select:focus-visible {
 
 
 /* =========================================================
-   FOOTER
-   ========================================================= */
-
-.fees-footer {
-    display:
-        flex;
-
-    align-items:
-        center;
-
-    justify-content:
-        space-between;
-
-    gap:
-        20px;
-
-    padding:
-        25px 28px;
-
-    background:
-        #ffffff;
-
-    border-top:
-        1px solid var(--fees-border);
-}
-
-.fees-footer > div {
-    display:
-        flex;
-
-    flex-direction:
-        column;
-
-    gap:
-        3px;
-}
-
-.fees-footer strong {
-    color:
-        var(--fees-text);
-
-    font-size:
-        14px;
-}
-
-.fees-footer span {
-    color:
-        var(--fees-muted);
-
-    font-size:
-        11px;
-}
-
-.fees-footer p {
-    margin:
-        0;
-
-    color:
-        var(--fees-muted);
-
-    font-size:
-        11px;
-
-    text-align:
-        right;
-}
-
-
-/* =========================================================
-   TABLET
-   ========================================================= */
-
-@media (max-width: 1100px) {
-
-    .fees-summary-grid {
-        grid-template-columns:
-            repeat(2, minmax(0, 1fr));
-    }
-
-    .fees-filters {
-        grid-template-columns:
-            repeat(2, minmax(0, 1fr));
-    }
-
-}
-
-
-/* =========================================================
-   MOBILE
-   ========================================================= */
-
-@media (max-width: 700px) {
-
-    .fees-header {
-        padding:
-            12px 14px;
-
-        gap:
-            10px;
-    }
-
-    .fees-header-left {
-        gap:
-            9px;
-    }
-
-    .back-btn {
-        width:
-            38px;
-
-        height:
-            38px;
-
-        flex-basis:
-            38px;
-
-        border-radius:
-            10px;
-
-        font-size:
-            19px;
-    }
-
-    .fees-title-area {
-        gap:
-            8px;
-    }
-
-    .fees-icon {
-        width:
-            40px;
-
-        height:
-            40px;
-
-        flex-basis:
-            40px;
-
-        border-radius:
-            11px;
-
-        font-size:
-            19px;
-    }
-
-    .fees-title-area h1 {
-        font-size:
-            16px;
-    }
-
-    .fees-title-area p {
-        display:
-            none;
-    }
-
-    .refresh-btn {
-        padding:
-            9px 11px;
-
-        font-size:
-            11px;
-    }
-
-    .fees-container {
-        width:
-            calc(100% - 20px);
-
-        padding:
-            16px 0 35px;
-    }
-
-    .fees-summary-grid {
-        grid-template-columns:
-            repeat(2, minmax(0, 1fr));
-
-        gap:
-            9px;
-    }
-
-    .fee-summary-card {
-        padding:
-            12px;
-
-        gap:
-            9px;
-
-        border-radius:
-            13px;
-    }
-
-    .fee-summary-icon {
-        width:
-            34px;
-
-        height:
-            34px;
-
-        flex-basis:
-            34px;
-
-        border-radius:
-            9px;
-
-        font-size:
-            15px;
-    }
-
-    .fee-summary-card span {
-        font-size:
-            9px;
-    }
-
-    .fee-summary-card strong {
-        font-size:
-            15px;
-    }
-
-    .fee-summary-card small {
-        font-size:
-            9px;
-    }
-
-    .section-heading {
-        padding:
-            18px 16px 6px;
-    }
-
-    .section-heading h2 {
-        font-size:
-            17px;
-    }
-
-    .section-heading p {
-        font-size:
-            11px;
-    }
-
-    .fee-action-grid {
-        grid-template-columns:
-            1fr;
-
-        padding:
-            12px 16px 18px;
-    }
-
-    .fees-filters {
-        grid-template-columns:
-            1fr;
-
-        gap:
-            12px;
-
-        padding:
-            12px 16px 18px;
-    }
-
-    .filter-actions {
-        padding:
-            0 16px 18px;
-
-        flex-direction:
-            column;
-
-        align-items:
-            stretch;
-    }
-
-    .primary-btn,
-    .secondary-btn {
-        width:
-            100%;
-    }
-
-    .table-header {
-        padding:
-            18px 16px 13px;
-
-        flex-direction:
-            column;
-
-        gap:
-            10px;
-    }
-
-    .table-header h2 {
-        font-size:
-            17px;
-    }
-
-    .record-count {
-        align-self:
-            flex-start;
-    }
-
-    .small-outline-btn {
-        align-self:
-            flex-start;
-    }
-
-    .fees-table {
-        min-width:
-            1050px;
-    }
-
-    .fees-table th {
-        padding:
-            11px 12px;
-
-        font-size:
-            9px;
-    }
-
-    .fees-table td {
-        padding:
-            12px;
-
-        font-size:
-            11px;
-    }
-
-    .fees-info-card {
-        padding:
-            16px;
-
-        gap:
-            10px;
-    }
-
-    .info-icon {
-        width:
-            36px;
-
-        height:
-            36px;
-
-        flex-basis:
-            36px;
-    }
-
-    .fees-info-card h3 {
-        font-size:
-            13px;
-    }
-
-    .fees-info-card p {
-        font-size:
-            11px;
-    }
-
-    .fees-footer {
-        padding:
-            20px 15px;
-
-        flex-direction:
-            column;
-
-        align-items:
-            center;
-
-        text-align:
-            center;
-    }
-
-    .fees-footer p {
-        text-align:
-            center;
-    }
-
-}
-
-
-/* =========================================================
-   SMALL MOBILE
-   ========================================================= */
-
-@media (max-width: 400px) {
-
-    .fees-title-area h1 {
-        font-size:
-            14px;
-    }
-
-    .refresh-btn {
-        font-size:
-            10px;
-
-        padding:
-            8px 9px;
-    }
-
-    .fee-summary-card {
-        padding:
-            10px;
-    }
-
-    .fee-summary-icon {
-        width:
-            30px;
-
-        height:
-            30px;
-
-        flex-basis:
-            30px;
-
-        font-size:
-            13px;
-    }
-
-    .fee-summary-card strong {
-        font-size:
-            14px;
-    }
-
-}
-
-
-/* =========================================================
-   PRINT
-   ========================================================= */
-
-@media print {
-
-    body {
-        background:
-            #ffffff;
-    }
-
-    .fees-header,
-    .fee-actions-card,
-    .fees-filters,
-    .fees-info-card,
-    .fees-footer,
-    .refresh-btn,
-    .back-btn,
-    .fees-toast,
-    .small-outline-btn {
-        display:
-            none !important;
-    }
-
-    .fees-container {
-        width:
-            100%;
-
-        margin:
-            0;
-
-        padding:
-            0;
-    }
-
-    .fees-summary-grid {
-        grid-template-columns:
-            repeat(4, 1fr);
-
-        margin-bottom:
-            15px;
-    }
-
-    .fee-summary-card,
-    .fees-card {
-        box-shadow:
-            none;
-
-        border:
-            1px solid #d1d5db;
-    }
-
-    .fee-records-card,
-    .recent-payments-card {
-        margin-top:
-            15px;
-    }
-
-    .fee-table-wrapper {
-        overflow:
-            visible;
-    }
-
-    .fees-table {
-        min-width:
-            0;
-
-        width:
-            100%;
-    }
-
-    .fees-table th,
-    .fees-table td {
-        padding:
-            7px;
-
-        font-size:
-            8px;
-    }
-
-}
-/* =========================================================
-   FEES MODALS
-   Step 8D
+   MODAL SYSTEM
+   IMPORTANT:
+   HIDDEN MODAL MUST NOT DISPLAY
    ========================================================= */
 
 .fee-modal-overlay {
@@ -1988,22 +1172,42 @@ select:focus-visible {
 
     z-index: 5000;
 
-    display: flex;
+    display: none !important;
 
     align-items: center;
-
     justify-content: center;
 
     padding: 18px;
 
     background:
-        rgba(15, 23, 42, 0.58);
+        rgba(15, 23, 42, 0.62);
 
     backdrop-filter:
         blur(7px);
 
     -webkit-backdrop-filter:
         blur(7px);
+
+    opacity: 0;
+
+    visibility: hidden;
+
+    pointer-events: none;
+
+    overflow-y: auto;
+}
+
+
+/* ONLY .show MODAL IS VISIBLE */
+
+.fee-modal-overlay.show {
+    display: flex !important;
+
+    opacity: 1;
+
+    visibility: visible;
+
+    pointer-events: auto;
 
     animation:
         feeModalFadeIn 0.2s ease;
@@ -2023,7 +1227,13 @@ select:focus-visible {
 }
 
 
+/* =========================================================
+   MODAL
+   ========================================================= */
+
 .fee-modal {
+    position: relative;
+
     width:
         min(680px, 100%);
 
@@ -2043,13 +1253,20 @@ select:focus-visible {
         20px;
 
     box-shadow:
-        0 25px 70px
-        rgba(15, 23, 42, 0.25);
+        var(--fees-shadow-lg);
+
+    transform:
+        translateY(0)
+        scale(1);
 
     animation:
         feeModalSlideUp 0.25s ease;
 }
 
+.fee-modal.wide {
+    width:
+        min(820px, 100%);
+}
 
 @keyframes feeModalSlideUp {
 
@@ -2077,17 +1294,12 @@ select:focus-visible {
    ========================================================= */
 
 .fee-modal-header {
-    display:
-        flex;
+    display: flex;
 
-    align-items:
-        flex-start;
+    align-items: flex-start;
+    justify-content: space-between;
 
-    justify-content:
-        space-between;
-
-    gap:
-        20px;
+    gap: 18px;
 
     padding:
         23px 24px 18px;
@@ -2096,10 +1308,12 @@ select:focus-visible {
         1px solid #e5e7eb;
 }
 
+.fee-modal-header > div {
+    min-width: 0;
+}
 
 .fee-modal-header h2 {
-    margin:
-        0;
+    margin: 0;
 
     color:
         #111827;
@@ -2113,7 +1327,6 @@ select:focus-visible {
     font-weight:
         800;
 }
-
 
 .fee-modal-header p {
     margin:
@@ -2130,27 +1343,37 @@ select:focus-visible {
 }
 
 
-.fee-modal-close {
-    width:
-        38px;
+/* =========================================================
+   CLOSE BUTTON
+   ========================================================= */
 
-    height:
-        38px;
+.fee-modal-close,
+.modal-close-btn {
+    position: relative;
 
-    display:
-        grid;
+    z-index: 20;
 
-    place-items:
-        center;
+    width: 40px;
+    height: 40px;
+
+    min-width: 40px;
+    min-height: 40px;
 
     flex:
-        0 0 38px;
+        0 0 40px;
+
+    display: grid !important;
+
+    place-items: center;
+
+    padding: 0 !important;
+    margin: 0;
 
     border:
         1px solid #e5e7eb;
 
     border-radius:
-        10px;
+        11px;
 
     background:
         #ffffff;
@@ -2159,27 +1382,58 @@ select:focus-visible {
         #6b7280;
 
     font-size:
-        15px;
+        22px;
+
+    line-height:
+        1;
 
     font-weight:
-        700;
+        800;
+
+    text-align:
+        center;
+
+    appearance:
+        none;
+
+    -webkit-appearance:
+        none;
+
+    cursor:
+        pointer;
+
+    touch-action:
+        manipulation;
+
+    -webkit-tap-highlight-color:
+        transparent;
 
     transition:
         background 0.2s ease,
         color 0.2s ease,
-        transform 0.2s ease;
+        transform 0.2s ease,
+        border-color 0.2s ease;
 }
 
-
-.fee-modal-close:hover {
+.fee-modal-close:hover,
+.modal-close-btn:hover {
     background:
         #fef2f2;
+
+    border-color:
+        #fecaca;
 
     color:
         #dc2626;
 
     transform:
         rotate(3deg);
+}
+
+.fee-modal-close:active,
+.modal-close-btn:active {
+    transform:
+        scale(0.92);
 }
 
 
@@ -2192,42 +1446,111 @@ select:focus-visible {
         22px 24px 24px;
 }
 
+.form-row {
+    display: grid;
 
-.fee-modal-field {
-    display:
-        flex;
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
 
-    flex-direction:
-        column;
-
-    gap:
-        7px;
-
-    margin-bottom:
-        15px;
+    gap: 14px;
 }
 
 
-.fee-modal-field label {
-    color:
-        #374151;
+/* =========================================================
+   STUDENT PREVIEW
+   ========================================================= */
 
-    font-size:
-        12px;
+.fee-student-preview {
+    display: flex;
 
-    font-weight:
-        700;
-}
+    align-items: center;
 
+    gap: 12px;
 
-.fee-modal-field input,
-.fee-modal-field select,
-.fee-modal-field textarea {
-    width:
-        100%;
+    margin-bottom: 17px;
+
+    padding: 12px;
 
     border:
-        1px solid #e5e7eb;
+        1px solid #e0e7ff;
+
+    border-radius: 13px;
+
+    background:
+        #f8faff;
+}
+
+.fee-student-preview .fee-avatar {
+    width: 44px;
+    height: 44px;
+
+    flex: 0 0 44px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 12px;
+
+    background:
+        var(--fees-primary-soft);
+
+    color:
+        var(--fees-primary);
+
+    font-size:
+        13px;
+
+    font-weight:
+        800;
+
+    overflow:
+        hidden;
+}
+
+.fee-student-preview .fee-avatar img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+}
+
+.fee-student-preview strong {
+    display: block;
+
+    color:
+        var(--fees-text);
+
+    font-size:
+        13px;
+}
+
+.fee-student-preview span {
+    display: block;
+
+    margin-top:
+        3px;
+
+    color:
+        var(--fees-muted);
+
+    font-size:
+        10px;
+}
+
+
+/* =========================================================
+   MONEY INPUT
+   ========================================================= */
+
+.money-input {
+    display: flex;
+
+    align-items: center;
+
+    min-height: 45px;
+
+    border:
+        1px solid var(--fees-border);
 
     border-radius:
         11px;
@@ -2235,64 +1558,45 @@ select:focus-visible {
     background:
         #ffffff;
 
+    overflow:
+        hidden;
+}
+
+.money-input > span {
+    display: grid;
+
+    place-items: center;
+
+    width: 42px;
+
+    align-self: stretch;
+
+    background:
+        #f8fafc;
+
+    border-right:
+        1px solid var(--fees-border);
+
     color:
-        #111827;
+        #475569;
 
-    font-size:
-        13px;
-
-    transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease;
+    font-weight:
+        800;
 }
 
+.money-input input {
+    min-width: 0;
 
-.fee-modal-field input,
-.fee-modal-field select {
-    min-height:
-        45px;
+    flex: 1;
+
+    border: 0 !important;
+
+    outline: 0 !important;
+
+    box-shadow: none !important;
 
     padding:
-        0 12px;
-}
-
-
-.fee-modal-field textarea {
-    min-height:
-        85px;
-
-    padding:
-        11px 12px;
-
-    resize:
-        vertical;
-}
-
-
-.fee-modal-field input:focus,
-.fee-modal-field select:focus,
-.fee-modal-field textarea:focus {
-    outline:
-        none;
-
-    border-color:
-        #4f46e5;
-
-    box-shadow:
-        0 0 0 4px
-        rgba(79, 70, 229, 0.09);
-}
-
-
-.fee-modal-grid {
-    display:
-        grid;
-
-    grid-template-columns:
-        repeat(2, minmax(0, 1fr));
-
-    gap:
-        14px;
+        0 12px !important;
 }
 
 
@@ -2300,18 +1604,9 @@ select:focus-visible {
    PAYMENT SUMMARY
    ========================================================= */
 
-.fee-modal-summary {
-    display:
-        grid;
-
-    grid-template-columns:
-        repeat(4, minmax(0, 1fr));
-
-    gap:
-        8px;
-
+.payment-summary {
     margin:
-        5px 0 18px;
+        4px 0 18px;
 
     padding:
         13px;
@@ -2326,35 +1621,30 @@ select:focus-visible {
         #eef2ff;
 }
 
+.summary-row {
+    display: flex;
 
-.fee-modal-summary > div {
-    min-width:
-        0;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 12px;
+
+    padding:
+        7px 0;
 }
 
-
-.fee-modal-summary span {
-    display:
-        block;
-
-    margin-bottom:
-        4px;
-
+.summary-row span {
     color:
-        #6b7280;
+        #64748b;
 
     font-size:
-        9px;
+        11px;
 
     font-weight:
-        700;
+        600;
 }
 
-
-.fee-modal-summary strong {
-    display:
-        block;
-
+.summary-row strong {
     color:
         #111827;
 
@@ -2365,28 +1655,20 @@ select:focus-visible {
         800;
 }
 
-
-.fee-modal-status {
-    grid-column:
-        1 / -1;
+.summary-row.highlight {
+    margin-top:
+        5px;
 
     padding-top:
-        8px;
+        11px;
 
     border-top:
         1px solid #c7d2fe;
-
-    color:
-        #475569;
-
-    font-size:
-        11px;
 }
 
-
-.fee-modal-status b {
+.summary-row.highlight strong {
     color:
-        #4f46e5;
+        var(--fees-primary);
 }
 
 
@@ -2395,54 +1677,109 @@ select:focus-visible {
    ========================================================= */
 
 .fee-modal-actions {
-    display:
-        flex;
+    display: flex;
 
-    align-items:
-        center;
+    align-items: center;
+    justify-content: flex-end;
 
-    justify-content:
-        flex-end;
-
-    gap:
-        10px;
+    gap: 10px;
 
     padding-top:
-        3px;
+        4px;
 }
-
 
 .fee-modal-actions .primary-btn,
 .fee-modal-actions .secondary-btn {
     min-width:
-        130px;
+        135px;
 }
 
 
 /* =========================================================
-   RECEIPTS / DUES LIST
+   PAYMENT STUDENT
    ========================================================= */
 
-.fee-receipts-list {
-    padding:
-        10px 24px 24px;
+.fee-payment-student {
+    display: flex;
+
+    align-items: center;
+
+    gap: 11px;
+
+    margin-bottom: 17px;
+
+    padding: 12px;
+
+    border:
+        1px solid var(--fees-border);
+
+    border-radius:
+        13px;
+
+    background:
+        #f8fafc;
+}
+
+.fee-payment-student .fee-avatar {
+    width: 42px;
+    height: 42px;
+
+    flex: 0 0 42px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 11px;
+
+    background:
+        var(--fees-primary-soft);
+}
+
+.fee-payment-student strong {
+    display: block;
+
+    color:
+        var(--fees-text);
+
+    font-size:
+        13px;
+}
+
+.fee-payment-student span {
+    display: block;
+
+    margin-top:
+        3px;
+
+    color:
+        var(--fees-muted);
+
+    font-size:
+        10px;
 }
 
 
-.fee-receipt-item {
-    display:
-        grid;
+/* =========================================================
+   MODAL LISTS
+   ========================================================= */
+
+.fee-modal-list {
+    padding:
+        8px 24px 24px;
+}
+
+.fee-receipt-item,
+.fee-due-item {
+    display: grid;
 
     grid-template-columns:
         minmax(0, 1fr)
         auto
         auto;
 
-    align-items:
-        center;
+    align-items: center;
 
-    gap:
-        14px;
+    gap: 14px;
 
     padding:
         14px 0;
@@ -2451,28 +1788,19 @@ select:focus-visible {
         1px solid #eef2f7;
 }
 
-
-.fee-receipt-item:last-child {
-    border-bottom:
-        0;
+.fee-receipt-item:last-child,
+.fee-due-item:last-child {
+    border-bottom: 0;
 }
 
-
-.fee-receipt-item > div {
-    min-width:
-        0;
+.fee-receipt-item > div,
+.fee-due-item > div {
+    min-width: 0;
 }
 
-
-.fee-receipt-item > div:nth-child(2) {
-    text-align:
-        right;
-}
-
-
-.fee-receipt-item strong {
-    display:
-        block;
+.fee-receipt-item strong,
+.fee-due-item strong {
+    display: block;
 
     color:
         #111827;
@@ -2484,10 +1812,9 @@ select:focus-visible {
         800;
 }
 
-
-.fee-receipt-item small {
-    display:
-        block;
+.fee-receipt-item small,
+.fee-due-item small {
+    display: block;
 
     margin-top:
         4px;
@@ -2502,8 +1829,8 @@ select:focus-visible {
         1.4;
 }
 
-
-.fee-receipt-item .table-action {
+.fee-receipt-item .table-action,
+.fee-due-item .table-action {
     white-space:
         nowrap;
 }
@@ -2514,53 +1841,292 @@ select:focus-visible {
    ========================================================= */
 
 .fee-modal::-webkit-scrollbar {
-    width:
-        7px;
+    width: 7px;
 }
-
 
 .fee-modal::-webkit-scrollbar-track {
-    background:
-        #f8fafc;
+    background: #f8fafc;
 }
-
 
 .fee-modal::-webkit-scrollbar-thumb {
-    background:
-        #cbd5e1;
+    background: #cbd5e1;
 
-    border-radius:
-        999px;
+    border-radius: 999px;
 }
 
-
 .fee-modal::-webkit-scrollbar-thumb:hover {
-    background:
-        #94a3b8;
+    background: #94a3b8;
 }
 
 
 /* =========================================================
-   MOBILE MODAL
+   MOBILE
    ========================================================= */
 
+@media (max-width: 1100px) {
+
+    .fees-kpi-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .quick-actions-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .fee-filters-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+
 @media (max-width: 700px) {
+
+    body {
+        overflow-x: hidden;
+    }
+
+    .page-header {
+        padding:
+            12px 14px;
+
+        gap: 10px;
+    }
+
+    .header-left {
+        gap: 9px;
+    }
+
+    .back-btn {
+        width: 38px;
+        height: 38px;
+
+        flex-basis: 38px;
+
+        font-size: 19px;
+    }
+
+    .header-icon {
+        width: 40px;
+        height: 40px;
+
+        flex-basis: 40px;
+
+        border-radius: 11px;
+
+        font-size: 19px;
+    }
+
+    .header-title h1 {
+        font-size: 16px;
+    }
+
+    .header-title p {
+        font-size: 9px;
+    }
+
+    .refresh-btn {
+        min-height: 38px;
+
+        padding:
+            0 10px;
+
+        font-size: 10px;
+    }
+
+
+    .fees-page {
+        width:
+            calc(100% - 20px);
+
+        padding:
+            16px 0 35px;
+    }
+
+
+    .fees-kpi-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        gap: 10px;
+    }
+
+    .fees-kpi-card {
+        padding:
+            12px;
+
+        gap: 9px;
+
+        border-radius:
+            14px;
+    }
+
+    .kpi-icon {
+        width: 34px;
+        height: 34px;
+
+        flex-basis: 34px;
+
+        border-radius:
+            9px;
+
+        font-size:
+            15px;
+    }
+
+    .kpi-label {
+        font-size:
+            9px;
+    }
+
+    .kpi-content strong {
+        font-size:
+            15px;
+    }
+
+    .kpi-content small {
+        font-size:
+            8px;
+    }
+
+
+    .fees-card {
+        margin-top:
+            14px;
+
+        border-radius:
+            15px;
+    }
+
+
+    .section-heading {
+        padding:
+            18px 16px 7px;
+    }
+
+    .heading-with-meta {
+        flex-direction:
+            column;
+
+        gap:
+            8px;
+    }
+
+    .section-heading h2 {
+        font-size:
+            17px;
+    }
+
+    .section-heading p {
+        font-size:
+            10px;
+    }
+
+
+    .quick-actions-grid {
+        grid-template-columns:
+            1fr;
+
+        padding:
+            11px 16px 17px;
+    }
+
+    .quick-action {
+        min-height:
+            70px;
+
+        padding:
+            12px;
+    }
+
+
+    .fee-filters-grid {
+        grid-template-columns:
+            1fr;
+
+        gap:
+            11px;
+
+        padding:
+            12px 16px 16px;
+    }
+
+    .filter-actions {
+        padding:
+            0 16px 17px;
+
+        flex-direction:
+            column;
+
+        align-items:
+            stretch;
+    }
+
+    .filter-actions .primary-btn,
+    .filter-actions .secondary-btn {
+        width:
+            100%;
+    }
+
+
+    .table-wrapper {
+        overflow-x:
+            auto;
+    }
+
+    .fees-table {
+        min-width:
+            1050px;
+    }
+
+
+    .fees-info-card {
+        padding:
+            15px;
+
+        gap:
+            10px;
+    }
+
+
+    /* =====================================================
+       MOBILE MODAL
+       ===================================================== */
 
     .fee-modal-overlay {
         align-items:
             flex-end;
 
+        justify-content:
+            center;
+
         padding:
             0;
+
+        overflow:
+            hidden;
     }
 
+    .fee-modal-overlay.show {
+        display:
+            flex !important;
+    }
 
     .fee-modal {
         width:
             100%;
 
+        max-width:
+            100%;
+
         max-height:
             94vh;
+
+        margin:
+            0;
 
         border-radius:
             20px 20px 0 0;
@@ -2572,18 +2138,24 @@ select:focus-visible {
             feeModalMobileUp 0.25s ease;
     }
 
+    .fee-modal.wide {
+        width:
+            100%;
+    }
 
     @keyframes feeModalMobileUp {
 
         from {
-            opacity: 0;
+            opacity:
+                0;
 
             transform:
                 translateY(100%);
         }
 
         to {
-            opacity: 1;
+            opacity:
+                1;
 
             transform:
                 translateY(0);
@@ -2593,44 +2165,63 @@ select:focus-visible {
 
 
     .fee-modal-header {
-        padding:
-            18px 16px 15px;
-    }
+        position:
+            relative;
 
+        padding:
+            17px 14px 14px;
+
+        gap:
+            10px;
+    }
 
     .fee-modal-header h2 {
         font-size:
             17px;
     }
 
-
     .fee-modal-header p {
         font-size:
-            10px;
+            9px;
+    }
+
+
+    .fee-modal-close,
+    .modal-close-btn {
+        width:
+            42px !important;
+
+        height:
+            42px !important;
+
+        min-width:
+            42px !important;
+
+        min-height:
+            42px !important;
+
+        flex:
+            0 0 42px !important;
+
+        border-radius:
+            11px;
+
+        font-size:
+            25px;
     }
 
 
     .fee-modal-form {
         padding:
-            17px 16px 22px;
+            16px 14px 22px;
     }
 
-
-    .fee-modal-grid {
+    .form-row {
         grid-template-columns:
             1fr;
 
         gap:
-            0;
-    }
-
-
-    .fee-modal-summary {
-        grid-template-columns:
-            repeat(2, minmax(0, 1fr));
-
-        gap:
-            10px;
+            12px;
     }
 
 
@@ -2642,46 +2233,208 @@ select:focus-visible {
             stretch;
     }
 
-
-    .fee-modal-actions
-    .primary-btn,
-    .fee-modal-actions
-    .secondary-btn {
+    .fee-modal-actions .primary-btn,
+    .fee-modal-actions .secondary-btn {
         width:
+            100%;
+
+        min-width:
             100%;
     }
 
 
-    .fee-receipts-list {
+    .fee-modal-list {
         padding:
-            5px 16px 20px;
+            6px 14px 20px;
     }
 
-
-    .fee-receipt-item {
+    .fee-receipt-item,
+    .fee-due-item {
         grid-template-columns:
             minmax(0, 1fr)
             auto;
 
         gap:
-            10px;
-
-        padding:
-            13px 0;
+            9px;
     }
 
-
-    .fee-receipt-item
-    > div:nth-child(2) {
-        text-align:
-            right;
-    }
-
-
-    .fee-receipt-item
-    .table-action {
+    .fee-receipt-item .table-action,
+    .fee-due-item .table-action {
         grid-column:
             1 / -1;
+
+        width:
+            100%;
+    }
+
+
+    .fees-toast {
+        bottom:
+            15px;
+
+        font-size:
+            11px;
+    }
+
+}
+
+
+@media (max-width: 400px) {
+
+    .page-header {
+        padding:
+            10px;
+    }
+
+    .header-icon {
+        display:
+            none;
+    }
+
+    .header-title h1 {
+        font-size:
+            14px;
+    }
+
+    .header-title p {
+        font-size:
+            8px;
+    }
+
+    .refresh-btn {
+        padding:
+            0 8px;
+
+        font-size:
+            9px;
+    }
+
+
+    .fees-page {
+        width:
+            calc(100% - 14px);
+    }
+
+
+    .fees-kpi-card {
+        padding:
+            9px;
+
+        gap:
+            7px;
+    }
+
+    .kpi-icon {
+        width:
+            30px;
+
+        height:
+            30px;
+
+        flex-basis:
+            30px;
+
+        font-size:
+            13px;
+    }
+
+    .kpi-content strong {
+        font-size:
+            13px;
+    }
+
+    .kpi-label {
+        font-size:
+            8px;
+    }
+
+    .kpi-content small {
+        font-size:
+            7px;
+    }
+
+
+    .fee-modal-close,
+    .modal-close-btn {
+        width:
+            40px !important;
+
+        height:
+            40px !important;
+
+        min-width:
+            40px !important;
+
+        min-height:
+            40px !important;
+
+        flex-basis:
+            40px !important;
+
+        font-size:
+            24px;
+    }
+
+}
+
+
+/* =========================================================
+   PRINT
+   ========================================================= */
+
+@media print {
+
+    body {
+        background:
+            #ffffff;
+    }
+
+    .page-header,
+    .quick-actions-grid,
+    .fee-filters-grid,
+    .filter-actions,
+    .fees-info-card,
+    .fees-toast,
+    .refresh-btn,
+    .back-btn,
+    .fee-modal-overlay,
+    .site-footer {
+        display:
+            none !important;
+    }
+
+    .fees-page {
+        width:
+            100%;
+
+        margin:
+            0;
+
+        padding:
+            0;
+    }
+
+    .fees-kpi-grid {
+        grid-template-columns:
+            repeat(4, 1fr);
+    }
+
+    .fees-card {
+        box-shadow:
+            none;
+
+        border:
+            1px solid #d1d5db;
+    }
+
+    .table-wrapper {
+        overflow:
+            visible;
+    }
+
+    .fees-table {
+        min-width:
+            0;
 
         width:
             100%;
@@ -2691,40 +2444,35 @@ select:focus-visible {
 
 
 /* =========================================================
-   VERY SMALL MOBILE
+   ACCESSIBILITY / SAFETY
    ========================================================= */
 
-@media (max-width: 400px) {
+.fee-modal-overlay:not(.show) {
+    display:
+        none !important;
 
-    .fee-modal-summary {
-        padding:
-            10px;
-    }
+    visibility:
+        hidden !important;
 
+    opacity:
+        0 !important;
 
-    .fee-modal-summary span {
-        font-size:
-            8px;
-    }
+    pointer-events:
+        none !important;
+}
 
+.fee-modal-overlay.show {
+    display:
+        flex !important;
 
-    .fee-modal-summary strong {
-        font-size:
-            12px;
-    }
+    visibility:
+        visible !important;
 
+    opacity:
+        1 !important;
 
-    .fee-modal-close {
-        width:
-            34px;
-
-        height:
-            34px;
-
-        flex-basis:
-            34px;
-    }
-
+    pointer-events:
+        auto !important;
 }
 
 
@@ -2734,10 +2482,20 @@ select:focus-visible {
 
 @media (prefers-reduced-motion: reduce) {
 
-    .fee-modal-overlay,
-    .fee-modal {
-        animation:
-            none;
+    *,
+    *::before,
+    *::after {
+        scroll-behavior:
+            auto !important;
+
+        transition-duration:
+            0.01ms !important;
+
+        animation-duration:
+            0.01ms !important;
+
+        animation-iteration-count:
+            1 !important;
     }
 
 }
